@@ -1,6 +1,7 @@
 #include "util/obj_loader.h"
 
 #include "stdio.h"
+#include "string.h"
 #include "stdlib.h"
 
 /* Quick utility function to check if a string is a prefix of another */
