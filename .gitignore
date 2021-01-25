@@ -1,0 +1,9 @@
+*.dSYM
+*.out
+*.ppm
+*.vscode
+*.DS_Store
+*.png
+
+build
+raytrace
