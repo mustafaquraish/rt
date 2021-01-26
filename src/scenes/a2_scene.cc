@@ -35,9 +35,10 @@ Scene *A2Scene(int sx, int sy) {
   s = new TriangleMesh("assets/obj/pinata.obj", new Material(Colour(1, 0, 0)));
   // s->RotateY(PI);
   // s->RotateX(PI/2);
-  s->Translate(0,0,5);
+  s->Translate(0,0,2);
   scene->add(s);
-  // for (int i = 0; i < 5000000; i++) {
+
+  // for (int i = 0; i < 1000000; i++) {
   //   s = new Sphere(new Material(Colour(0.75, 0.95, 0.55)));
   //   s->Scale(.05, .05, .05);
   //   s->RotateZ(-PI / 1.5);
@@ -60,7 +61,9 @@ Scene *A2Scene(int sx, int sy) {
   s->RotateZ(PI / 4);
   s->RotateX(PI / 2);
   s->Translate(0, -4, 5);
+  cout << "plane bounds: " << s->getBounds() << endl;
   scene->add(s);
+  cout << "plane bounds: " << s->getBounds() << endl;
   // world.add(s);
 
   // BVH *bvh = new BVH(scene->obj_list);

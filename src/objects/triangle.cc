@@ -1,5 +1,18 @@
 #include "objects/triangle.h"
 
+Triangle::Triangle(Vec  p0, Vec  p1, Vec  p2,
+                   Vec  n0, Vec  n1, Vec  n2,
+                   Vec ab0, Vec ab1, Vec ab2) {
+
+    p[0] = p0; n[0] = n0; ab[0] = ab0;
+    p[1] = p1; n[1] = n1; ab[1] = ab1;
+    p[2] = p2; n[2] = n2; ab[2] = ab2;
+
+    bounds = AABB(p0);
+    bounds.addPoint(p1);
+    bounds.addPoint(p2);
+  };
+
 Vec Triangle::baryCentricWeights(const Vec& pt) {
   Vec AB = p[1] - p[0], AC = p[2] - p[0];
   Vec BP =   pt - p[1], CP =   pt - p[2];

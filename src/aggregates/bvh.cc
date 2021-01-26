@@ -73,7 +73,7 @@ BVH::BVH(std::vector<Primitive *>& prims, int start, int num) {
   // Now onto the regular recursive building...
 
   if (num == 1) {
-    a =b = prims[start];
+    a = b = prims[start];
     bounds = a->getBounds();
     b = NULL;
     isLeaf = 1;
@@ -140,9 +140,8 @@ bool BVH::hit(Ray& ray, HitRec& rec) {
   Primitive *secnd = a1 >= b1 ? a : b;  // 'secnd` is the child starting after
 
   // Swap aX and bX so a1/2 corresponds to `first`
-  if (a1 >= b1) {
-    std::swap(a1, b1);
-    std::swap(a2, b2);
+  if (a1 > b1) {
+    b1 = a1;
   }
 
   int hit_first = first->hit(ray, r1);
