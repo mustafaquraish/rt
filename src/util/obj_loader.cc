@@ -52,7 +52,7 @@ std::vector<Primitive *> wavefrontObjLoader(const char *fname) {
                                  vts[t0-1], vts[t1-1], vts[t2-1]);
       // std::cout << "Face: " << vs[v0-1] << ", " << vs[v1-1] << ", " << vs[v2-1] << std::endl;
       // std::cout << "   n: " << vns[n0-1] << ", " << vns[n1-1] << ", " << vns[n2-1] << std::endl;
-      // std::cout << "    bounds: " << t->getBounds() << std::endl;
+      // std::cout << "    bounds: " << t->bounds << std::endl;
       faces.push_back((Primitive *) t);
     }
     

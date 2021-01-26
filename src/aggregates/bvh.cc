@@ -31,7 +31,7 @@ inline unsigned int mortonCode(const AABB &bb) {
 }
 
 inline unsigned int mortonCode(const Primitive *p) {
-  return mortonCode(p->getBounds());
+  return mortonCode(p->bounds);
 }
 
 bool mortonComp(Primitive *a, Primitive *b) {
@@ -42,8 +42,8 @@ namespace bvh_sort {
 
 template <int AXIS>
 bool cmpPrim(const Primitive *a, const Primitive *b) {
-  AABB ba = a->getBounds();
-  AABB bb = b->getBounds();
+  AABB ba = a->bounds;
+  AABB bb = b->bounds;
   double ca = ba.min[AXIS] + ba.max[AXIS];
   double cb = bb.min[AXIS] + bb.max[AXIS];
   return ca < cb;
@@ -74,7 +74,7 @@ BVH::BVH(std::vector<Primitive *>& prims, int start, int num) {
 
   if (num == 1) {
     a = b = prims[start];
-    bounds = a->getBounds();
+    bounds = a->bounds;
     b = NULL;
     isLeaf = 1;
     return;
@@ -82,7 +82,7 @@ BVH::BVH(std::vector<Primitive *>& prims, int start, int num) {
   } else if (num == 2) {
     a = prims[start]; 
     b = prims[start+1];
-    bounds = combine(a->getBounds(), b->getBounds());
+    bounds = combine(a->bounds, b->bounds);
     isLeaf = 1;
     return;
   }
@@ -99,7 +99,7 @@ BVH::BVH(std::vector<Primitive *>& prims, int start, int num) {
   int midpt = start + (num + 1) / 2;
   a = new BVH(prims, start, (num + 1) / 2);
   b = new BVH(prims, midpt, num / 2);
-  bounds = combine(a->getBounds(), b->getBounds());
+  bounds = combine(a->bounds, b->bounds);
 
 #ifdef LOG_BVH_TIME 
   if (topLevel) {
@@ -113,10 +113,13 @@ BVH::BVH(std::vector<Primitive *>& prims, int start, int num) {
 
 bool BVH::hit(Ray& ray, HitRec& rec) {
   if (isLeaf) {
+    // If we have only one child...
     if (b == NULL) return a->hit(ray, rec);
+    // Intersect both children
     HitRec ra, rb;
     bool hit_a = a->hit(ray, ra);
     bool hit_b = b->hit(ray, rb);
+    // Return closer one if there were intersections
     if (!hit_a && !hit_b) return false;
     if      (!hit_a) rec = rb;
     else if (!hit_b) rec = ra;
@@ -126,8 +129,8 @@ bool BVH::hit(Ray& ray, HitRec& rec) {
 
   // Check both children's bounding boxes
   double a1, a2, b1, b2;
-  int hit_a = a->getBounds().hit(ray, a1, a2);
-  int hit_b = b->getBounds().hit(ray, b1, b2);
+  int hit_a = a->bounds.hit(ray, a1, a2);
+  int hit_b = b->bounds.hit(ray, b1, b2);
 
   if (!hit_a && !hit_b) return false;           // Hit none of them
   if (!hit_b) return hit_a && a->hit(ray, rec); // Didn't hit b, recurse on a

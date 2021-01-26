@@ -68,11 +68,3 @@ bool Triangle::hit(Ray& ray, HitRec& rec) {
   
   return 1;
 }
-
-// AABB Triangle::getBounds() const {
-//   AABB bounds = AABB(0);
-//   bounds.addPoint(p[0]);
-//   bounds.addPoint(p[1]);
-//   bounds.addPoint(p[2]);
-//   return bounds;
-// }

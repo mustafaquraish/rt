@@ -8,14 +8,11 @@ bool Sphere::hit(Ray& r, HitRec& rec) {
   int DEBUG = 0;
 
   Ray transformed = rayTransform(r);
-  if(DEBUG) cout << "------ Sphere intersection --------" << endl;
-  if(DEBUG) cout << "orignl: " << endl << "  p:" << r.p << endl << "  d: " << r.d << endl;
-  if(DEBUG) cout << "transf: " << endl << "  p:" << transformed.p << endl <<"  d: " << transformed.d << endl;
   double A = dot(transformed.d, transformed.d);
   double B = dot(transformed.p, transformed.d) * 2;
   double C = dot(transformed.p, transformed.p) - 1;
+
   double t1, t2;
-  if(DEBUG) cout << " A: " << A << " B: " << B << " C: " << C << endl;
 
   if (!solveQuadratic(A, B, C, &t1, &t2)) {
     return false;

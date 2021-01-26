@@ -13,10 +13,3 @@ bool PrimitiveList::hit(Ray& ray, HitRec& rec) {
 
   return (closest != INFINITY);
 }
-
-AABB PrimitiveList::getBounds() const {
-  AABB totalBounds = AABB(0);
-  for (Primitive *prim : list) 
-    totalBounds = combine(totalBounds, prim->getBounds());
-  return totalBounds;
-}
