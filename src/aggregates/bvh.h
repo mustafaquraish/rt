@@ -9,30 +9,36 @@ struct BVH : Aggregate {
     BVH(std::vector<Primitive *>& list, int start=0, int num=-1);
     ~BVH() { 
       if (!isLeaf) {
-        delete (BVH *)a;
-        delete (BVH *)b;
+        delete bvh_a;
+        delete bvh_b;
       }
     }
-    AABB bounds;
     bool isLeaf = 0;
-    Primitive *a;
-    Primitive *b;
-    
+
+    // Using unions here just to be able to access BVH fields easier later.
+    union {
+      Primitive *a;
+      BVH *bvh_a;
+    };
+    union {
+      Primitive *b;
+      BVH *bvh_b;
+    };
+
     bool hit(Ray& ray, HitRec& rec);
-    AABB getBounds() const { return bounds; }
 
     inline int height() {
       if (isLeaf) {
         return 1;
       }
-      else return max(((BVH*)a)->height() + 1, ((BVH*)b)->height()+1);
+      else return max(bvh_a->height() + 1, bvh_b->height()+1);
     }
 
     inline int num_nodes() {
       if (isLeaf) { 
         return 1;
       }
-      else return ((BVH*)a)->num_nodes() + ((BVH*)b)->num_nodes();
+      else return bvh_a->num_nodes() + bvh_b->num_nodes();
     }
 };
 

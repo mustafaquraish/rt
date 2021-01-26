@@ -6,6 +6,8 @@
 using std::cout;
 using std::endl;
 
+#define AGGREGATE BVH
+
 #include "core/ray.h"
 #include "core/object.h"
 #include "core/camera.h"

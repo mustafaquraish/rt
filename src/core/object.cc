@@ -34,7 +34,3 @@ void Object::finalize() {
   T_inv = invert(T);
   bounds = transformed(T, bounds);
 }
-
-AABB Object::getBounds() const {
-  return bounds;
-}

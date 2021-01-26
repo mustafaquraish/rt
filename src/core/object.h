@@ -24,16 +24,11 @@ struct Object : Primitive {
   Vec normalTransform(const Vec& n);
   Material *getMaterial(HitRec& rec) { return mat; }
   
-  // Get **World** bounds for object after transformation
-  virtual AABB getBounds() const;
-
   virtual bool hit(Ray& r, HitRec &rec) = 0;
   virtual Vec sample() = 0;
 
   Material *mat = NULL;
   Primitive *prim = NULL;
-  // Canonical object bounds
-  AABB bounds = AABB(Vec(-INFINITY), Vec(INFINITY));
   Matrix T, T_inv;
   int both = 0;
 };

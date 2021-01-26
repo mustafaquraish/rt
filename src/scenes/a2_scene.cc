@@ -1,5 +1,4 @@
 #include "core/rt.h"
-#include "aggregates/primitive_list.h"
 
 Scene *A2Scene(int sx, int sy) {
 
@@ -61,20 +60,21 @@ Scene *A2Scene(int sx, int sy) {
   s->RotateZ(PI / 4);
   s->RotateX(PI / 2);
   s->Translate(0, -4, 5);
-  cout << "plane bounds: " << s->getBounds() << endl;
+  cout << "plane bounds: " << s->bounds << endl;
   scene->add(s);
-  cout << "plane bounds: " << s->getBounds() << endl;
+  cout << "plane bounds: " << s->bounds << endl;
   // world.add(s);
 
   // BVH *bvh = new BVH(scene->obj_list);
   // scene->world = bvh;
-  // cout << "BVH bounds" << bvh->getBounds() << endl;
+  // cout << "BVH bounds" << bvh->bounds << endl;
   // cout << "BVH MADE, height: " << bvh->height() << "  nodes: " << bvh->num_nodes() << endl;
   
   // BVH *bvh = new BVH(scene->obj_list);
 
   // scene->world = new PrimitiveList(scene->obj_list);
-  scene->world = new BVH(scene->obj_list);
+  // scene->world = new BVH(scene->obj_list);
+  scene->world = new AGGREGATE(scene->obj_list);
   
   // exit(0);
   // ls.push_back(PointLS(Vec(0, 25.5, -3.5), Vec(0.95, 0.95, 0.95)));

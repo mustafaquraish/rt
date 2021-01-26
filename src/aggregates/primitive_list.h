@@ -6,11 +6,13 @@
 #include <vector>
 
 struct PrimitiveList : Aggregate {
-  PrimitiveList(std::vector<Primitive *>& list) : list(list) {};
+  PrimitiveList(std::vector<Primitive *>& list) : list(list) {
+    bounds = list[0]->bounds;
+    for (Primitive *prim : list) 
+      bounds = combine(bounds, prim->bounds);
+  };
   bool hit(Ray& r, HitRec &rec);
   std::vector<Primitive *> list;
-  // This should never really be used
-  AABB getBounds() const;
 };
 
 #endif // __PRIMITIVE_LIST_H__

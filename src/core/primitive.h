@@ -27,8 +27,8 @@ struct HitRec {
 
 struct Primitive {
   virtual bool hit(Ray& r, HitRec &rec) = 0;
-  // Get primitive bounds
-  virtual AABB getBounds() const = 0;
+  // Primitive bounds
+  AABB bounds = AABB(Vec(-INFINITY), Vec(INFINITY));
 };
 
 struct Aggregate : Primitive {

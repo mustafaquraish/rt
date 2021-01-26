@@ -5,7 +5,7 @@ SRC      = src
 SRCS     = $(wildcard $(SRC)/**/*.cc) src/main.cc
 OBJS     = $(patsubst $(SRC)/%.cc,$(OBJ)/%.o,$(SRCS))
 EXE      = raytrace
-CFLAGS   = -g -I$(INCLUDE) -std=c++17
+CFLAGS   = -g -I$(INCLUDE) -std=c++17 -flto=full
 LDLIBS   = -lm
 
 .PHONY: all run clean release debug
