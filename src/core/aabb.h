@@ -9,6 +9,8 @@ struct AABB {
   AABB() : min(Vec(-INFINITY)), max(Vec(INFINITY)) {};
   // Bounding box from (-v, -v, -v) to (v, v, v)
   AABB(double v) : min(Vec(-v)), max(Vec(v)) {};
+  // Create Bounds with a single point
+  AABB(Vec v) : min(v), max(v) {};
   // Bounding box with `min` and `max` bounds
   AABB(Vec min, Vec max) : min(min), max(max) {};
   
