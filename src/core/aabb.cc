@@ -74,7 +74,8 @@ Vec AABB::offset(const Vec& p) const {
 }
 
 double area(const AABB& a) {
-  return 2 * lengthSq(a.max - a.min);
+  Vec d = a.max - a.min;
+  return 2 * (d.x * d.y + d.x * d.z + d.y * d.z);
 }
 
 Vec centroid(const AABB& a) {

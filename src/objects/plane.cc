@@ -8,8 +8,7 @@ bool Plane::hit(Ray& r, HitRec& rec) {
       fabs(it.x) > 1 || fabs(it.y) > 1) {
     return false;
   } else {
-    rec.t1 = t;
-    rec.t2 = t;
+    rec.t = t;
     rec.p = r.at(t);
     rec.n = normalTransform(Vec(0,0,1));
     rec.a = it.x*2 - 1;

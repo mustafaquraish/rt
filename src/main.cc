@@ -6,6 +6,7 @@ Colour trace(Ray& ray, Scene* scene) {
 
 int main() {
   Scene *scene = A2Scene(1024, 1024);
+  // Scene *scene = RoomScene(1024, 1024);
   Ray kk = Ray(Vec(), Vec());
   if (scene->integrator) scene->integrator->render(scene, 10);
   else {

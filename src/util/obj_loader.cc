@@ -3,13 +3,19 @@
 #include "stdio.h"
 #include "string.h"
 #include "stdlib.h"
+#include <unordered_map>
+
+std::unordered_map<const char *, Aggregate *> OBJ_CACHE; 
 
 /* Quick utility function to check if a string is a prefix of another */
 int prefix(const char *pre, const char *str) {
   return strncmp(pre, str, strlen(pre)) == 0;
 }
 
-std::vector<Primitive *> wavefrontObjLoader(const char *fname) {
+Aggregate *wavefrontObjLoader(const char *fname) {
+  if (OBJ_CACHE.find(fname) != OBJ_CACHE.end()) {
+    return OBJ_CACHE[fname];
+  }
 
   FILE *f = fopen(fname, "r");
   if (f == NULL) {
@@ -50,13 +56,13 @@ std::vector<Primitive *> wavefrontObjLoader(const char *fname) {
       Triangle *t = new Triangle( vs[v0-1],  vs[v1-1],  vs[v2-1],
                                  vns[n0-1], vns[n1-1], vns[n2-1],
                                  vts[t0-1], vts[t1-1], vts[t2-1]);
-      // std::cout << "Face: " << vs[v0-1] << ", " << vs[v1-1] << ", " << vs[v2-1] << std::endl;
-      // std::cout << "   n: " << vns[n0-1] << ", " << vns[n1-1] << ", " << vns[n2-1] << std::endl;
-      // std::cout << "    bounds: " << t->bounds << std::endl;
+
       faces.push_back((Primitive *) t);
     }
     
   }
   printf("[+] Loaded %s; vert=%lu, face=%lu\n", fname, vs.size(), faces.size());
-  return faces;
+  Aggregate *mesh = new AGGREGATE(faces);
+  OBJ_CACHE[fname] = mesh;
+  return mesh;
 }

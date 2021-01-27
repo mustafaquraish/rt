@@ -14,8 +14,7 @@ struct Image {
   void set(int i, int j, const Vec& col);
   void hdrset(int i, int j, const Vec& col);
   int sx, sy;
-  double* data;
-  double* wght;
+  Colour* data;
 };
 
 #endif // __IMAGE_H__

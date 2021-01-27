@@ -19,22 +19,16 @@ bool Sphere::hit(Ray& r, HitRec& rec) {
   }
 
   if (t1 < TOL && t2 < TOL) return false;
+  if (t2 > TOL && (t2 < t1 || t1 < TOL)) t1 = t2;
+  if (t1 < TOL || t1 > r.tMax) return false;
 
-  if (t2 > TOL && (t2 < t1 || t1 < TOL)) {
-    std::swap(t1, t2);
-  }
-  if (t1 < TOL || t1 > r.tMax) {
-    return false;
-  }
-
-  rec.t1 = t1;
-  rec.t2 = t2;
+  rec.t = t1;
   rec.p = r.at(t1);
   rec.n = normalTransform(transformed.at(t1));
   rec.a = atan2(rec.p.z, rec.p.x) / (2 * PI) + 0.5;
   rec.b = 0.5 - asin(rec.p.y) / PI;
   rec.obj = this;
-  r.tMax = min(r.tMax, rec.t1);
+  r.tMax = min(r.tMax, rec.t);
   return true;
 }
 
