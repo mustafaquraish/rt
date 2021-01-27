@@ -14,14 +14,13 @@ struct TriangleMesh : Object {
   };
 
   // Caller should set the `prims` vector to contain all the Triangles.
-  void loadTriangles();
+  void loadTriangles(std::vector<Primitive *>& prims);
   void loadObj(const char *fname);
 
   bool hit(Ray& r, HitRec &rec);
   Vec sample() { return T * Vec(); };
   
   Aggregate *mesh;
-  std::vector<Primitive *> prims;
 };
 
 #endif // __TRIANGLE_MESH_H__

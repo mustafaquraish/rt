@@ -1,12 +1,16 @@
 #include "core/rt.h"
 #include "integrators/debug_shader.h"
+#include "time.h"
 
 int DEBUG = 0;
 
 void DebugShader::render(Scene *scene, int depth) {
   Image im = Image(scene->sx, scene->sy);
+  clock_t timeBegin = clock();
+
+  int done = 0;
   for (int i = 0; i < scene->sx; i++) {
-    printf("\rRendering row %d / %d ~ %f", i, scene->sx, 100 * (float)i/scene->sx);
+    printf("\rRendering row %d / %d ~ %f", done, scene->sx, 100 * (float)done/scene->sx);
     fflush(stdout);
     for (int j = 0; j < scene->sy; j++) {
       // DEBUG = i == 182 && j == 145;
@@ -21,7 +25,7 @@ void DebugShader::render(Scene *scene, int depth) {
         col = (rec.n + 1) / 2;
 
         /****************** DISTANCE ***************/
-        // col = 1 / rec.t1;
+        // col = 1 / rec.t;
 
         /***************** MATERIAL COLOUR *********/
         // Material *mat = rec.obj->getMaterial(rec); col = (mat) ? mat->get() : Vec();
@@ -31,7 +35,11 @@ void DebugShader::render(Scene *scene, int depth) {
 
       im.set(i, j, col);
     }
+    done++;
   }
+  clock_t timeEnd = clock();
+  double buildTime = (double)(timeEnd - timeBegin) / CLOCKS_PER_SEC;
+  printf("\n[+] Rendering completed in %.3fs\n", buildTime);
   cout << endl;
   im.save("output.ppm");
   return;

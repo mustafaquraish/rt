@@ -1,3 +1,8 @@
+/**
+ * This is NOT an object, but it just extends Primitive. Used in the 
+ * TriangleMesh() object.
+ */
+
 #include "objects/triangle.h"
 
 Triangle::Triangle(Vec  p0, Vec  p1, Vec  p2,
@@ -24,8 +29,6 @@ Vec Triangle::baryCentricWeights(const Vec& pt) {
 }
 
 bool Triangle::hit(Ray& r, HitRec& rec) {
-  // printf("Hit.. triangle...\n");
-
   double u, v, w, t;
   
   Vec e0 = p[1] - p[0];
@@ -33,35 +36,29 @@ bool Triangle::hit(Ray& r, HitRec& rec) {
 
   Vec h = cross(r.d, e1);
   double a1 = dot(e0, h);
-  if (a1 < TOL && a1 > -TOL) {
-    return 0;
-  }
+  if (a1 < TOL && a1 > -TOL) return false;
 
   double f = 1.0 / a1;
 
   Vec s = r.p - p[0];
   u = f * dot(s, h);
-  if (u < 0.0 || u > 1.0) {
-    return 0;;
-  }
+  if (u < 0.0 || u > 1.0) return false;
 
   Vec q = cross(s, e0);
   v = f * dot(r.d, q);
-  if (v < 0.0 || u + v > 1.0) {
-    return 0;
-  }
+  if (v < 0.0 || u + v > 1.0) return false;
+  
   t = f * dot(e1, q);
-
-  if (t < TOL || t > r.tMax) return 0;
+  if (t < TOL || t > r.tMax) return false;
 
   Vec bw = baryCentricWeights(r.at(t));
 
-  /*** rec.p   NEEDS TO BE SET BY THE CALLER ***/
-  rec.t1 = t;
-  // Needs to be transformed by TriangleMesh class.
-  rec.n = Vec(n[0].x * bw[0] + n[1].x * bw[1] + n[2].x * bw[2],
-              n[0].y * bw[0] + n[1].y * bw[1] + n[2].y * bw[2],
-              n[0].z * bw[0] + n[1].z * bw[1] + n[2].z * bw[2]);
+  // NOTE: rec.p needs to be set by `TriangleMesh::hit`
+  // NOTE: rec.n needs to transformed by `TriangleMesh::hit`
+  rec.t = t;
+  rec.n = -Vec(n[0].x * bw[0] + n[1].x * bw[1] + n[2].x * bw[2],
+               n[0].y * bw[0] + n[1].y * bw[1] + n[2].y * bw[2],
+               n[0].z * bw[0] + n[1].z * bw[1] + n[2].z * bw[2]);
   rec.a = ab[0].x * bw[0] + ab[1].x * v + ab[2].x * w;
   rec.b = ab[0].y * bw[0] + ab[1].y * v + ab[2].y * w;
   r.tMax = min(r.tMax, t);

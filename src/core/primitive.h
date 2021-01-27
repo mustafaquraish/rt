@@ -16,8 +16,7 @@
 struct Object;
 
 struct HitRec {
-  double t1;
-  double t2;
+  double t;
   Vec p;
   Vec n;
   double a;

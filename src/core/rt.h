@@ -18,7 +18,9 @@ using std::endl;
 // Individual Objects
 #include "objects/plane.h"
 #include "objects/sphere.h"
+#include "objects/cylinder.h"
 #include "objects/cube.h"
+#include "objects/disc.h"
 #include "objects/implicit.h"
 #include "objects/triangle_mesh.h"
 
@@ -34,6 +36,7 @@ using std::endl;
 
 // Scene definitions
 Scene *A2Scene(int sx, int sy);
+Scene *RoomScene(int sx, int sy);
 
 
 #endif // __RT_COMMON_H__

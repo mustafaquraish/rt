@@ -7,7 +7,7 @@
 
 struct PrimitiveList : Aggregate {
   PrimitiveList(std::vector<Primitive *>& list) : list(list) {
-    bounds = list[0]->bounds;
+    bounds = AABB();
     for (Primitive *prim : list) 
       bounds = combine(bounds, prim->bounds);
   };
