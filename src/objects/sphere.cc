@@ -23,7 +23,7 @@ bool Sphere::hit(Ray& r, HitRec& rec) {
   if (t2 > TOL && (t2 < t1 || t1 < TOL)) {
     std::swap(t1, t2);
   }
-  if (t1 < TOL) {
+  if (t1 < TOL || t1 > r.tMax) {
     return false;
   }
 
@@ -34,6 +34,7 @@ bool Sphere::hit(Ray& r, HitRec& rec) {
   rec.a = atan2(rec.p.z, rec.p.x) / (2 * PI) + 0.5;
   rec.b = 0.5 - asin(rec.p.y) / PI;
   rec.obj = this;
+  r.tMax = min(r.tMax, rec.t1);
   return true;
 }
 

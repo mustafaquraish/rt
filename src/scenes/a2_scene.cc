@@ -37,15 +37,15 @@ Scene *A2Scene(int sx, int sy) {
   s->Translate(0,0,2);
   scene->add(s);
 
-  // for (int i = 0; i < 1000000; i++) {
-  //   s = new Sphere(new Material(Colour(0.75, 0.95, 0.55)));
-  //   s->Scale(.05, .05, .05);
-  //   s->RotateZ(-PI / 1.5);
-  //   s->Translate(rand01()*30-15, rand01()*30-15, rand01()+3);
-  //   s->Scale(1, 1, 5);
-  //   s->Translate(0, 0, -10);
-  //   scene->add(s);
-  // }
+  for (int i = 0; i < 1000000; i++) {
+    s = new Sphere(new Material(Colour(0.75, 0.95, 0.55)));
+    s->Scale(.05, .05, .05);
+    s->RotateZ(-PI / 1.5);
+    s->Translate(rand01()*30-15, rand01()*30-15, rand01()+3);
+    s->Scale(1, 1, 5);
+    s->Translate(0, 0, -10);
+    scene->add(s);
+  }
 
   s = new Sphere(new Material(Colour(0.55, 0.55, 0.95)));
   s->both = 1;
@@ -60,25 +60,9 @@ Scene *A2Scene(int sx, int sy) {
   s->RotateZ(PI / 4);
   s->RotateX(PI / 2);
   s->Translate(0, -4, 5);
-  cout << "plane bounds: " << s->bounds << endl;
   scene->add(s);
-  cout << "plane bounds: " << s->bounds << endl;
-  // world.add(s);
 
-  // BVH *bvh = new BVH(scene->obj_list);
-  // scene->world = bvh;
-  // cout << "BVH bounds" << bvh->bounds << endl;
-  // cout << "BVH MADE, height: " << bvh->height() << "  nodes: " << bvh->num_nodes() << endl;
-  
-  // BVH *bvh = new BVH(scene->obj_list);
-
-  // scene->world = new PrimitiveList(scene->obj_list);
-  // scene->world = new BVH(scene->obj_list);
   scene->world = new AGGREGATE(scene->obj_list);
   
-  // exit(0);
-  // ls.push_back(PointLS(Vec(0, 25.5, -3.5), Vec(0.95, 0.95, 0.95)));
-  //   ls.push_back(PointLS(Vec(0, 10, -1), Vec(1,1,1)));
-  // Scene scene = {world, PrimitiveList(), cam, _sx, _sy, ls};
   return scene;
 }

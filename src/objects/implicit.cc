@@ -9,12 +9,14 @@ bool Implicit::hit(Ray& r, HitRec& rec) {
   double tmin, tmax;
   if (!localBouds.hit(transformed, tmin, tmax)) return false;
 
+  if (tmin > r.tMax) return false;
+
   // printf("IMPLICIT BOUNDS ARE %f %f\n", tmin, tmax);
 
   double inc = RAYMARCH_INCREMENT;
 
   double lambda = max(10e-3, tmin);
-  double maxLambda = min(RAYMARCH_MAX_LAMBDA, tmax + inc);
+  double maxLambda = min(r.tMax, tmax + inc);
 
   Vec p = transformed.at(lambda);
 
@@ -56,6 +58,7 @@ bool Implicit::hit(Ray& r, HitRec& rec) {
   rec.n = normalTransform(canon_n);
   rec.a = rec.b = 0;
   rec.obj = this;
+  r.tMax = min(r.tMax, lambda);
   return true;
 }
 
