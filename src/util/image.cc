@@ -35,7 +35,7 @@ Image::Image(char const *fname) {
   sscanf(&line[0], "%d %d\n", &sx, &sy);  // Read file size
   tmp = fgets(&line[0], 9, f);            // Read the remaining header line
 
-  unsigned char raw[sx * sy * 3];
+  unsigned char *raw = new unsigned char[sx * sy * 3];
   // Read the data
   un = fread(raw, sx * sy * 3, sizeof(unsigned char), f);
 
@@ -44,12 +44,13 @@ Image::Image(char const *fname) {
     data[i] = Colour(raw[3*i], raw[3*i+1], raw[3*i+2]) / 255.0;
 
   un = un || tmp;  // Use both temp variables so compiler doesn't shout
+  delete raw;
   fclose(f);
 }
 
 void Image::save(char const *fname) {
   FILE *f;
-  unsigned char bits24[sx * sy * 3];
+  unsigned char* bits24 = new unsigned char[sx * sy * 3];
   for (int i = 0; i < sx * sy; i++) {
     bits24[3*i+0] = data[i].r * 255.0;
     bits24[3*i+1] = data[i].g * 255.0;
@@ -67,6 +68,7 @@ void Image::save(char const *fname) {
   fprintf(f, "255\n");
   fwrite(bits24, sx * sy * 3 * sizeof(unsigned char), 1, f);
   fclose(f);
+  delete bits24;
   return;
 }
 
