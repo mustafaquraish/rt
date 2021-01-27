@@ -6,7 +6,7 @@
 #include <vector>
 
 struct BVH : Aggregate {
-    BVH(std::vector<Primitive *>& list, int start=0, int num=-1);
+    BVH(std::vector<Primitive *>& list, int start=0, int end=-1);
     ~BVH() { 
       if (!isLeaf) {
         delete bvh_a;

@@ -90,8 +90,26 @@ void AABB::addPoint(const Vec& p) {
   max.z = fmax(max.z, p.z);
 }
 
+Vec AABB::offset(const Vec& p) const {
+  Vec t = p - min;
+  if (max.x > min.x) t.x /= max.x - min.x;
+  if (max.y > min.y) t.y /= max.y - min.y;
+  if (max.z > min.z) t.z /= max.z - min.z;
+  return t;
+}
+
+double area(const AABB& a) {
+  return 2 * lengthSq(a.max - a.min);
+}
+
 Vec centroid(const AABB& a) {
   return (a.min + a.max) / 2;
+}
+
+bool overlap(const AABB& a, const AABB& b) {
+  return(a.min.x < b.max.x && b.min.x < a.max.x && 
+         a.min.y < b.max.y && b.min.y < a.max.y &&
+         a.min.z < b.max.z && b.min.z < a.max.z);
 }
 
 std::ostream& operator<<(std::ostream& os, const AABB& bb) {

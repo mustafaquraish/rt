@@ -91,6 +91,7 @@ inline Vec operator/(const double t, const Vec& v) { return Vec(v.x / t, v.y / t
 inline Vec operator/(const Vec& v, const double t) { return Vec(v.x / t, v.y / t, v.z / t); }
 
 inline double length(const Vec& a) { return sqrt(a.x * a.x + a.y * a.y + a.z * a.z); }
+inline double lengthSq(const Vec& a) { return a.x * a.x + a.y * a.y + a.z * a.z; }
 inline Vec norm(const Vec& a) { return a * (1 / sqrt(a.x * a.x + a.y * a.y + a.z * a.z)); }
 inline Vec mult(const Vec& a, const Vec& b) { return Vec(a.x * b.x, a.y * b.y, a.z * b.z); }
 
@@ -127,6 +128,13 @@ inline Vec randomVectorHemisphere(const Vec& n=Vec(0,0,1)) {
     canon = randomVector();
   }
   return canon;
+}
+
+// Return the index of the maximum element
+inline int maxIndex(const Vec& a) {
+  if (a.x >= a.y && a.x >= a.z) return 0;
+  if (a.y >= a.x && a.y >= a.z) return 1;
+  return 2;
 }
 
 /**************************** MATRIX *****************************************/

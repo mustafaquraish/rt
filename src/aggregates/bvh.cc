@@ -3,59 +3,82 @@
 #include <algorithm>
 #include <time.h>
 
-// This is BAD... I'm not sure how to use it properly yet oops
-#define USE_MORTON_CODE 0
-
 #define LOG_BVH_TIME
 
-// Shamelessly stolen from PBRT
-inline unsigned int mortonShifts(unsigned int x) {
-  if (x == (1 << 10)) --x;
-  x = (x | (x << 16)) & 0x30000ff; // x = ---- --98 ---- ---- ---- ---- 7654 3210
-  x = (x | (x <<  8)) & 0x300f00f; // x = ---- --98 ---- ---- 7654 ---- ---- 3210
-  x = (x | (x <<  4)) & 0x30c30c3; // x = ---- --98 ---- 76-- --54 ---- 32-- --10
-  x = (x | (x <<  2)) & 0x9249249; // x = ---- 9--8 --7- -6-- 5--4 --3- -2-- 1--0
-  return x;
+// TODO: Make this work with multiple objects inside a BVHNode
+int surfaceAreaHueristic(std::vector<Primitive *>& prims, int start, int end,
+                         AABB& totalBounds, int dim) {
+  constexpr int nBuckets = 12;
+  struct BucketInfo {
+    int count = 0;
+    AABB bounds;
+  };
+  BucketInfo buckets[nBuckets];
+
+  for (int i = start; i < end; ++i) {
+    int b = nBuckets * totalBounds.offset(centroid(prims[i]->bounds))[dim];
+    if (b == nBuckets) b = nBuckets - 1;
+    buckets[b].count++;
+    buckets[b].bounds = combine(buckets[b].bounds, prims[i]->bounds);
+  }
+
+  double cost[nBuckets - 1];
+  for (int i = 0; i < nBuckets - 1; ++i) {
+    AABB b0, b1;
+    int count0 = 0, count1 = 0;
+    for (int j = 0; j <= i; ++j) {
+      b0 = combine(b0, buckets[j].bounds);
+      count0 += buckets[j].count;
+    }
+    for (int j = i+1; j < nBuckets; ++j) {
+      b1 = combine(b1, buckets[j].bounds);
+      count1 += buckets[j].count;
+    }
+    cost[i] = .125f + (count0 * area(b0) + count1 * area(b1)) / area(totalBounds);
+  }
+
+  double minCost = cost[0];
+  int minCostSplitBucket = 0;
+  for (int i = 1; i < nBuckets - 1; ++i) {
+      if (cost[i] < minCost) {
+          minCost = cost[i];
+          minCostSplitBucket = i;
+      }
+  }
+  
+  auto pmid = std::partition(prims.begin() + start, prims.begin() + end, 
+                             [=](const Primitive* pi) {
+                               Vec c = centroid(pi->bounds);
+                               Vec off = totalBounds.offset(c);
+                               int b = nBuckets * off[dim];
+                               if (b == nBuckets) b = nBuckets - 1;
+                               return b <= minCostSplitBucket;
+                             });
+  int mid = pmid - prims.begin();
+  if (mid == start) mid++;
+  if (mid == end) mid--;
+  return mid;
 }
 
-inline unsigned int mortonCode(const Vec &p) {
-  unsigned int x = mortonShifts(p.x);
-  unsigned int y = mortonShifts(p.y);
-  unsigned int z = mortonShifts(p.z);
-  return (z << 2) | (y << 1) | x;
+int equalCounts(std::vector<Primitive *>& prims, int start, int end,
+                AABB& totalBounds, int dim) {
+  int mid = start + ((end - start) + 1) / 2;
+  std::nth_element(prims.begin() + start, prims.begin() + mid,
+                   prims.begin() + end, 
+                   [dim](const Primitive *a, const Primitive *b) {
+                     AABB ba = a->bounds;
+                     AABB bb = b->bounds;
+                     double ca = ba.min[dim] + ba.max[dim];
+                     double cb = bb.min[dim] + bb.max[dim];
+                     return ca < cb;
+                   });
+  return mid;
 }
 
-inline unsigned int mortonCode(const AABB &bb) {
-  Vec centroid = (bb.min + bb.max) / 2;
-  return mortonCode(centroid);
-}
-
-inline unsigned int mortonCode(const Primitive *p) {
-  return mortonCode(p->bounds);
-}
-
-bool mortonComp(Primitive *a, Primitive *b) {
-  return mortonCode(a) < mortonCode(b);
-}
-
-namespace bvh_sort {
-
-template <int AXIS>
-bool cmpPrim(const Primitive *a, const Primitive *b) {
-  AABB ba = a->bounds;
-  AABB bb = b->bounds;
-  double ca = ba.min[AXIS] + ba.max[AXIS];
-  double cb = bb.min[AXIS] + bb.max[AXIS];
-  return ca < cb;
-}
-bool (*funcs[])(const Primitive *, const Primitive *) = {cmpPrim<0>, cmpPrim<1>, cmpPrim<2>};
-
-}
-
-BVH::BVH(std::vector<Primitive *>& prims, int start, int num) {
+BVH::BVH(std::vector<Primitive *>& prims, int start, int end) {  
 
 #ifdef LOG_BVH_TIME 
-  bool topLevel = (num == -1);
+  bool topLevel = (end == -1);
   clock_t timeBegin;
   if (topLevel) {
     printf("[+] Creating BVH from %lu objects...\n", prims.size());
@@ -64,12 +87,11 @@ BVH::BVH(std::vector<Primitive *>& prims, int start, int num) {
 #endif
 
   // First iteration, sort the array first and set parameters correctly.
-  if (num == -1) {
-    if (USE_MORTON_CODE) std::sort(prims.begin(), prims.end(), mortonComp);
-    num = prims.size();
-    topLevel = true;
+  if (end == -1) {
+    end = prims.size();
   }
 
+  int num = end - start;
   // Now onto the regular recursive building...
 
   if (num == 1) {
@@ -87,19 +109,20 @@ BVH::BVH(std::vector<Primitive *>& prims, int start, int num) {
     return;
   }
 
-  if (!USE_MORTON_CODE) {
-    int dim = rand() % 3;
-    int mid = (num + 1) / 2;
-    std::nth_element(prims.begin()+start, 
-                     prims.begin()+start+mid,
-                     prims.begin()+start+num, 
-                     bvh_sort::funcs[dim]);
-  }
+  AABB totalBounds = prims[start]->bounds;
+  for (int i = start; i < end; i++)
+    totalBounds = combine(totalBounds, prims[i]->bounds);
   
-  int midpt = start + (num + 1) / 2;
-  a = new BVH(prims, start, (num + 1) / 2);
-  b = new BVH(prims, midpt, num / 2);
-  bounds = combine(a->bounds, b->bounds);
+  int dim = maxIndex(totalBounds.max - totalBounds.min);
+  // int dim = rand() % 3;
+
+  // Split algorithm:
+  int mid = surfaceAreaHueristic(prims, start, end, totalBounds, dim);
+  // int mid = equalCounts(prims, start, end, totalBounds, dim);  
+  
+  a = new BVH(prims, start, mid);
+  b = new BVH(prims, mid, end);
+  bounds = totalBounds;
 
 #ifdef LOG_BVH_TIME 
   if (topLevel) {
