@@ -5,7 +5,23 @@
 
 #define LOG_BVH_TIME
 
+int equalCounts(std::vector<Primitive *>& prims, int start, int end,
+                AABB& totalBounds, int dim) {
+  int mid = (end + start + 1) / 2;
+  std::nth_element(prims.begin() + start, prims.begin() + mid,
+                   prims.begin() + end, 
+                   [dim](const Primitive *a, const Primitive *b) {
+                     AABB ba = a->bounds;
+                     AABB bb = b->bounds;
+                     double ca = ba.min[dim] + ba.max[dim];
+                     double cb = bb.min[dim] + bb.max[dim];
+                     return ca < cb;
+                   });
+  return mid;
+}
+
 // TODO: Make this work with multiple objects inside a BVHNode
+//          It is currenty too slow for big scenes
 int surfaceAreaHueristic(std::vector<Primitive *>& prims, int start, int end,
                          AABB& totalBounds, int dim) {
   constexpr int nBuckets = 12;
@@ -55,28 +71,16 @@ int surfaceAreaHueristic(std::vector<Primitive *>& prims, int start, int end,
                                return b <= minCostSplitBucket;
                              });
   int mid = pmid - prims.begin();
-  if (mid == start) mid++;
-  if (mid == end) mid--;
-  return mid;
-}
 
-int equalCounts(std::vector<Primitive *>& prims, int start, int end,
-                AABB& totalBounds, int dim) {
-  int mid = start + ((end - start) + 1) / 2;
-  std::nth_element(prims.begin() + start, prims.begin() + mid,
-                   prims.begin() + end, 
-                   [dim](const Primitive *a, const Primitive *b) {
-                     AABB ba = a->bounds;
-                     AABB bb = b->bounds;
-                     double ca = ba.min[dim] + ba.max[dim];
-                     double cb = bb.min[dim] + bb.max[dim];
-                     return ca < cb;
-                   });
+  // TODO: this is bad, but currently no support for multiple objects in node
+  if (mid == start || mid == end) 
+    mid = equalCounts(prims, start, end, totalBounds, dim);
+  
   return mid;
 }
 
 BVH::BVH(std::vector<Primitive *>& prims, int start, int end) {  
-
+// printf("called with %d %d\n", start, end);
 #ifdef LOG_BVH_TIME 
   bool topLevel = (end == -1);
   clock_t timeBegin;
@@ -97,7 +101,7 @@ BVH::BVH(std::vector<Primitive *>& prims, int start, int end) {
   if (num == 1) {
     a = b = prims[start];
     bounds = a->bounds;
-    b = NULL;
+    // b = NULL;
     isLeaf = 1;
     return;
 
@@ -117,11 +121,12 @@ BVH::BVH(std::vector<Primitive *>& prims, int start, int end) {
   // int dim = rand() % 3;
 
   // Split algorithm:
-  int mid = surfaceAreaHueristic(prims, start, end, totalBounds, dim);
-  // int mid = equalCounts(prims, start, end, totalBounds, dim);  
+  // int mid = surfaceAreaHueristic(prims, start, end, totalBounds, dim);
+  int mid = equalCounts(prims, start, end, totalBounds, dim);  
   
   a = new BVH(prims, start, mid);
   b = new BVH(prims, mid, end);
+  
   bounds = totalBounds;
 
 #ifdef LOG_BVH_TIME 
@@ -136,18 +141,11 @@ BVH::BVH(std::vector<Primitive *>& prims, int start, int end) {
 
 bool BVH::hit(Ray& ray, HitRec& rec) {
   if (isLeaf) {
-    // If we have only one child...
-    if (b == NULL) return a->hit(ray, rec);
     // Intersect both children
     HitRec ra, rb;
-    bool hit_a = a->hit(ray, ra);
-    bool hit_b = b->hit(ray, rb);
-    // Return closer one if there were intersections
-    if (!hit_a && !hit_b) return false;
-    if      (!hit_a) rec = rb;
-    else if (!hit_b) rec = ra;
-    else             rec = (ra.t1 < rb.t1) ? ra : rb;
-    return true;
+    bool hit_a = a->hit(ray, rec);
+    bool hit_b = b->hit(ray, rec);
+    return hit_a || hit_b;
   }
 
   // Check both children's bounding boxes
@@ -155,9 +153,9 @@ bool BVH::hit(Ray& ray, HitRec& rec) {
   int hit_a = a->bounds.hit(ray, a1, a2);
   int hit_b = b->bounds.hit(ray, b1, b2);
 
-  if (!hit_a && !hit_b) return false;           // Hit none of them
-  if (!hit_b) return hit_a && a->hit(ray, rec); // Didn't hit b, recurse on a
-  if (!hit_a) return hit_b && b->hit(ray, rec); // Didn't hit a, recurse on b
+  if (!hit_a && !hit_b) return false;  // Hit none of them
+  if (!hit_b) return a->hit(ray, rec); // Didn't hit b, recurse on a
+  if (!hit_a) return b->hit(ray, rec); // Didn't hit a, recurse on b
 
   // OK, we hit both children. Want to see which bounding box is 
   // closer to the ray
@@ -165,33 +163,8 @@ bool BVH::hit(Ray& ray, HitRec& rec) {
   Primitive *first = a1 <  b1 ? a : b;  // `first` is the child starting closer
   Primitive *secnd = a1 >= b1 ? a : b;  // 'secnd` is the child starting after
 
-  // Swap aX and bX so a1/2 corresponds to `first`
-  if (a1 > b1) {
-    b1 = a1;
-  }
-
-  int hit_first = first->hit(ray, r1);
+  int hit_first = first->hit(ray, rec);
+  int hit_secnd = secnd->hit(ray, rec);
   
-  // We have the following scenario, we can completely discard the 2nd child.
-  //                  a1      `first`       a2
-  //  ray             |---------------------|
-  // ------->                  X                `secnd`    
-  //                  hit-----/          |-----------------| 
-  //                                    b1                b2
-  if (hit_first && r1.t1 < b1) {
-    rec = r1;
-    return true;
-  }
-
-  int hit_secnd = secnd->hit(ray, r2);
-  
-  // Missed both children
-  if (!hit_first && !hit_secnd) return false;
-  
-  // Pick the closest intersection:
-  if      (!hit_secnd) rec = r1;
-  else if (!hit_first) rec = r2;
-  else                 rec = (r1.t1 < r2.t1) ? r1 : r2;
-
-  return true;
+  return hit_first || hit_secnd;
 }

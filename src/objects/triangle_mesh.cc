@@ -27,5 +27,7 @@ bool TriangleMesh::hit(Ray& r, HitRec &rec) {
 
   rec.p = r.at(rec.t1);
   rec.n = normalTransform(rec.n);
+  r.tMax = min(r.tMax, rec.t1);
+
   return true;
 }

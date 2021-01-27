@@ -6,6 +6,7 @@ bool Cube::hit(Ray& r, HitRec& rec) {
 
   if (!bounds.hit(transformed, t1, t2)) return false;
 
+  if (t1 > r.tMax) return false;
   if (t1 < TOL) t1 = t2;
 
   rec.t1 = t1;
@@ -28,7 +29,9 @@ bool Cube::hit(Ray& r, HitRec& rec) {
   rec.obj = this;
   rec.a = 0;
   rec.b = 0;
-  return true;
+  r.tMax = min(r.tMax, t1);
+  return true;    
+
 }
 
 Vec Cube::sample() {

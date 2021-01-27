@@ -33,6 +33,6 @@ void DebugShader::render(Scene *scene, int depth) {
     }
   }
   cout << endl;
-  im.save("normal.ppm");
+  im.save("output.ppm");
   return;
 }

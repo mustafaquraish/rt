@@ -23,7 +23,7 @@ void Object::RotateZ(double a) {
 }
 
 Ray Object::rayTransform(const Ray& r) {
-  return Ray(T_inv * r.p, T_inv % r.d);
+  return Ray(T_inv * r.p, T_inv % r.d, r.tMax);
 }
 
 Vec Object::normalTransform(const Vec& n) {

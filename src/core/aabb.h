@@ -16,7 +16,7 @@ struct AABB {
   
   void addPoint(const Vec& p);
   Vec offset(const Vec& p) const;
-  bool hit(Ray &ray, double &t_min, double &t_max);
+  bool hit(Ray &ray, double &t1, double &t2);
   bool hit(Ray &ray);
   Vec min;
   Vec max;
