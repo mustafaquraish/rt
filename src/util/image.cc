@@ -44,7 +44,7 @@ Image::Image(char const *fname) {
     data[i] = Colour(raw[3*i], raw[3*i+1], raw[3*i+2]) / 255.0;
 
   un = un || tmp;  // Use both temp variables so compiler doesn't shout
-  delete raw;
+  delete[] raw;
   fclose(f);
 }
 
@@ -68,7 +68,7 @@ void Image::save(char const *fname) {
   fprintf(f, "255\n");
   fwrite(bits24, sx * sy * 3 * sizeof(unsigned char), 1, f);
   fclose(f);
-  delete bits24;
+  delete[] bits24;
   return;
 }
 
@@ -77,5 +77,5 @@ void Image::set(int i, int j, const Vec &col) {
 }
 
 Image::~Image() {
-  delete data;
+  delete[] data;
 }
