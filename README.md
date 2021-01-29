@@ -10,9 +10,11 @@ will just display normals. Only geometry intersections implemented
 
 Implemented:
 - Arbitrary object transformations
-- Implicit surfaces through Ray Marching
-- Bounded Volume Hierarchies (Intersections very slow...)
 - Triangle meshes (wavefront OBJ)
+- Two level Bounded Volume Hierarchies with mesh instancing
+- Implicit surfaces through Ray Marching
+- Surfaces of revolution (convert to mesh)
+- Beveled parametric curves and knots (convert to mesh)
 
 ---
 

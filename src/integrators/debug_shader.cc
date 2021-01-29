@@ -9,6 +9,7 @@ void DebugShader::render(Scene *scene, int depth) {
   clock_t timeBegin = clock();
 
   int done = 0;
+  // #pragma omp parallel for schedule(dynamic, 64)
   for (int i = 0; i < scene->sx; i++) {
     printf("\rRendering row %d / %d ~ %f", done, scene->sx, 100 * (float)done/scene->sx);
     fflush(stdout);
@@ -22,19 +23,21 @@ void DebugShader::render(Scene *scene, int depth) {
       if (scene->world->hit(ray, rec)) {
 
         /****************** NORMALS ****************/
-        col = (rec.n + 1) / 2;
+        if (type == DEBUG_NORMALS) col = (rec.n + 1) / 2;
 
         /****************** DISTANCE ***************/
-        // col = 1 / rec.t;
+        if (type == DEBUG_DEPTH) col = 1 / rec.t;
 
         /***************** MATERIAL COLOUR *********/
-        // Material *mat = rec.obj->getMaterial(rec); col = (mat) ? mat->get() : Vec();
-
-
+        if (type == DEBUG_COLOUR) {
+          Material *mat = rec.obj->getMaterial(rec); 
+          col = (mat) ? mat->get() : Vec();
+        }
       }
 
       im.set(i, j, col);
     }
+    // #pragma omp atomic
     done++;
   }
   clock_t timeEnd = clock();

@@ -344,6 +344,12 @@ inline Matrix RotateZMatrix(double a) {
   );
 }
 
+inline Matrix getRotationMatrix(const Vec& n) {
+  double theta = atan2(n.y, n.x);
+  double phi = acos(n.z);
+  return RotateZMatrix(theta) * RotateYMatrix(phi);
+}
+
 /***************************** QUADRATIC SOLVING *****************************/
 
 inline bool solveQuadratic(double a, double b, double c,

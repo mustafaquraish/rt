@@ -85,7 +85,7 @@ BVH::BVH(std::vector<Primitive *>& prims, int start, int end) {
   bool topLevel = (end == -1);
   clock_t timeBegin;
   if (topLevel) {
-    printf("[+] Creating BVH from %lu objects...\n", prims.size());
+    printf("[+] Creating BVH from %lu objects", prims.size());
     timeBegin = clock();
   }
 #endif
@@ -133,7 +133,7 @@ BVH::BVH(std::vector<Primitive *>& prims, int start, int end) {
   if (topLevel) {
     clock_t timeEnd = clock();
     double buildTime = (double)(timeEnd - timeBegin) / CLOCKS_PER_SEC;
-    printf("[+] BVH Constructed in %.3fs\n", buildTime);
+    printf(": %.3fs\n", buildTime);
   }
 #endif
   return;
