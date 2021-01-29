@@ -1,7 +1,6 @@
 #ifndef __TRIANGLE_MESH_H__
 #define __TRIANGLE_MESH_H__
 
-#include "core/rt.h"
 #include "core/object.h"
 #include "util/obj_loader.h"
 #include <vector>

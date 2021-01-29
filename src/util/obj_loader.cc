@@ -1,5 +1,6 @@
 #include "util/obj_loader.h"
 
+#include "core/rt.h"
 #include "stdio.h"
 #include "string.h"
 #include "stdlib.h"

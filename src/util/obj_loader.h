@@ -1,7 +1,6 @@
 #ifndef __OBJ_LOADER_H__
 #define __OBJ_LOADER_H__
 
-#include "core/rt.h"
 #include "core/primitive.h"
 #include "objects/triangle.h"
 #include <vector>

@@ -9,14 +9,40 @@ Triangle::Triangle(Vec  p0, Vec  p1, Vec  p2,
                    Vec  n0, Vec  n1, Vec  n2,
                    Vec ab0, Vec ab1, Vec ab2) {
 
-    p[0] = p0; n[0] = n0; ab[0] = ab0;
-    p[1] = p1; n[1] = n1; ab[1] = ab1;
-    p[2] = p2; n[2] = n2; ab[2] = ab2;
+  p[0] = p0; n[0] = n0; ab[0] = ab0;
+  p[1] = p1; n[1] = n1; ab[1] = ab1;
+  p[2] = p2; n[2] = n2; ab[2] = ab2;
 
-    bounds = AABB(p0);
-    bounds.addPoint(p1);
-    bounds.addPoint(p2);
-  };
+  bounds = AABB(p0);
+  bounds.addPoint(p1);
+  bounds.addPoint(p2);
+};
+
+Triangle::Triangle(Vec  p0, Vec  p1, Vec  p2,
+                   Vec  n0, Vec  n1, Vec  n2) {
+
+  Vec tx = Vec(0);
+  p[0] = p0; n[0] = n0; ab[0] = tx;
+  p[1] = p1; n[1] = n1; ab[1] = tx;
+  p[2] = p2; n[2] = n2; ab[2] = tx;
+
+  bounds = AABB(p0);
+  bounds.addPoint(p1);
+  bounds.addPoint(p2);
+};
+
+Triangle::Triangle(Vec  p0, Vec  p1, Vec  p2) {
+
+  Vec tx = Vec(0);
+  Vec nn = cross(p2-p0, p1-p0);
+  p[0] = p0; n[0] = nn; ab[0] = tx;
+  p[1] = p1; n[1] = nn; ab[1] = tx;
+  p[2] = p2; n[2] = nn; ab[2] = tx;
+
+  bounds = AABB(p0);
+  bounds.addPoint(p1);
+  bounds.addPoint(p2);
+};
 
 Vec Triangle::baryCentricWeights(const Vec& pt) {
   Vec AB = p[1] - p[0], AC = p[2] - p[0];

@@ -23,9 +23,12 @@ using std::endl;
 #include "objects/disc.h"
 #include "objects/implicit.h"
 #include "objects/triangle_mesh.h"
+#include "objects/bevel_curve.h"
+#include "objects/surface_revolution.h"
 
 // Integrators
 #include "integrators/debug_shader.h"
+#include "integrators/aa.h"
 
 
 // Aggregates
@@ -37,6 +40,9 @@ using std::endl;
 // Scene definitions
 Scene *A2Scene(int sx, int sy);
 Scene *RoomScene(int sx, int sy);
+Scene *OcclusionScene(int sx, int sy);
+Scene *ImplicitScene(int sx, int sy);
+Scene *SORScene(int sx, int sy);
 
 
 #endif // __RT_COMMON_H__

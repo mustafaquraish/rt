@@ -24,6 +24,10 @@ endif
 $(EXE): $(OBJS) | $(BIN)
 	$(CC) $(CFLAGS) $^ -o $@ $(LDLIBS)
 
+build/scenes/implicit_scene.o: src/objects/implicit.h
+build/scenes/sor_scene.o: src/objects/surface_revolution.h
+build/scenes/sor_scene.o: src/objects/bevel_curve.h
+
 $(OBJ)/%.o: $(SRC)/%.cc | $(OBJ)
 	@mkdir -p "$(@D)"
 	$(CC) $(CFLAGS) -c $< -o $@ 
