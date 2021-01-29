@@ -4,9 +4,14 @@ Colour trace(Ray& ray, Scene* scene) {
   return Vec();
 }
 
-int main() {
-  Scene *scene = A2Scene(1024, 1024);
-  // Scene *scene = RoomScene(1024, 1024);
+int main(int argc, char **argv) {
+  int resolution = 1024;
+  if (argc > 1) resolution = atoi(argv[1]);
+  // Scene *scene = A2Scene(resolution, resolution);
+  Scene *scene = SORScene(resolution, resolution);
+  // Scene *scene = ImplicitScene(resolution, resolution);
+  // Scene *scene = RoomScene(resolution, resolution);
+  // Scene *scene = OcclusionScene(resolution, resolution);
   Ray kk = Ray(Vec(), Vec());
   if (scene->integrator) scene->integrator->render(scene, 10);
   else {
