@@ -22,9 +22,11 @@ using std::endl;
 #include "objects/cube.h"
 #include "objects/disc.h"
 #include "objects/implicit.h"
+#include "objects/lsystem.h"
 #include "objects/triangle_mesh.h"
 #include "objects/bevel_curve.h"
 #include "objects/surface_revolution.h"
+#include "objects/parametric_surface.h"
 
 // Integrators
 #include "integrators/debug_shader.h"
@@ -43,6 +45,7 @@ Scene *RoomScene(int sx, int sy);
 Scene *OcclusionScene(int sx, int sy);
 Scene *ImplicitScene(int sx, int sy);
 Scene *SORScene(int sx, int sy);
+Scene *LsystemsScene(int sx, int sy);
 
 
 #endif // __RT_COMMON_H__

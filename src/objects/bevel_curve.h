@@ -39,17 +39,31 @@ private:
   Vec getCirclePoint(double t);
 };
 
-struct TorusBevel : BeveledCurve {
-  TorusBevel(Material *mat,
-             int loops = 20,    // Number of divisions along curve
+struct LineBevel : BeveledCurve {
+  LineBevel(Material *mat,
+             int loops = 10,    // Number of divisions along curve
              int turns = 20,    // Number of divisions of circle
              double radius = 1, // Radius of circle
-             double tMin = 0,   // min and max parameters for curve
-             double tMax = 2 * PI)
+             double tMin = -1,   // min and max parameters for curve
+             double tMax =  1)
       : BeveledCurve(mat, loops, turns, radius, tMin, tMax) {}
 
   Vec F(double t) { 
-    return Vec(cos(t), 0, sin(t)) * 3; 
+    return Vec(t, 0, 0); 
+  }
+};
+
+struct TorusBevel : BeveledCurve {
+  TorusBevel(Material *mat,
+             int loops = 10,    // Number of divisions along curve
+             int turns = 20,    // Number of divisions of circle
+             double radius = 1, // Radius of circle
+             double tMin = 0,   // min and max parameters for curve
+             double tMax = 2*PI)
+      : BeveledCurve(mat, loops, turns, radius, tMin, tMax) {}
+
+  Vec F(double t) { 
+    return Vec(cos(t), sin(t), 0) * 3; 
   }
 };
 
@@ -59,11 +73,12 @@ struct SpiralBevel : BeveledCurve {
               int turns = 20,     // Number of divisions of circle
               double radius = .4, // Radius of circle
               double tMin = 0,    // min and max parameters for curve
-              double tMax = 8 * PI, double heightScale = 1.0 / 6.0)
+              double tMax = 8 * PI, 
+              double heightScale = 1.0 / 6.0)
       : BeveledCurve(mat, loops, turns, radius, tMin, tMax), h(heightScale) {}
 
   Vec F(double t) { 
-    return Vec(cos(t), t * h, sin(t)) * 3; 
+    return Vec(cos(t), sin(t), t * h) * 3; 
   }
   double h;
 };

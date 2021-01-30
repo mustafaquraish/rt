@@ -27,6 +27,7 @@ $(EXE): $(OBJS) | $(BIN)
 build/scenes/implicit_scene.o: src/objects/implicit.h
 build/scenes/sor_scene.o: src/objects/surface_revolution.h
 build/scenes/sor_scene.o: src/objects/bevel_curve.h
+build/scenes/sor_scene.o: src/objects/parametric_surface.h
 
 $(OBJ)/%.o: $(SRC)/%.cc | $(OBJ)
 	@mkdir -p "$(@D)"
@@ -36,7 +37,7 @@ $(OBJ):
 	mkdir -p $@
 
 # No compiler optimizations enabled, use default flags.
-debug: clean $(EXE)
+debug: $(EXE)
 
 # Optimize in release mode
 release: CFLAGS += -O3 -ffast-math $(OPENMP) -ftree-vectorize -msse2 -mfpmath=sse -flto=full -march=native

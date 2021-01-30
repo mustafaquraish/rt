@@ -3,8 +3,6 @@
 
 // Caller should set the `prims` vector to contain all the Triangles.
 void TriangleMesh::loadTriangles(std::vector<Primitive *>& prims) {
-  // mesh = new BVH(prims);
-  // mesh = new PrimitiveList(prims);
   mesh = new AGGREGATE(prims);
   bounds = mesh->bounds;
 }

@@ -89,5 +89,7 @@ bool Triangle::hit(Ray& r, HitRec& rec) {
   rec.b = ab[0].y * bw[0] + ab[1].y * v + ab[2].y * w;
   r.tMax = min(r.tMax, t);
 
+  // if (dot(rec.n, r.d) > 0) rec.n = -rec.n;
+
   return 1;
 }
