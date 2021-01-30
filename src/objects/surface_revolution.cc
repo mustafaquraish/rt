@@ -12,8 +12,9 @@ Vec SurfaceOfRevolution::N(double t) {
 void SurfaceOfRevolution::createSurface() {
   double dt = (tMax - tMin) / (double)loops;
   double dtheta = 2*PI/(double)turns;
+
   std::vector<Primitive *> tris_list;
-  bounds = AABB();
+  
   for (int i = 0; i < loops; i++) {
     double t1 = tMin + i * dt;
     double t2 = tMin + (i+1) * dt;
@@ -31,11 +32,6 @@ void SurfaceOfRevolution::createSurface() {
       Vec c = m2 * p1, nc = m2 * n1;
       Vec d = m2 * p2, nd = m2 * n2;
       
-      bounds.addPoint(a);
-      bounds.addPoint(b);
-      bounds.addPoint(c);
-      bounds.addPoint(d);
-
       // tris_list.push_back(new Triangle(a, b, c));
       // tris_list.push_back(new Triangle(c, b, d));
       tris_list.push_back(new Triangle(a, b, c, na, nb, nc));

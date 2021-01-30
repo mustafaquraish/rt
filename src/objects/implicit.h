@@ -122,8 +122,9 @@ struct Gumdrop : Implicit {
 
 struct WiffleCube : Implicit {
   WiffleCube(Material *mat, double offset = 0)
-      : Implicit(mat), b(offset * 0.2 + 0.38) {
+      : Implicit(mat) {
     bounds = AABB(2.3);
+    b = lerp(offset, 0.38, 0.58);
   };
   double F(double x, double y, double z) {
     return -(-1.0 / pow(a, 1.2E+1) * 1.0 / pow(x * x + y * y + z * z, 6.0) -

@@ -11,7 +11,7 @@ void DebugShader::render(Scene *scene, int depth) {
   int done = 0;
   // #pragma omp parallel for schedule(dynamic, 64)
   for (int i = 0; i < scene->sx; i++) {
-    printf("\rRendering row %d / %d ~ %f", done, scene->sx, 100 * (float)done/scene->sx);
+    printf("\rRendering row %d / %d ~ %02.2f%%", done, scene->sx, 100 * (float)done/scene->sx);
     fflush(stdout);
     for (int j = 0; j < scene->sy; j++) {
       // DEBUG = i == 182 && j == 145;
@@ -23,7 +23,7 @@ void DebugShader::render(Scene *scene, int depth) {
       if (scene->world->hit(ray, rec)) {
 
         /****************** NORMALS ****************/
-        if (type == DEBUG_NORMALS) col = (rec.n + 1) / 2;
+        if (type == DEBUG_NORMALS) col = map(rec.n, -1, 1, 0, 1);
 
         /****************** DISTANCE ***************/
         if (type == DEBUG_DEPTH) col = 1 / rec.t;

@@ -6,6 +6,7 @@
  *    - Vector math definitions: Vec, dot(), cross(), ...
  *    - Matrix math definitions: Matrix, mat-vec / mat-mat mult, 4x4 invert
  *    - Transformation matrices: Scale, Translate, Rotate X/Y/Z
+ *    - Linear / Bilinear interpolation, transforming ranges
  *    - Quadratic Solving: solveQuadratic()
  */
 
@@ -23,7 +24,6 @@
 #define PI 3.141592653
 #define TAU 6.283185307
 #define TOL (10e-6)
-
 
 /**************************** COMMON FUNCTIONS *******************************/
 
@@ -267,6 +267,14 @@ inline std::ostream& operator<<(std::ostream& os, const Matrix& m) {
   return os;
 }
 
+inline void printMatrix(const Matrix& m) {
+  for (int i = 0; i < 4; i++) {
+    for (int j = 0; j < 4; j++) 
+      printf("%2.3e, ", m[i][j]);
+    printf("\n");
+  }
+}
+
 /*************************** MATRIX INVERSION ********************************/
 
 // Source: https://stackoverflow.com/questions/1148309
@@ -350,13 +358,42 @@ inline Matrix getRotationMatrix(const Vec& n) {
   return RotateZMatrix(theta) * RotateYMatrix(phi);
 }
 
+// Align vector `a` from +Z hemisphere to hemisphere with normal `n`
+inline Vec alignTo(const Vec& a, const Vec& n) {
+  return getRotationMatrix(n) * a;
+}
+
+/***************************** INTERPOLATION *********************************/
+
+template<typename T>
+inline T lerp(double fac, const T a, const T b) {
+  return fac * a + (1-fac) * b;
+}
+
+template<typename T>
+inline T bilerp(double facX, double facY, const T tl, const T tr,
+                                          const T bl, const T br) {
+  return lerp(facY, lerp(facX, tl, tr), lerp(facX, bl, br));
+}
+
+// Map value(s) from [sMin-sMax] to the new range [tMin-tMax]
+template<typename T>
+inline T map(const T a, double sMin=0 , double sMax=1, 
+                        double tMin=-1, double tMax=1) {
+  double ratio = (tMax - tMin) / (sMax - sMin);
+  return (a - sMin) * ratio + tMin; 
+}
+
+inline double randf(double rmin, double rmax) {
+  return lerp(rand01(), rmin, rmax);
+}
+
 /***************************** QUADRATIC SOLVING *****************************/
 
 inline bool solveQuadratic(double a, double b, double c,
                            double *l1, double *l2) {
   double disc = b*b - 4*a*c;
   if (disc < TOL) return false; // No solutions
-
   double root = sqrt(disc);
   *l1 = (-b - root) / (2 * a);
   *l2 = (-b + root) / (2 * a);
