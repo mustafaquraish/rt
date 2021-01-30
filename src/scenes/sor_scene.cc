@@ -14,10 +14,10 @@ Scene *SORScene(int sx, int sy) {
 
   Object *s;
 
-  // s = new SinSOR(new Material(Colour(0.55, 0.8, 0.75)), 100, 100);
-  // s->Scale(.5, .5, .5);
-  // s->Translate(-4, -4, -3);
-  // scene->add(s);
+  s = new SinSOR(new Material(Colour(0.55, 0.8, 0.75)), 6, 6);
+  s->Scale(.5, .5, .5);
+  s->Translate(-4, -4, -3);
+  scene->add(s);
 
   s = new SaddleParametric(new Material(Colour(0.55, 0.8, 0.75)), 100, 100);
   s->Scale(2, 2, 2);
@@ -26,7 +26,7 @@ Scene *SORScene(int sx, int sy) {
   s->Translate(0, 0, 2);
   scene->add(s);   
 
-  s = new TorusBevel(new Material(Colour(0.55, 0.8, 0.75)), 100, 100);
+  s = new TorusBevel(new Material(Colour(0.55, 0.8, 0.75)));
   s->RotateX(PI/2);
   s->Translate(5, 5, 2);
   scene->add(s); 
@@ -37,7 +37,7 @@ Scene *SORScene(int sx, int sy) {
   s->Translate(-10, -4, 10);
   scene->add(s);  
 
-  s = new TorusKnotBevel(new Material(Colour(0.55, 0.8, 0.75)), 6, 11);
+  s = new TorusKnotBevel(new Material(Colour(0.55, 0.8, 0.75)));
   s->RotateX(PI/2);
   s->Translate(-5, 5, 2);
   scene->add(s);  

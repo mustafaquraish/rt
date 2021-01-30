@@ -5,8 +5,9 @@ using namespace std;
 
 Vec ParametricSurface::N(double a, double b) {
   double EPS = 10e-4;
-  Vec ta = norm((P(a+EPS, b) - P(a, b)) / EPS);
-  Vec tb = norm((P(a, b+EPS) - P(a, b)) / EPS);
+  Vec p_ab = P(a, b);
+  Vec ta = norm((P(a+EPS, b) - p_ab) / EPS);
+  Vec tb = norm((P(a, b+EPS) - p_ab) / EPS);
   return cross(ta, tb);
 }
 
@@ -45,8 +46,8 @@ void ParametricSurface::createSurface() {
                                     t_11, t_12, t_22);
 
       Triangle *tri2 = new Triangle(p_11, p_22, p_21,
-                                    n_11, n_12, n_21,
-                                    t_11, t_12, t_21);
+                                    n_11, n_22, n_21,
+                                    t_11, t_22, t_21);
 
       tris_list.push_back(tri1);
       tris_list.push_back(tri2);
