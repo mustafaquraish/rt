@@ -2,83 +2,95 @@
 #define __SURFACE_REVOLUTION_H__
 
 /**
- * A surface of revolution turns itself into a mesh.
+ * A surface of revolution tCount itself into a mesh.
  */
 
-#include "objects/triangle_mesh.h"
+#include "objects/parametric_surface.h"
 
-struct SurfaceOfRevolution : TriangleMesh {
-  SurfaceOfRevolution(
-    Material *mat, int turns, int loops, double tMin, double tMax
-  ) : TriangleMesh(mat), turns(turns), loops(loops), tMin(tMin), tMax(tMax) {}
+/**
+ * A surface of revolution is just a parametric surface where parameter `a`
+ *  is a custom function, and the parameter `b` just controls the rotation
+ *  around the Y axis.
+ */
+struct SurfaceOfRevolution : ParametricSurface {
+  SurfaceOfRevolution(Material *mat,
+                      int tCount,  // Cuts along parameter a (function)
+                      int rCount,  // Stops along revolution
+                      double tMin, // t min value for defined F
+                      double tMax  // t max value for defined F
+                      )
+      : ParametricSurface(mat, tCount, rCount, tMin, tMax, 0, TAU) {}
 
-  void createSurface();
+  Vec P(double a, double b);
 
-  // Function to rotate around Y axis
+  // Function to be rotated around Y axis
   virtual Vec F(double t) = 0;
-  void finalize() {
-    createSurface();
-    Object::finalize();
-  }
-
-  int turns;
-  int loops;
-  double tMin;
-  double tMax;
-
-private:
-  // Numerically compute normal
-  Vec N(double t);
 };
 
 struct CylinderSOR : SurfaceOfRevolution {
-  CylinderSOR(
-    Material *mat, int turns=20, int loops=1, double tMin=0, double tMax=1
-  ) : SurfaceOfRevolution(mat, turns, loops, tMin, tMax) {};
+  CylinderSOR(Material *mat, 
+              int tCount = 1, 
+              int rCount = 20, 
+              double tMin = 0,
+              double tMax = 1
+              )
+      : SurfaceOfRevolution(mat, tCount, rCount, tMin, tMax){};
 
-  Vec F(double t) {
-    return Vec(1, t, 0);
+  Vec F(double t) { 
+    return Vec(1, t, 0); 
   }
 };
 
 struct SphereSOR : SurfaceOfRevolution {
-  SphereSOR(
-    Material *mat, int turns=20, int loops=10, double tMin=-PI/2, double tMax=PI/2
-  ) : SurfaceOfRevolution(mat, turns, loops, tMin, tMax) {};
+  SphereSOR(Material *mat,
+            int tCount = 5,
+            int rCount = 20,
+            double tMin = -PI / 2,
+            double tMax = PI / 2)
+      : SurfaceOfRevolution(mat, tCount, rCount, tMin, tMax){};
 
-  Vec F(double t) {
-    return Vec(cos(t), sin(t), 0);
+  Vec F(double t) { 
+    return Vec(cos(t), sin(t), 0); 
   }
 };
 
 struct TorusSOR : SurfaceOfRevolution {
-  TorusSOR(
-    Material *mat, int turns=20, int loops=20, double tMin=0, double tMax=2*PI
-  ) : SurfaceOfRevolution(mat, turns, loops, tMin, tMax) {};
+  TorusSOR(Material *mat, 
+           int tCount = 20, 
+           int rCount = 20, 
+           double tMin = 0,
+           double tMax = 2 * PI)
+      : SurfaceOfRevolution(mat, tCount, rCount, tMin, tMax){};
 
-  Vec F(double t) {
-    return Vec(cos(t)+3, sin(t), 0);
+  Vec F(double t) { 
+    return Vec(cos(t) + 3, sin(t), 0); 
   }
 };
 
 struct SinSOR : SurfaceOfRevolution {
-  SinSOR(
-    Material *mat, int turns=20, int loops=10, double tMin=0, double tMax=2*PI
-  ) : SurfaceOfRevolution(mat, turns, loops, tMin, tMax) {};
+  SinSOR(Material *mat, 
+         int tCount = 4, 
+         int rCount = 4, 
+         double tMin = 0,
+         double tMax = 2 * PI)
+      : SurfaceOfRevolution(mat, tCount, rCount, tMin, tMax){
+        printf("SINSOR: %d %d\n", tCount, rCount);
+      };
 
-  Vec F(double t) {
-    return Vec(sin(t) + 2, t, 0);
+  Vec F(double t) { 
+    return Vec(sin(t) + 2, t, 0); 
   }
 };
 
 struct ParabolicBowlSOR : SurfaceOfRevolution {
-  ParabolicBowlSOR(
-    Material *mat, int turns=20, int loops=10, double tMin=0, double tMax=2
-  ) : SurfaceOfRevolution(mat, turns, loops, tMin, tMax) {};
+  ParabolicBowlSOR(Material *mat, 
+                   int tCount = 20, 
+                   int rCount = 10,
+                   double tMin = 0, 
+                   double tMax = 2)
+      : SurfaceOfRevolution(mat, tCount, rCount, tMin, tMax){};
 
-  Vec F(double t) {
-    return Vec(t, t*t, 0);
-  }
+  Vec F(double t) { return Vec(t, t * t, 0); }
 };
 
 #endif // __SURFACE_REVOLUTION_H__
