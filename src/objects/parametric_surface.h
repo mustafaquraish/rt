@@ -37,7 +37,7 @@ struct ParametricSurface : TriangleMesh {
 private:
   // Numerically compute normal
   Vec N(double a, double b);
-  // Get Tex coords
+  // Get Tex coords for point
   Vec T(double a, double b);
 };
 
@@ -66,7 +66,9 @@ struct SaddleParametric : ParametricSurface {
                    double bMin = -1, // b min value
                    double bMax = 1   // b max value
                    )
-      : ParametricSurface(mat, aCount, bCount, aMin, aMax, bMin, bMax){};
+      : ParametricSurface(mat, aCount, bCount, aMin, aMax, bMin, bMax) {
+    bothSides = true;
+  };
 
   Vec P(double a, double b) {
     return Vec(a, b, a*a - b*b);

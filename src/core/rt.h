@@ -8,10 +8,12 @@ using std::endl;
 
 #define AGGREGATE BVH
 
+// Core stuff
 #include "core/ray.h"
 #include "core/object.h"
 #include "core/camera.h"
 
+// Utilities
 #include "util/image.h"
 #include "util/obj_loader.h"
 
@@ -26,7 +28,6 @@ using std::endl;
 #include "objects/triangle_mesh.h"
 #include "objects/bevel_curve.h"
 #include "objects/surface_revolution.h"
-#include "objects/parametric_surface.h"
 
 // Integrators
 #include "integrators/debug_shader.h"
@@ -37,6 +38,7 @@ using std::endl;
 #include "aggregates/primitive_list.h"
 #include "aggregates/bvh.h"
 
+// Scene (this needs to be at the end)
 #include "scene.h"
 
 // Scene definitions

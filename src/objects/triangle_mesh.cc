@@ -26,5 +26,7 @@ bool TriangleMesh::hit(Ray& r, HitRec &rec) {
   rec.obj = this;
   r.tMax = min(r.tMax, rec.t);
 
+  if (bothSides && dot(rec.n, r.d) > 0) rec.n = -rec.n;
+
   return true;
 }

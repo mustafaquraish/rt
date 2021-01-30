@@ -20,6 +20,7 @@ struct TriangleMesh : Object {
   Vec sample() { return T * Vec(); };
   
   Aggregate *mesh;
+  bool bothSides = false;
 };
 
 #endif // __TRIANGLE_MESH_H__
