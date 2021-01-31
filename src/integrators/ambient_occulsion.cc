@@ -1,9 +1,9 @@
-#include "integrators/aa.h"
+#include "integrators/ambient_occlusion.h"
 #include "core/rt.h"
 #include "time.h"
 
 #define AA_SAMPLES 100
-#define MAX_AA_DIST 1.5
+#define MAX_AA_DIST INFINITY
 
 Vec cosWeightedSample(const Vec &n) {
   // Random sample on hemisphere with cosine-weighted distribution
@@ -20,32 +20,22 @@ Vec cosWeightedSample(const Vec &n) {
 }
 
 Colour otrace(Ray &ray, Scene *scene) {
-  HitRec rec;
+  HitRec rec, tmp;
   if (!scene->world->hit(ray, rec))
     return Vec(0);
-  Colour col = Vec(1);
 
-  // if (dot(ray.d, rec.n) > 0) rec.n = -rec.n;
+  if (dot(ray.d, rec.n) > 0) rec.n = -rec.n;
 
-  std::vector<double> vals;
+  double sum = 0;
   for (int i = 0; i < AA_SAMPLES; i++) {
-    // Ray rr = Ray(rec.p, randomVectorHemisphere(rec.n), MAX_AA_DIST);
-    Ray rr = Ray(rec.p, cosWeightedSample(rec.n), MAX_AA_DIST);
-    if (scene->world->hit(rr, rec))
-      vals.push_back(rec.t / MAX_AA_DIST);
-    else
-      vals.push_back(1);
-  }
-
-  if (vals.size() > 0) {
-    double sum = 0;
-    for (double v : vals) {
-      sum += powf(v, 0.5);
+    Vec dir = cosWeightedSample(rec.n);
+    Ray rr = Ray(rec.p, dir, MAX_AA_DIST);
+    if ( !scene->world->hit(rr, tmp) ) {
+      sum += 1.0;
     }
-    col = Vec(sum / AA_SAMPLES);
   }
-
-  return col;
+  
+  return sum / AA_SAMPLES;
 }
 
 void AmbientOcclusion::render(Scene *scene, int depth) {
@@ -53,7 +43,6 @@ void AmbientOcclusion::render(Scene *scene, int depth) {
   clock_t timeBegin = clock();
 
   int done = 0;
-#pragma omp parallel for schedule(dynamic, 64)
   for (int i = 0; i < scene->sx; i++) {
     printf("\rRendering row %d / %d ~ %f", done, scene->sx,
            100 * (float)done / scene->sx);
@@ -67,7 +56,6 @@ void AmbientOcclusion::render(Scene *scene, int depth) {
 
       im.set(i, j, col);
     }
-#pragma omp atomic
     done++;
   }
   clock_t timeEnd = clock();
