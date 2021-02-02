@@ -5,6 +5,7 @@
 
 struct Emitter : BSDF {
   Emitter(Colour col) : BSDF(col) { emitter = true; }
+  
   Colour eval(BSDFRec& bRec);
   Colour sample(BSDFRec& bRec);
   double pdf(BSDFRec& bRec);

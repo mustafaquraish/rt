@@ -3,12 +3,13 @@
 
 #include "core/ray.h"
 #include "core/material.h"
+#include "materials/lambertian.h"
 #include "core/primitive.h"
 #include "core/aabb.h"
 
 struct Object : Primitive {
   Object() {};
-  Object(Material *mat): mat(mat) {};
+  Object(Material *mat): mat(mat), bsdf(new Lambertian(mat->col)) {};
 
   // Public API for transforming objects
   void RotateX(double t);
@@ -28,6 +29,7 @@ struct Object : Primitive {
   virtual Vec sample() = 0;
 
   Material *mat = NULL;
+  BSDF *bsdf;
   Primitive *prim = NULL;
   Matrix T, T_inv;
   int both = 0;
