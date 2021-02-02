@@ -391,34 +391,6 @@ inline bool solveQuadratic(double a, double b, double c,
   return true;
 }
 
-/**************************** RANDOM VECTORS *********************************/
-
-
-inline Vec randomVector() {
-  return norm(2 * Vec(rand01(), rand01(), rand01()) - 1);
-}
-
-inline Vec randomVectorHemisphere(const Vec& n=Vec(0,0,1)) {
-  Vec canon = randomVector();
-  while (dot(canon, n) < 0) {
-    canon = randomVector();
-  }
-  return canon;
-}
-
-inline Vec randomVectorCosineHemisphere(const Vec &n) {
-  // Random sample on hemisphere with cosine-weighted distribution
-  double r = sqrt(rand01());
-  double theta = 2 * PI * rand01();
-
-  double x = r * cos(theta);
-  double y = r * sin(theta);
-  double z = sqrt(1.0 - (x * x) - (y * y));
-  Vec d = Vec(x, y, z);
-
-  // Transform from hemisphere to normal-space
-  return getRotationMatrix(n) * d;
-}
 
 
 #endif // __RT_MATH_H__ 

@@ -3,10 +3,10 @@
 #include "core/bsdf.h"
 #include "time.h"
 
-#define PATH_SAMPLES 200
+#define PATH_SAMPLES 1000
 #define PATH_MAX_BOUNCES 3
 
-Colour pptrace(Ray &r, Scene *scene) {
+Colour pptrace(Ray &r, Scene *scene, RNG& rng) {
   HitRec rec;
   Colour L = 1;
   
@@ -20,7 +20,7 @@ Colour pptrace(Ray &r, Scene *scene) {
     BSDF *bsdf = rec.obj->bsdf;
     if (!bsdf) { printf("BSDF IS NULL :((((\n"); }
 
-    BSDFRec bRec = BSDFRec(ray.d, rec);
+    BSDFRec bRec = BSDFRec(ray.d, rec, rng);
     if (bsdf->isEmitter()) {
       L = L * bsdf->emittance(bRec);
       return L;
@@ -43,12 +43,13 @@ void Path::render(Scene *scene, int depth) {
   {
     #pragma omp for
     for (int i = 0; i < scene->sx; i++) {
+      RNG rng;
       printf("\rRendering %d / %d ~ %f", done, scene->sx, done / total); fflush(stdout);
       for (int j = 0; j < scene->sy; j++) {
         Colour col;
         Ray ray = scene->cam.getRay(i, j);
         for (int sample = 0; sample < PATH_SAMPLES; sample++) {
-          col = pptrace(ray, scene);
+          col = pptrace(ray, scene, rng);
           im.accumHDR(i, j, col);
         }
       }
