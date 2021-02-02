@@ -23,7 +23,7 @@ struct Triangle : Primitive {
 
   Vec p[3];
   Vec n[3];
-  Vec ab[3];
+  Vec uv[3];
 };
 
 #endif // __TRIANGLE_H__

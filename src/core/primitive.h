@@ -19,8 +19,8 @@ struct HitRec {
   double t;
   Vec p;
   Vec n;
-  double a;
-  double b;
+  double u;
+  double v;
   Object *obj;
 };
 

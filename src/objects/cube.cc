@@ -29,8 +29,8 @@ bool Cube::hit(Ray& r, HitRec& rec) {
     rec.n = normalTransform(Vec(0, 0, -1));
 
   rec.obj = this;
-  rec.a = 0;
-  rec.b = 0;
+  rec.u = 0;
+  rec.v = 0;
   r.tMax = min(r.tMax, t1);
   return true;    
 
