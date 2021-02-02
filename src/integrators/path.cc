@@ -12,8 +12,8 @@ Colour pptrace(Ray &r, Scene *scene) {
   Colour L = 0;
   
   for (int sample = 0; sample < PATH_SAMPLES; sample++) {
-    Ray ray = Ray(r);
-    Colour c = 1.0;
+    Ray ray = Ray(r.p, r.d);
+    Colour c = Colour(1.0);
     // cout << "--------------------------" << endl;
     for (int bounce = 0;; bounce++) {
       
