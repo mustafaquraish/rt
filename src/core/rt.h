@@ -48,6 +48,7 @@ Scene *OcclusionScene(int sx, int sy);
 Scene *ImplicitScene(int sx, int sy);
 Scene *SORScene(int sx, int sy);
 Scene *LsystemsScene(int sx, int sy);
+Scene *AjaxScene(int sx, int sy);
 
 
 #endif // __RT_COMMON_H__
