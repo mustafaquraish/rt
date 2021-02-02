@@ -85,6 +85,7 @@ inline Vec operator-(const Vec& v1, const Vec& v2) { return Vec(v1.x - v2.x, v1.
 inline Vec operator-(const Vec& v, const double t) { return Vec(v.x - t, v.y - t, v.z - t); }
 inline Vec operator-(const double t, const Vec& v) { return Vec(v.x - t, v.y - t, v.z - t); }
 
+inline Vec operator*(const Vec& v1, const Vec& v2) { return Vec(v1.x * v2.x, v1.y * v2.y, v1.z * v2.z); }
 inline Vec operator*(const double t, const Vec& v) { return Vec(t * v.x, t * v.y, t * v.z); }
 inline Vec operator*(const Vec& v, const double t) { return Vec(t * v.x, t * v.y, t * v.z); }
 

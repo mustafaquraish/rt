@@ -1,4 +1,5 @@
 #include "core/rt.h"
+#include "materials/emitter.h"
 
 using namespace std;
 
@@ -7,7 +8,8 @@ Scene *CornellScene(int sx, int sy) {
   Scene *scene = new Scene();
   scene->sx = sx;
   scene->sy = sy;
-  scene->integrator = new DebugShader();
+  scene->integrator = new Path();
+  // scene->integrator = new DebugShader();
   
   Vec e = Vec(0, 0, -15);
   Vec g = -e;
@@ -59,6 +61,13 @@ Scene *CornellScene(int sx, int sy) {
   s = new Sphere(new Material(Colour(.79, .99, .99)));
   s->Scale(3.75, 3.75, 3.75);
   s->Translate(4, -6.25, 6.5);
+  scene->add(s);
+
+  s = new Plane(new Material(Colour(.79, .99, .99)));
+  s->bsdf = new Emitter(Colour(1,1,1));
+  s->Scale(.5,2.5,2);
+  s->RotateX(PI/2);
+  s->Translate(0,9.995,5);
   scene->add(s);
 
   // scene->world = new AGGREGATE(scene->obj_list);
