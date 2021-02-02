@@ -97,6 +97,7 @@ inline double lengthSq(const Vec& a) { return a.x * a.x + a.y * a.y + a.z * a.z;
 inline Vec norm(const Vec& a) { return a * (1 / sqrt(a.x * a.x + a.y * a.y + a.z * a.z)); }
 inline Vec mult(const Vec& a, const Vec& b) { return Vec(a.x * b.x, a.y * b.y, a.z * b.z); }
 
+inline Vec sqrt(const Vec& v) { return Vec(sqrt(v.x), sqrt(v.y), sqrt(v.z)); }
 inline double dot(const Vec& a, const Vec& b) { return a.x * b.x + a.y * b.y + a.z * b.z; }
 inline Vec cross(const Vec& a, const Vec& b) { 
   return Vec( a.y * b.z - a.z * b.y, 

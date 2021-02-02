@@ -3,70 +3,63 @@
 #include "core/bsdf.h"
 #include "time.h"
 
-#define PATH_SAMPLES 10
-#define PATH_MAX_BOUNCES 500
+#define PATH_SAMPLES 200
+#define PATH_MAX_BOUNCES 3
 
 Colour pptrace(Ray &r, Scene *scene) {
-  HitRec rec, tmp;
-
-  Colour L = 0;
+  HitRec rec;
+  Colour L = 1;
   
-  for (int sample = 0; sample < PATH_SAMPLES; sample++) {
-    Ray ray = Ray(r.p, r.d);
-    Colour c = Colour(1.0);
-    // cout << "--------------------------" << endl;
-    for (int bounce = 0;; bounce++) {
-      
-      if (bounce > PATH_MAX_BOUNCES || !scene->world->hit(ray, rec)) {
-        c = Vec(0);
-        break;
-      }
-      
-      BSDF *bsdf = rec.obj->bsdf;
-      if (!bsdf) { printf("BSDF IS NULL :((((\n"); }
-
-      BSDFRec bRec;
-      bRec.n = rec.n;
-      bRec.wo = ray.d;
-
-      if (bsdf->isEmitter()) {
-        c = c * bsdf->emittance(bRec);
-        break;
-      }
-
-      c = c * bsdf->sample(bRec);
-      ray = Ray(rec.p, bRec.wi);    
+  Ray ray = Ray(r.p, r.d);
+  for (int bounce = 0;; bounce++) {
+    
+    if (bounce > PATH_MAX_BOUNCES || !scene->world->hit(ray, rec)) {
+      return 0;
     }
-    L += c;
+    
+    BSDF *bsdf = rec.obj->bsdf;
+    if (!bsdf) { printf("BSDF IS NULL :((((\n"); }
+
+    BSDFRec bRec = BSDFRec(ray.d, rec);
+    if (bsdf->isEmitter()) {
+      L = L * bsdf->emittance(bRec);
+      return L;
+    }
+
+    L = L * bsdf->sample(bRec);
+    ray = Ray(rec.p, bRec.wi);    
   }
-  // cout << "TOTAL: " << L << endl;
-  return L;
+  return 0;
 }
 
 void Path::render(Scene *scene, int depth) {
   Image im = Image(scene->sx, scene->sy);
+  
   clock_t timeBegin = clock();
-
   int done = 0;
-  for (int i = 0; i < scene->sx; i++) {
-    printf("\rRendering row %d / %d ~ %f", done, scene->sx,
-           100 * (float)done / scene->sx);
-    fflush(stdout);
-    for (int j = 0; j < scene->sy; j++) {
-      // DEBUG = i == 182 && j == 145;
-      Ray ray = scene->cam.getRay(i, j);
-      // if (DEBUG) cout << "init ray:  p: " << ray.p << "  d: " << ray.d <<
-      // endl;
-      Vec col = pptrace(ray, scene);
+  float total = im.sx / 100;
 
-      im.set(i, j, col);
+#pragma omp parallel
+  {
+    #pragma omp for
+    for (int i = 0; i < scene->sx; i++) {
+      printf("\rRendering %d / %d ~ %f", done, scene->sx, done / total); fflush(stdout);
+      for (int j = 0; j < scene->sy; j++) {
+        Colour col;
+        Ray ray = scene->cam.getRay(i, j);
+        for (int sample = 0; sample < PATH_SAMPLES; sample++) {
+          col = pptrace(ray, scene);
+          im.accumHDR(i, j, col);
+        }
+      }
+      #pragma omp atomic
+      done++;
     }
-    done++;
   }
   clock_t timeEnd = clock();
   double buildTime = (double)(timeEnd - timeBegin) / CLOCKS_PER_SEC;
   printf("\n[+] Rendering completed in %.3fs\n", buildTime);
   cout << endl;
-  im.save("output.ppm");
+  im.saveHDR("output.ppm");
   return;
 }

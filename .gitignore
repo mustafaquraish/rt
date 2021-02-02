@@ -5,5 +5,8 @@
 *.DS_Store
 *.png
 
+.idea
+
 build
 raytrace
+assets/obj/ajax.obj
