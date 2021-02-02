@@ -2,22 +2,8 @@
 #include "core/rt.h"
 #include "time.h"
 
-#define AA_SAMPLES 100
+#define AA_SAMPLES 500
 #define MAX_AA_DIST INFINITY
-
-Vec cosWeightedSample(const Vec &n) {
-  // Random sample on hemisphere with cosine-weighted distribution
-  double r = sqrt(rand01());
-  double theta = 2 * PI * rand01();
-
-  double x = r * cos(theta);
-  double y = r * sin(theta);
-  double z = sqrt(1.0 - (x * x) - (y * y));
-  Vec d = Vec(x, y, z);
-
-  // Transform from hemisphere to normal-space
-  return getRotationMatrix(n) * d;
-}
 
 Colour otrace(Ray &ray, Scene *scene) {
   HitRec rec, tmp;
@@ -28,7 +14,7 @@ Colour otrace(Ray &ray, Scene *scene) {
 
   double sum = 0;
   for (int i = 0; i < AA_SAMPLES; i++) {
-    Vec dir = cosWeightedSample(rec.n);
+    Vec dir = randomVectorCosineHemisphere(rec.n);
     Ray rr = Ray(rec.p, dir, MAX_AA_DIST);
     if ( !scene->world->hit(rr, tmp) ) {
       sum += 1.0;
@@ -43,6 +29,7 @@ void AmbientOcclusion::render(Scene *scene, int depth) {
   clock_t timeBegin = clock();
 
   int done = 0;
+  #pragma omp parallel for
   for (int i = 0; i < scene->sx; i++) {
     printf("\rRendering row %d / %d ~ %f", done, scene->sx,
            100 * (float)done / scene->sx);
@@ -56,6 +43,7 @@ void AmbientOcclusion::render(Scene *scene, int depth) {
 
       im.set(i, j, col);
     }
+    #pragma omp atomic
     done++;
   }
   clock_t timeEnd = clock();
