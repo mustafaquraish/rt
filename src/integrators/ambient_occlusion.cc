@@ -5,7 +5,7 @@
 #define AA_SAMPLES 500
 #define MAX_AA_DIST INFINITY
 
-Colour otrace(Ray &ray, Scene *scene) {
+Colour otrace(Ray &ray, Scene *scene, RNG& rng) {
   HitRec rec, tmp;
   if (!scene->world->hit(ray, rec))
     return Vec(0);
@@ -14,7 +14,7 @@ Colour otrace(Ray &ray, Scene *scene) {
 
   double sum = 0;
   for (int i = 0; i < AA_SAMPLES; i++) {
-    Vec dir = randomVectorCosineHemisphere(rec.n);
+    Vec dir = rng.randomVectorCosineHemisphere(rec.n);
     Ray rr = Ray(rec.p, dir, MAX_AA_DIST);
     if ( !scene->world->hit(rr, tmp) ) {
       sum += 1.0;
@@ -31,6 +31,7 @@ void AmbientOcclusion::render(Scene *scene, int depth) {
   int done = 0;
   #pragma omp parallel for
   for (int i = 0; i < scene->sx; i++) {
+    RNG rng;
     printf("\rRendering row %d / %d ~ %f", done, scene->sx,
            100 * (float)done / scene->sx);
     fflush(stdout);
@@ -39,7 +40,7 @@ void AmbientOcclusion::render(Scene *scene, int depth) {
       Ray ray = scene->cam.getRay(i, j);
       // if (DEBUG) cout << "init ray:  p: " << ray.p << "  d: " << ray.d <<
       // endl;
-      Vec col = otrace(ray, scene);
+      Vec col = otrace(ray, scene, rng);
 
       im.set(i, j, col);
     }
