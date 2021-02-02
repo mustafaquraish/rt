@@ -21,9 +21,10 @@
 
 /**************************** GLOBAL CONSTANTS *******************************/
 
-#define PI 3.141592653
-#define TAU 6.283185307
-#define TOL (10e-6)
+#define PI     3.141592653589793
+#define INV_PI 0.3183098861837907
+#define TAU    6.283185307179586
+#define TOL    (10e-6)
 
 /**************************** COMMON FUNCTIONS *******************************/
 
@@ -116,18 +117,6 @@ inline Vec clamp01(const Vec& a) {
   return Vec(min(1, max(a.x, 0)),
              min(1, max(a.y, 0)),
              min(1, max(a.z, 0)));
-}
-
-inline Vec randomVector() {
-  return norm(2 * Vec(rand01(), rand01(), rand01()) - 1);
-}
-
-inline Vec randomVectorHemisphere(const Vec& n=Vec(0,0,1)) {
-  Vec canon = randomVector();
-  while (dot(canon, n) < 0) {
-    canon = randomVector();
-  }
-  return canon;
 }
 
 // Return the index of the maximum element
@@ -393,11 +382,40 @@ inline double randf(double rmin, double rmax) {
 inline bool solveQuadratic(double a, double b, double c,
                            double *l1, double *l2) {
   double disc = b*b - 4*a*c;
-  if (disc < TOL) return false; // No solutions
+  if (disc < 0) return false; // No solutions
   double root = sqrt(disc);
   *l1 = (-b - root) / (2 * a);
   *l2 = (-b + root) / (2 * a);
   return true;
+}
+
+/**************************** RANDOM VECTORS *********************************/
+
+
+inline Vec randomVector() {
+  return norm(2 * Vec(rand01(), rand01(), rand01()) - 1);
+}
+
+inline Vec randomVectorHemisphere(const Vec& n=Vec(0,0,1)) {
+  Vec canon = randomVector();
+  while (dot(canon, n) < 0) {
+    canon = randomVector();
+  }
+  return canon;
+}
+
+inline Vec randomVectorCosineHemisphere(const Vec &n) {
+  // Random sample on hemisphere with cosine-weighted distribution
+  double r = sqrt(rand01());
+  double theta = 2 * PI * rand01();
+
+  double x = r * cos(theta);
+  double y = r * sin(theta);
+  double z = sqrt(1.0 - (x * x) - (y * y));
+  Vec d = Vec(x, y, z);
+
+  // Transform from hemisphere to normal-space
+  return getRotationMatrix(n) * d;
 }
 
 

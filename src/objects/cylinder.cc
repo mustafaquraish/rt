@@ -12,8 +12,8 @@ bool hitBase(Ray &r, HitRec &rec) {
   if (fabs(xy_dist) > 1+TOL) return false;
   rec.t = t;
   rec.n = Z * Vec(0, 0, 1);
-  rec.a = (it.x + 1) / 2;
-  rec.b = (it.y + 1) / 2;
+  rec.u = (it.x + 1) / 2;
+  rec.v = (it.y + 1) / 2;
   r.tMax = min(r.tMax, rec.t);
   return true;
 }
@@ -35,8 +35,8 @@ bool hitSide(Ray &r, HitRec &rec) {
 
   rec.t = t1;
   rec.n = Vec(it.x, it.y, 0);
-  rec.a = atan2(rec.p.z, rec.p.x) / (2 * PI) + 0.5;
-  rec.b = 0.5 - asin(rec.p.y) / PI;
+  rec.u = atan2(rec.p.z, rec.p.x) / (2 * PI) + 0.5;
+  rec.v = 0.5 - asin(rec.p.y) / PI;
   r.tMax = min(r.tMax, rec.t);
   return true;
 }

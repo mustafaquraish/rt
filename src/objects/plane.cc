@@ -11,8 +11,8 @@ bool Plane::hit(Ray& r, HitRec& rec) {
     rec.t = t;
     rec.p = r.at(t);
     rec.n = normalTransform(Vec(0,0,1));
-    rec.a = it.x*2 - 1;
-    rec.b = it.y*2 - 1;
+    rec.u = it.x*2 - 1;
+    rec.v = it.y*2 - 1;
     rec.obj = this;
     r.tMax = min(r.tMax, t);
     return true;

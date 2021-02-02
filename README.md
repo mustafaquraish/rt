@@ -10,11 +10,17 @@ will just display normals. Only geometry intersections implemented
 
 Implemented:
 - Arbitrary object transformations
-- Triangle meshes (wavefront OBJ)
-- Two level Bounded Volume Hierarchies with mesh instancing
+- Triangle meshes 
+- Wavefront OBJ file parsing
+- Two level Bounded Volume Hierarchies
 - Implicit surfaces through Ray Marching
-- Surfaces of revolution (convert to mesh)
-- Beveled parametric curves and knots (convert to mesh)
+- Parametric Surfaces (Paraboloids, etc)*
+- Surfaces of revolution*
+- Beveled curves and knots*
+- Ambient Occulusion Shader
+
+
+* Converted to meshes
 
 ---
 

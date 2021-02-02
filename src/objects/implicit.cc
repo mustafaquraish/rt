@@ -53,7 +53,7 @@ bool Implicit::hit(Ray& r, HitRec& rec) {
   rec.t = lambda;
   rec.p = r.at(lambda);
   rec.n = normalTransform(canon_n);
-  rec.a = rec.b = 0;
+  rec.u = rec.v = 0;
   rec.obj = this;
   r.tMax = min(r.tMax, lambda);
   return true;
