@@ -6,9 +6,9 @@
 #include <vector>
 
 struct TriangleMesh : Object {
-  TriangleMesh(Material *mat) : Object(mat) {}
+  TriangleMesh(BSDF *mat) : Object(mat) {}
 
-  TriangleMesh(const char *fname, Material *mat) : Object(mat) { 
+  TriangleMesh(const char *fname, BSDF *mat) : Object(mat) { 
     loadObj(fname); 
   };
 

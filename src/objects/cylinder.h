@@ -4,7 +4,7 @@
 #include "core/object.h"
 
 struct Cylinder : Object {
-  Cylinder(Material *mat) : Object(mat) { bounds = AABB(1); };
+  Cylinder(BSDF *mat) : Object(mat) { bounds = AABB(1); };
   bool hit(Ray& r, HitRec &rec);
   Vec sample();
 };

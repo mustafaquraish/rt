@@ -1,4 +1,4 @@
-#include "emitter.h"
+#include "materials/emitter.h"
 
 
 Colour Emitter::eval(BSDFRec& bRec) {

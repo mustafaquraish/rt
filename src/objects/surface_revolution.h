@@ -13,7 +13,7 @@
  *  around the Y axis.
  */
 struct SurfaceOfRevolution : ParametricSurface {
-  SurfaceOfRevolution(Material *mat,
+  SurfaceOfRevolution(BSDF *mat,
                       int tCount,  // Cuts along parameter a (function)
                       int rCount,  // Stops along revolution
                       double tMin, // t min value for defined F
@@ -28,7 +28,7 @@ struct SurfaceOfRevolution : ParametricSurface {
 };
 
 struct CylinderSOR : SurfaceOfRevolution {
-  CylinderSOR(Material *mat, 
+  CylinderSOR(BSDF *mat, 
               int tCount = 1, 
               int rCount = 20, 
               double tMin = 0,
@@ -42,7 +42,7 @@ struct CylinderSOR : SurfaceOfRevolution {
 };
 
 struct SphereSOR : SurfaceOfRevolution {
-  SphereSOR(Material *mat,
+  SphereSOR(BSDF *mat,
             int tCount = 5,
             int rCount = 20,
             double tMin = -PI / 2,
@@ -55,7 +55,7 @@ struct SphereSOR : SurfaceOfRevolution {
 };
 
 struct TorusSOR : SurfaceOfRevolution {
-  TorusSOR(Material *mat, 
+  TorusSOR(BSDF *mat, 
            int tCount = 20, 
            int rCount = 20, 
            double tMin = 0,
@@ -68,7 +68,7 @@ struct TorusSOR : SurfaceOfRevolution {
 };
 
 struct SinSOR : SurfaceOfRevolution {
-  SinSOR(Material *mat, 
+  SinSOR(BSDF *mat, 
          int tCount = 4, 
          int rCount = 4, 
          double tMin = 0,
@@ -83,7 +83,7 @@ struct SinSOR : SurfaceOfRevolution {
 };
 
 struct ParabolicBowlSOR : SurfaceOfRevolution {
-  ParabolicBowlSOR(Material *mat, 
+  ParabolicBowlSOR(BSDF *mat, 
                    int tCount = 20, 
                    int rCount = 10,
                    double tMin = 0, 

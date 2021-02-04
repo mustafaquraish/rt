@@ -2,14 +2,13 @@
 #define __OBJECT_H__
 
 #include "core/ray.h"
-#include "core/material.h"
-#include "materials/lambertian.h"
+#include "core/bsdf.h"
 #include "core/primitive.h"
 #include "core/aabb.h"
 
 struct Object : Primitive {
   Object() {};
-  Object(Material *mat): mat(mat), bsdf(new Lambertian(mat->col)) {};
+  Object(BSDF *bsdf): bsdf(bsdf) {};
 
   // Public API for transforming objects
   void RotateX(double t);
@@ -23,13 +22,12 @@ struct Object : Primitive {
   // Internal utiliies
   Ray rayTransform(const Ray& r);
   Vec normalTransform(const Vec& n);
-  Material *getMaterial(HitRec& rec) { return mat; }
+  BSDF *getBSDF(HitRec& rec) { return bsdf; }
   
   virtual bool hit(Ray& r, HitRec &rec) = 0;
   virtual Vec sample() = 0;
 
-  Material *mat = NULL;
-  BSDF *bsdf;
+  BSDF *bsdf = NULL;
   Primitive *prim = NULL;
   Matrix T, T_inv;
   int both = 0;

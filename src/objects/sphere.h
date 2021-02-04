@@ -4,7 +4,7 @@
 #include "core/object.h"
 
 struct Sphere : Object {
-  Sphere(Material *mat) : Object(mat) { bounds = AABB(1); };
+  Sphere(BSDF *mat) : Object(mat) { bounds = AABB(1); };
   bool hit(Ray& r, HitRec &rec);
   Vec sample();
 };

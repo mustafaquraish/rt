@@ -43,11 +43,13 @@ void Path::render(Scene *scene, int depth) {
   {
     #pragma omp parallel for schedule(dynamic)
     for (int i = 0; i < scene->sx; i++) {
-      RNG rng;
+      // Seed RNG with some random function based on row number
+      RNG rng = RNG((i * i) ^ 0xdeadbeef);
+
       printf("\rRendering %d / %d ~ %f", done, scene->sx, done / total); fflush(stdout);
       for (int j = 0; j < scene->sy; j++) {
         Colour col = 0;
-        Ray ray = scene->cam.getRay(i, j);
+        Ray ray = scene->cam.getRay(i, j, rng);
         for (int sample = 0; sample < PATH_SAMPLES; sample++) {
           col += pptrace(ray, scene, rng) / PATH_SAMPLES;
         }
