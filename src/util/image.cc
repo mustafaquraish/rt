@@ -1,6 +1,6 @@
 #include "util/image.h"
 
-Image::Image(int sx, int sy): sx(sx), sy(sy) {
+Image::Image(int sx, int sy) : sx(sx), sy(sy) {
   data = new double[sx * sy * 3];
 }
 
@@ -13,8 +13,8 @@ Image::Image(char const *fname) {
   FILE *f;
   char line[1024];
 
-  char *tmp;  // | These are to keep the compiler happy. Want to ignore
-  int un;     // | Value of fgets() and fread()
+  char *tmp; // | These are to keep the compiler happy. Want to ignore
+  int un;    // | Value of fgets() and fread()
 
   f = fopen(fname, "rb+");
   if (f == NULL) {
@@ -32,30 +32,38 @@ Image::Image(char const *fname) {
   do {
     tmp = fgets(line, 511, f);
   } while (line[0] == '#');
-  sscanf(&line[0], "%d %d\n", &sx, &sy);  // Read file size
-  tmp = fgets(&line[0], 9, f);            // Read the remaining header line
+  sscanf(&line[0], "%d %d\n", &sx, &sy); // Read file size
+  tmp = fgets(&line[0], 9, f);           // Read the remaining header line
 
   unsigned char *raw = new unsigned char[sx * sy * 3];
   // Read the data
   un = fread(raw, sx * sy * 3, sizeof(unsigned char), f);
 
   data = new double[sx * sy * 3];
-  for (int i = 0; i < sx * sy * 3; i++) 
+  for (int i = 0; i < sx * sy * 3; i++)
     data[i] = raw[i] / 255.0;
 
-  un = un || tmp;  // Use both temp variables so compiler doesn't shout
+  un = un || tmp; // Use both temp variables so compiler doesn't shout
   delete[] raw;
   fclose(f);
 }
 
+double linearToSRGB(double L) {
+  double S = L * 12.92;
+  if (L > 0.0031308) {
+    S = 1.055 * pow(L, 1.0 / 2.4) - 0.055;
+  }
+  return S;
+}
+
 void Image::save(char const *fname, bool gammaCorrect) {
   FILE *f;
-  unsigned char* bits24 = new unsigned char[sx * sy * 3];
+  unsigned char *bits24 = new unsigned char[sx * sy * 3];
   for (int i = 0; i < sx * sy * 3; i++) {
     if (!gammaCorrect) {
       bits24[i] = data[i] * 255.0;
     } else {
-      bits24[i] = pow(data[i], 1/2.2) * 255.0;
+      bits24[i] = linearToSRGB(data[i]) * 255.0;
     }
   }
 
@@ -81,6 +89,4 @@ void Image::set(int i, int j, const Colour &col) {
   data[(i + j * sx) * 3 + 2] = clamped.z;
 }
 
-Image::~Image() {
-  delete[] data;
-}
+Image::~Image() { delete[] data; }
