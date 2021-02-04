@@ -18,7 +18,7 @@ struct RNG {
   }
 
   inline Vec randomVector() {
-    return norm(2 * Vec(rand01(), rand01(), rand01()) - 1);
+    return 2 * Vec(rand01(), rand01(), rand01()) - 1;
   }
 
   inline Vec randomVectorUnitSphere() {
@@ -30,17 +30,7 @@ struct RNG {
   }
 
   inline Vec randomVectorCosineHemisphere(const Vec &n) {
-    // Random sample on hemisphere with cosine-weighted distribution
-    double r = sqrt(rand01());
-    double theta = 2 * PI * rand01();
-
-    double x = r * cos(theta);
-    double y = r * sin(theta);
-    double z = sqrt(1.0 - (x * x) - (y * y));
-    Vec d = Vec(x, y, z);
-
-    // Transform from hemisphere to normal-space
-    return getRotationMatrix(n) * d;
+    return norm(n + norm(randomVectorUnitSphere()));
   }
   
   int x;
