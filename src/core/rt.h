@@ -42,6 +42,11 @@ using std::endl;
 // Scene (this needs to be at the end)
 #include "scene.h"
 
+// Materials
+#include "materials/lambertian.h"
+#include "materials/emitter.h"
+#include "materials/mirror.h"
+
 // Scene definitions
 Scene *A2Scene(int sx, int sy);
 Scene *RoomScene(int sx, int sy);

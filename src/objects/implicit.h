@@ -4,7 +4,7 @@
 #include "core/object.h"
 
 struct Implicit : Object {
-  Implicit(Material *mat) : Object(mat){};
+  Implicit(BSDF *mat) : Object(mat){};
   bool hit(Ray &r, HitRec &rec);
   void finalize();
   Vec sample();
@@ -15,7 +15,7 @@ struct Implicit : Object {
 };
 
 struct TangleCube : Implicit {
-  TangleCube(Material *mat, double offset = 0) : Implicit(mat), offset(offset) {
+  TangleCube(BSDF *mat, double offset = 0) : Implicit(mat), offset(offset) {
     bounds = AABB(3);
   };
   double F(double x, double y, double z) {
@@ -26,7 +26,7 @@ struct TangleCube : Implicit {
 };
 
 struct Torus : Implicit {
-  Torus(Material *mat) : Implicit(mat) { bounds = AABB(2); };
+  Torus(BSDF *mat) : Implicit(mat) { bounds = AABB(2); };
   double F(double x, double y, double z) {
     double R = 1;
     double a = 0.5;
@@ -37,7 +37,7 @@ struct Torus : Implicit {
 };
 
 struct Tetrahedral : Implicit {
-  Tetrahedral(Material *mat, double offset = 0)
+  Tetrahedral(BSDF *mat, double offset = 0)
       : Implicit(mat), offset(offset) {
     bounds = AABB(4);
   };
@@ -50,7 +50,7 @@ struct Tetrahedral : Implicit {
 };
 
 struct Chubbs : Implicit {
-  Chubbs(Material *mat, double offset = 0) : Implicit(mat), offset(offset) {
+  Chubbs(BSDF *mat, double offset = 0) : Implicit(mat), offset(offset) {
     bounds = AABB(1.5);
   };
   double F(double x, double y, double z) {
@@ -61,7 +61,7 @@ struct Chubbs : Implicit {
 };
 
 struct Sweet : Implicit {
-  Sweet(Material *mat, double offset = 0) : Implicit(mat), offset(offset) {
+  Sweet(BSDF *mat, double offset = 0) : Implicit(mat), offset(offset) {
     bounds = AABB(4);
   };
   double F(double x, double y, double z) {
@@ -73,7 +73,7 @@ struct Sweet : Implicit {
 };
 
 struct Blobs : Implicit {
-  Blobs(Material *mat, double offset = 0) : Implicit(mat), offset(offset) {
+  Blobs(BSDF *mat, double offset = 0) : Implicit(mat), offset(offset) {
     bounds = AABB(4);
   };
   double F(double x, double y, double z) {
@@ -84,7 +84,7 @@ struct Blobs : Implicit {
 };
 
 struct Bifolia : Implicit {
-  Bifolia(Material *mat, double offset = 0) : Implicit(mat), offset(offset) {
+  Bifolia(BSDF *mat, double offset = 0) : Implicit(mat), offset(offset) {
     bounds = AABB(2);
   };
   double F(double x, double y, double z) {
@@ -96,7 +96,7 @@ struct Bifolia : Implicit {
 };
 
 struct BohemianDome : Implicit {
-  BohemianDome(Material *mat, double offset = 0)
+  BohemianDome(BSDF *mat, double offset = 0)
       : Implicit(mat), offset(offset) {
     bounds = AABB(2);
   };
@@ -109,7 +109,7 @@ struct BohemianDome : Implicit {
 };
 
 struct Gumdrop : Implicit {
-  Gumdrop(Material *mat, double offset = 0) : Implicit(mat), offset(offset) {
+  Gumdrop(BSDF *mat, double offset = 0) : Implicit(mat), offset(offset) {
     bounds = AABB(2.3);
   };
   double F(double x, double y, double z) {
@@ -121,7 +121,7 @@ struct Gumdrop : Implicit {
 };
 
 struct WiffleCube : Implicit {
-  WiffleCube(Material *mat, double offset = 0)
+  WiffleCube(BSDF *mat, double offset = 0)
       : Implicit(mat) {
     bounds = AABB(2.3);
     b = lerp(offset, 0.38, 0.58);
@@ -140,7 +140,7 @@ struct WiffleCube : Implicit {
 };
 
 struct Orthocircle : Implicit {
-  Orthocircle(Material *mat, double off = 0) : Implicit(mat) {
+  Orthocircle(BSDF *mat, double off = 0) : Implicit(mat) {
     a = off * 0.1 + 0.04;
     b = off;
     offset = -off * .01;

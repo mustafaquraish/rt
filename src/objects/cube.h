@@ -4,7 +4,7 @@
 #include "core/object.h"
 
 struct Cube : Object {
-  Cube(Material *mat) : Object(mat) { bounds = AABB(1); };
+  Cube(BSDF *mat) : Object(mat) { bounds = AABB(1); };
   bool hit(Ray& r, HitRec &rec);
   Vec sample();
 };

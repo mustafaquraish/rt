@@ -2,9 +2,18 @@
 #define __RNG_H__
 
 #include "core/math.h"
+#include <time.h>
 
 struct RNG {
   RNG() {
+    x = rand();
+    y = rand();
+    z = rand();
+    w = rand();
+  }
+
+  RNG(int seed) {
+    srand(seed);
     x = rand();
     y = rand();
     z = rand();

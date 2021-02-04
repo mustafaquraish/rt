@@ -14,7 +14,7 @@
  *  on a circle around the curve
  */
 struct BeveledCurve : ParametricSurface {
-  BeveledCurve(Material *mat,
+  BeveledCurve(BSDF *mat,
                double radius, // Radius of circle
                int tCount,    // Number of divisions along curve
                int rCount,    // Number of divisions of circle
@@ -34,7 +34,7 @@ private:
 };
 
 struct LineBevel : BeveledCurve {
-  LineBevel(Material *mat,
+  LineBevel(BSDF *mat,
             double radius = 1, // Radius of circle
             int tCount = 10,   // Number of divisions along curve
             int rCount = 20,   // Number of divisions of circle
@@ -47,7 +47,7 @@ struct LineBevel : BeveledCurve {
 };
 
 struct TorusBevel : BeveledCurve {
-  TorusBevel(Material *mat,
+  TorusBevel(BSDF *mat,
              double radius = 1, // Radius of circle
              int tCount = 10,   // Number of divisions along curve
              int rCount = 20,   // Number of divisions of circle
@@ -60,7 +60,7 @@ struct TorusBevel : BeveledCurve {
 };
 
 struct SpiralBevel : BeveledCurve {
-  SpiralBevel(Material *mat,
+  SpiralBevel(BSDF *mat,
               double radius = .4, // Radius of circle
               int tCount = 100,   // Number of divisions along curve
               int rCount = 20,    // Number of divisions of circle
@@ -80,7 +80,7 @@ struct SpiralBevel : BeveledCurve {
  * https://www.maa.org/sites/default/files/images/upload_library/23/stemkoski/knots/page5.html#:~:text=Parametric%20equations%20for%20such%20a,generality)%20that%20p%20%3E%20q%20.
  */
 struct TorusKnotBevel : BeveledCurve {
-  TorusKnotBevel(Material *mat,
+  TorusKnotBevel(BSDF *mat,
                  double radius = .05, // Radius of circle
                  int P = 6,           // P for Torus Knot (prime)
                  int Q = 11,          // Q for torus knot (prime)
@@ -106,7 +106,7 @@ struct TorusKnotBevel : BeveledCurve {
 };
 
 struct ButterflyBevel : BeveledCurve {
-  ButterflyBevel(Material *mat,
+  ButterflyBevel(BSDF *mat,
                  int tCount = 1000,   // Number of divisions along curve
                  int rCount = 20,     // Number of divisions of circle
                  double radius = .15, // Radius of circle
