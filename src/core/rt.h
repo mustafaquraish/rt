@@ -46,6 +46,7 @@ using std::endl;
 #include "materials/lambertian.h"
 #include "materials/emitter.h"
 #include "materials/mirror.h"
+#include "materials/transmissive.h"
 
 // Scene definitions
 Scene *A2Scene(int sx, int sy);
