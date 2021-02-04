@@ -44,6 +44,6 @@ void DebugShader::render(Scene *scene, int depth) {
   double buildTime = (double)(timeEnd - timeBegin) / CLOCKS_PER_SEC;
   printf("\n[+] Rendering completed in %.3fs\n", buildTime);
   cout << endl;
-  im.save("output.ppm");
+  im.save("output.ppm", false);
   return;
 }
