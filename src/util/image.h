@@ -9,13 +9,10 @@ struct Image {
   Image(int sx, int sy);
   Image(char const *fname);
   ~Image();
-  void save(char const *fname);
-  void saveHDR(char const *fname);
+  void save(char const *fname, bool gammaCorrect=true);
   void set(int i, int j, const Vec& col);
-  void accumHDR(int i, int j, const Vec& col);
   int sx, sy;
   double* data;
-  double* weights;
 };
 
 #endif // __IMAGE_H__
