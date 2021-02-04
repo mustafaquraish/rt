@@ -13,6 +13,7 @@ struct Transmissive : BSDF {
   }
   Colour eval(BSDFRec& bRec);
   Colour sample(BSDFRec& bRec);
+  Colour reflect(BSDFRec& bRec);
   double pdf(BSDFRec& bRec);
 
   // Index of refraction
