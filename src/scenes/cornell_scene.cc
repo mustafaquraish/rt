@@ -63,9 +63,9 @@ Scene *CornellScene(int sx, int sy) {
   s->Translate(4, -6.25, 6.5);
   scene->add(s);
 
-  s = new Plane(new Material(Colour(.79, .99, .99)));
-  s->bsdf = new Emitter(Colour(1,1,1));
-  s->Scale(.5,2.5,2);
+  s = new Disc(new Material(Colour(.79, .99, .99)));
+  s->bsdf = new Emitter(Colour(12,12,12));
+  s->Scale(2.5,2.5,2);
   s->RotateX(PI/2);
   s->Translate(0,9.995,5);
   scene->add(s);
