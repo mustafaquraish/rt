@@ -16,9 +16,9 @@ Scene *AjaxScene(int sx, int sy) {
 
   s = new TriangleMesh("assets/obj/ajax.obj", new Material(Colour(1, 0, 0)));
   s->RotateY(-PI/4 - PI/2);
-  s->Scale(0.3, 0.3, 0.3);
+  s->Scale(0.25, 0.25, 0.25);
   // s->RotateX(PI);
-  s->Translate(-2, -4, 1.5);
+  s->Translate(-3.5, -4, -7);
   scene->add(s);
 
   s = new Plane(new Material(Colour(0.55, 0.8, 0.75)));

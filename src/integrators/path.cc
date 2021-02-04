@@ -4,7 +4,7 @@
 #include "time.h"
 
 #define PATH_SAMPLES 1000
-#define PATH_MAX_BOUNCES 3
+#define PATH_MAX_BOUNCES 5
 
 Colour pptrace(Ray &r, Scene *scene, RNG& rng) {
   HitRec rec;
@@ -39,21 +39,20 @@ void Path::render(Scene *scene, int depth) {
   int done = 0;
   float total = im.sx / 100;
 
-#pragma omp parallel
+// #pragma omp parallel
   {
-    #pragma omp for
+    #pragma omp parallel for schedule(dynamic)
     for (int i = 0; i < scene->sx; i++) {
       RNG rng;
       printf("\rRendering %d / %d ~ %f", done, scene->sx, done / total); fflush(stdout);
       for (int j = 0; j < scene->sy; j++) {
-        Colour col;
+        Colour col = 0;
         Ray ray = scene->cam.getRay(i, j);
         for (int sample = 0; sample < PATH_SAMPLES; sample++) {
-          col = pptrace(ray, scene, rng);
-          im.accumHDR(i, j, col);
+          col += pptrace(ray, scene, rng) / PATH_SAMPLES;
         }
+        im.set(i, j, col);
       }
-      #pragma omp atomic
       done++;
     }
   }
@@ -61,6 +60,6 @@ void Path::render(Scene *scene, int depth) {
   double buildTime = (double)(timeEnd - timeBegin) / CLOCKS_PER_SEC;
   printf("\n[+] Rendering completed in %.3fs\n", buildTime);
   cout << endl;
-  im.saveHDR("output.ppm");
+  im.save("output.ppm");
   return;
 }
