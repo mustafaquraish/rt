@@ -9,8 +9,8 @@ int main(int argc, char **argv) {
 
   // Scene *scene = A2Scene(resolution, resolution);
   // Scene *scene = SORScene(resolution, resolution);
-  // Scene *scene = AjaxScene(resolution, resolution);
-  Scene *scene = CornellScene(resolution, resolution);
+  Scene *scene = AjaxScene(resolution, resolution);
+  // Scene *scene = CornellScene(resolution, resolution);
   // Scene *scene = ImplicitScene(resolution, resolution);
   // Scene *scene = RoomScene(resolution, resolution);
   // Scene *scene = OcclusionScene(resolution, resolution);

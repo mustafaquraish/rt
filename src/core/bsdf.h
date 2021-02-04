@@ -3,14 +3,17 @@
 
 #include "core/math.h"
 #include "core/primitive.h"
+#include "core/rng.h"
 
 struct BSDFRec {
-  BSDFRec(const Vec& d, const Vec& n) : wo(-d), n(n) {}
-  BSDFRec(const Vec& d, const HitRec& rec) : wo(-d), n(rec.n), u(rec.u), v(rec.v) {}
+  BSDFRec(const Vec& d, const HitRec& rec, RNG& rng) : 
+    wo(-d), n(rec.n), u(rec.u), v(rec.v), p(rec.p), rng(rng) {}
   Vec wo;      // Outgoing direction
   Vec wi;      // Incident direction (to be sampled)
   Vec n;       // Normal at the shading point
+  Vec p;       // Shading point
   double u, v; // Texture coordinates for intersection point
+  RNG& rng;
 };
 
 struct BSDF {
