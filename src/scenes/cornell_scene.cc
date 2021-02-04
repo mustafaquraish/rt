@@ -55,15 +55,15 @@ Scene *CornellScene(int sx, int sy) {
   scene->add(s);
 
   // left sphere
-  s = new Sphere(new Lambertian(Colour(1, 1, 1)));
+  s = new Sphere(new Transmissive(1.47, Colour(1, 1, 1)));
   s->Scale(3.75, 3.75, 3.75);
-  s->Translate(-5, -6.25, 4.5);
+  s->Translate(-5, -4, 4.5);
   scene->add(s);
 
   // right sphere
   s = new Sphere(new Mirror(Colour(.99, .99, .99)));
   s->Scale(3.75, 3.75, 3.75);
-  s->Translate(4, -6.25, 6.5);
+  s->Translate(4, -3.75, 6.5);
   scene->add(s);
 
   s = new Disc(new Emitter(Colour(12, 12, 12)));
