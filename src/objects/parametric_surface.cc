@@ -8,7 +8,7 @@ Vec ParametricSurface::N(double a, double b) {
   Vec p_ab = P(a, b);
   Vec ta = norm((P(a+EPS, b) - p_ab) / EPS);
   Vec tb = norm((P(a, b+EPS) - p_ab) / EPS);
-  return cross(ta, tb);
+  return cross(tb, ta);
 }
 
 Vec ParametricSurface::T(double a, double b) {

@@ -70,9 +70,9 @@ bool Triangle::hit(Ray& r, HitRec& rec) {
   // NOTE: rec.p needs to be set by `TriangleMesh::hit`
   // NOTE: rec.n needs to transformed by `TriangleMesh::hit`
   rec.t = t;
-  rec.n = -Vec(n[0].x * u + n[1].x * v + n[2].x * w,
-               n[0].y * u + n[1].y * v + n[2].y * w,
-               n[0].z * u + n[1].z * v + n[2].z * w);
+  rec.n = Vec(n[0].x * u + n[1].x * v + n[2].x * w,
+              n[0].y * u + n[1].y * v + n[2].y * w,
+              n[0].z * u + n[1].z * v + n[2].z * w);
   rec.u = uv[0].x * u + uv[1].x * v + uv[2].x * w;
   rec.v = uv[0].y * u + uv[1].y * v + uv[2].y * w;
   r.tMax = min(r.tMax, t);
