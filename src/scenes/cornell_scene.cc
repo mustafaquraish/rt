@@ -54,16 +54,21 @@ Scene *CornellScene(int sx, int sy) {
   s->Translate(0, 510, 5);
   scene->add(s);
 
-  // left sphere
-  s = new Sphere(new Transmissive(1.47, Colour(1, 1, 1)));
-  s->Scale(3.75, 3.75, 3.75);
-  s->Translate(-5, -4, 4.5);
-  scene->add(s);
+  // // left sphere
+  // s = new Sphere(new Transmissive(1.47, Colour(1, 1, 1)));
+  // s->Scale(3.75, 3.75, 3.75);
+  // s->Translate(-5, -4, 4.5);
+  // scene->add(s);
 
-  // right sphere
-  s = new Sphere(new Mirror(Colour(.99, .99, .99)));
-  s->Scale(3.75, 3.75, 3.75);
-  s->Translate(4, -3.75, 6.5);
+  // // right sphere
+  // s = new Sphere(new Mirror(Colour(.99, .99, .99)));
+  // s->Scale(3.75, 3.75, 3.75);
+  // s->Translate(4, -3.75, 6.5);
+  // scene->add(s);
+
+  s = new TriangleMesh("assets/obj/wineglass.obj", new Transmissive(1.47, Colour(1)));
+  s->Scale(1, 1, 1);
+  s->Translate(0, -6, 6);
   scene->add(s);
 
   s = new Disc(new Emitter(Colour(12, 12, 12)));

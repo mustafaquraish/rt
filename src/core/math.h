@@ -391,6 +391,4 @@ inline bool solveQuadratic(double a, double b, double c,
   return true;
 }
 
-
-
 #endif // __RT_MATH_H__ 
