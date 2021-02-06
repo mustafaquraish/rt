@@ -4,9 +4,9 @@
 #include "time.h"
 
 #define PATH_SAMPLES 1000
-#define PATH_MAX_BOUNCES 5
+#define PATH_MAX_BOUNCES 10
 
-Colour pptrace(Ray &r, Scene *scene) {
+Colour Path::Li(Ray &r, Scene *scene, RNG& rng) {
   HitRec rec;
   Colour L = 1;
   
@@ -20,7 +20,7 @@ Colour pptrace(Ray &r, Scene *scene) {
     BSDF *bsdf = rec.obj->bsdf;
     if (!bsdf) { printf("BSDF IS NULL :((((\n"); }
 
-    BSDFRec bRec = BSDFRec(ray.d, rec);
+    BSDFRec bRec = BSDFRec(ray.d, rec, rng);
     if (bsdf->isEmitter()) {
       L = L * bsdf->emittance(bRec);
       return L;
@@ -43,12 +43,15 @@ void Path::render(Scene *scene, int depth) {
   {
     #pragma omp parallel for schedule(dynamic)
     for (int i = 0; i < scene->sx; i++) {
+      // Seed RNG with some random function based on row number
+      RNG rng = RNG((i * i) ^ 0xdeadbeef);
+
       printf("\rRendering %d / %d ~ %f", done, scene->sx, done / total); fflush(stdout);
       for (int j = 0; j < scene->sy; j++) {
         Colour col = 0;
-        Ray ray = scene->cam.getRay(i, j);
+        Ray ray = scene->cam.getRay(i, j, rng);
         for (int sample = 0; sample < PATH_SAMPLES; sample++) {
-          col += pptrace(ray, scene) / PATH_SAMPLES;
+          col += Li(ray, scene, rng) / PATH_SAMPLES;
         }
         im.set(i, j, col);
       }
