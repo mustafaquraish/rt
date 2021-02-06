@@ -66,9 +66,9 @@ Scene *CornellScene(int sx, int sy) {
   // s->Translate(4, -3.75, 6.5);
   // scene->add(s);
 
-  s = new TriangleMesh("assets/obj/wineglass.obj", new Transmissive(1.47, Colour(1)));
-  s->Scale(1, 1, 1);
-  s->Translate(0, -6, 6);
+  s = new TriangleMesh("assets/obj/water.obj", new Transmissive(1.47, Colour(1)));
+  s->Scale(10, 10, 10);
+  s->Translate(0, -5, 6);
   scene->add(s);
 
   s = new Disc(new Emitter(Colour(12, 12, 12)));

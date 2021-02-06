@@ -5,6 +5,7 @@
 
 struct AmbientOcclusion : Integrator {
   void render(Scene *scene, int depth);
+  Colour Li(Ray& r, Scene *scene, RNG& rng);
 };
 
 #endif // __AA_SHADER_H__

@@ -5,6 +5,7 @@
 
 struct Path : Integrator {
   void render(Scene *scene, int depth);
+  Colour Li(Ray& r, Scene *scene, RNG& rng);
 };
 
 #endif // __PATH_H__
