@@ -51,12 +51,28 @@ Aggregate *wavefrontObjLoader(const char *fname) {
 
     if (prefix("f ", buf)) {
       int v0, v1, v2, n0, n1, n2, t0, t1, t2;
-      sscanf(buf, "f %d/%d/%d %d/%d/%d %d/%d/%d", &v0, &t0, &n0,
-                                                  &v1, &t1, &n1,
-                                                  &v2, &t2, &n2);
-      Triangle *t = new Triangle( vs[v0-1],  vs[v1-1],  vs[v2-1],
-                                 vns[n0-1], vns[n1-1], vns[n2-1],
-                                 vts[t0-1], vts[t1-1], vts[t2-1]);
+      Triangle *t;
+
+
+      // Vertices only
+      if (sscanf(buf, "f %d %d %d", &v0, &v1, &v2) == 3) {
+        t = new Triangle(vs[v0-1],  vs[v1-1],  vs[v2-1]);
+      }
+
+      // Vertices + Normals
+      if (sscanf(buf, "f %d//%d %d//%d %d//%d", 
+                 &v0, &n0, &v1, &n1, &v2, &n2) == 6) {
+        t = new Triangle( vs[v0-1],  vs[v1-1],  vs[v2-1],
+                         vns[n0-1], vns[n1-1], vns[n2-1]);
+      }
+      
+      // Vertices + Normals + Textures
+      if (sscanf(buf, "f %d/%d/%d %d/%d/%d %d/%d/%d", 
+                 &v0, &t0, &n0, &v1, &t1, &n1, &v2, &t2, &n2) == 9) {
+        t = new Triangle( vs[v0-1],  vs[v1-1],  vs[v2-1],
+                         vns[n0-1], vns[n1-1], vns[n2-1],
+                         vts[t0-1], vts[t1-1], vts[t2-1]);
+      }
 
       faces.push_back((Primitive *) t);
     }

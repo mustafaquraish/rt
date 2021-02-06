@@ -5,7 +5,7 @@
 #define AA_SAMPLES 256
 #define MAX_AA_DIST INFINITY
 
-Colour otrace(Ray &ray, Scene *scene, RNG& rng) {
+Colour AmbientOcclusion::Li(Ray &ray, Scene *scene, RNG& rng) {
   HitRec rec, tmp;
   if (!scene->world->hit(ray, rec))
     return Vec(0);
@@ -39,7 +39,7 @@ void AmbientOcclusion::render(Scene *scene, int depth) {
         Ray ray = scene->cam.getRay(i, j);
         // if (DEBUG) cout << "init ray:  p: " << ray.p << "  d: " << ray.d <<
         // endl;
-        col += otrace(ray, scene, rng);
+        col += Li(ray, scene, rng);
       }
       im.set(i, j, col / AA_SAMPLES);
     }
