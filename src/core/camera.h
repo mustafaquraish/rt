@@ -1,7 +1,7 @@
 #ifndef __CAMERA_H__
 #define __CAMERA_H__
 
-#include "core/math.h"
+#include "core/rng.h"
 #include "core/ray.h"
 
 struct Camera {
@@ -9,6 +9,7 @@ struct Camera {
   Camera(Vec e, Vec g, Vec u, double f, double wl, double wt,
          double wsize, int sx, int sy);
 
+  virtual Ray getRay(int i, int j, RNG& rng);
   virtual Ray getRay(int i, int j);
   
   Vec e, u, v, w;

@@ -18,8 +18,14 @@ Camera::Camera(Vec e, Vec g, Vec up, double f, double wl, double wt,
   dv = -wsize / (sy - 1);
 }
 
+Ray Camera::getRay(int i, int j, RNG& rng) {
+  Vec pij = Vec(wl + (i + rng.rand01())*du, wt + (j + rng.rand01())*dv, f);
+  Vec p = C2W * pij;
+  return Ray(p, norm(p - e));
+}
+
 Ray Camera::getRay(int i, int j) {
-  Vec pij = Vec(wl + (i + drand48())*du, wt + (j + drand48())*dv, f);
+  Vec pij = Vec(wl + (i)*du, wt + (j)*dv, f);
   Vec p = C2W * pij;
   return Ray(p, norm(p - e));
 }

@@ -9,7 +9,7 @@ Colour Lambertian::eval(BSDFRec &bRec) {
 }
 
 Colour Lambertian::sample(BSDFRec &bRec) {
-  bRec.wi = randomVectorCosineHemisphere(bRec.n);
+  bRec.wi = bRec.rng.randomVectorCosineHemisphere(bRec.n);
   return col;
 }
 

@@ -9,7 +9,7 @@
 #include "objects/triangle_mesh.h"
 
 struct ParametricSurface : TriangleMesh {
-  ParametricSurface(Material *mat,
+  ParametricSurface(BSDF *mat,
                     int aCount,  // Cuts along parameter a
                     int bCount,  // Cuts along parameter b
                     double aMin, // a min value
@@ -42,7 +42,7 @@ private:
 };
 
 struct SphereParametric : ParametricSurface {
-  SphereParametric(Material *mat,
+  SphereParametric(BSDF *mat,
                    int aCount = 20,   // Cuts along parameter a
                    int bCount = 20,   // Cuts along parameter b
                    double aMin = 0,   // a min value
@@ -58,7 +58,7 @@ struct SphereParametric : ParametricSurface {
 };
 
 struct SaddleParametric : ParametricSurface {
-  SaddleParametric(Material *mat,
+  SaddleParametric(BSDF *mat,
                    int aCount = 20,  // Cuts along parameter a
                    int bCount = 20,  // Cuts along parameter b
                    double aMin = -1, // a min value

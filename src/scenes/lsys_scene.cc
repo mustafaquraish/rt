@@ -26,7 +26,7 @@ Scene *LsystemsScene(int sx, int sy) {
     }
   }
   
-  s = new Plane(new Material(Colour(0.55, 0.8, 0.75)));
+  s = new Plane(new Lambertian(Colour(0.55, 0.8, 0.75)));
   s->Scale(20, 20, 20);
   s->RotateX(PI / 2);
   s->Translate(0, -9, 5);
