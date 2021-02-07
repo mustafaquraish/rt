@@ -57,24 +57,36 @@ Scene *CornellScene(int sx, int sy) {
   // // left sphere
   // s = new Sphere(new Transmissive(1.47, Colour(1, 1, 1)));
   // s->Scale(3.75, 3.75, 3.75);
-  // s->Translate(-5, -4, 4.5);
+  // s->Translate(-5, -6.25, 4.5);
   // scene->add(s);
 
   // // right sphere
   // s = new Sphere(new Mirror(Colour(.99, .99, .99)));
   // s->Scale(3.75, 3.75, 3.75);
-  // s->Translate(4, -3.75, 6.5);
+  // s->Translate(4, -6.25, 6.5);
   // scene->add(s);
 
-  s = new TriangleMesh("assets/obj/water.obj", new Transmissive(1.47, Colour(1)));
-  s->Scale(10, 10, 10);
-  s->Translate(0, -5, 6);
+  // s = new TriangleMesh("assets/obj/water.obj", new Transmissive(1.47, Colour(1)));
+  // s->Scale(10, 10, 10);
+  // s->Translate(0, -5, 6);
+  // scene->add(s);
+
+  s = new TriangleMesh("assets/obj/dragon.obj", new Transmissive(1.47, Colour(1)));
+  s->Scale(2.5, 2.5, 2.5);
+  s->Translate(0, -10, 6);
   scene->add(s);
+
+  // s = new LSystem(12);
+  // s->Scale(2.5, 2.5, 2.5);
+  // s->RotateX(-PI/2);
+  // s->RotateY(PI/2);
+  // s->Translate(-3, -15, 6);
+  // scene->add(s);
 
   s = new Disc(new Emitter(Colour(12, 12, 12)));
   s->Scale(2.5,2.5,2);
   s->RotateX(PI/2);
-  s->Translate(0,9.995,5);
+  s->Translate(0,9.9995,5);
   scene->add(s);
 
   // scene->world = new AGGREGATE(scene->obj_list);

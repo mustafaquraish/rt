@@ -6,30 +6,83 @@
 #define PATH_SAMPLES 1000
 #define PATH_MAX_BOUNCES 10
 
+Vec DiscSample(Object *obj, RNG& rng) {
+  double x, y;
+  do {
+    x = rng.rand01();
+    y = rng.rand01();
+  } while (x*x + y*y > 1);
+
+  // double x = rng.rand01();
+  // double y = rng.rand01();
+  
+  return obj->T * Vec(x, y, 0);
+}
+
+Colour SampleLight(Vec& p, BSDF *bsdf, Scene *scene, RNG& rng) {
+  Object *light = scene->lights[ 0 ];
+  Vec lp = DiscSample(light, rng);
+
+  Vec wi = lp - p;
+  Ray shadowRay = Ray(p, norm(wi));
+  HitRec tmp;
+
+  BSDFRec bRec(p, tmp, rng);
+  if (scene->hit(shadowRay, tmp) && tmp.obj == light) {
+    if (dot(wi, tmp.n) > 0) return 0;
+    double factor = PI * -dot(norm(wi), tmp.n) / (lengthSq(wi));
+    return bsdf->col * light->bsdf->emittance(bRec) * factor; 
+  }
+  return Vec(0);
+}
+
+#define USE_ELS 1
+
 Colour Path::Li(Ray &r, Scene *scene, RNG& rng) {
   HitRec rec;
-  Colour L = 1;
   
+  Colour L = 0;
+  Colour throughput = 1;
+  bool applyEmission = true;
+
   Ray ray = Ray(r.p, r.d);
-  for (int bounce = 0;; bounce++) {
+  for (int bounce = 0; bounce < PATH_MAX_BOUNCES; bounce++) {
     
-    if (bounce > PATH_MAX_BOUNCES || !scene->world->hit(ray, rec)) {
-      return 0;
-    }
+    if (!scene->world->hit(ray, rec)) break;
     
     BSDF *bsdf = rec.obj->bsdf;
-    if (!bsdf) { printf("BSDF IS NULL :((((\n"); }
 
     BSDFRec bRec = BSDFRec(ray.d, rec, rng);
-    if (bsdf->isEmitter()) {
-      L = L * bsdf->emittance(bRec);
-      return L;
+
+    
+    if (USE_ELS) {
+      if (applyEmission)
+        L += throughput * bsdf->emittance(bRec);
+      if (!bsdf->isSpecular()) 
+        L += throughput * SampleLight(rec.p, bsdf, scene, rng);
+      if (bsdf->isEmitter()) 
+        break;
+
+    } else {
+      if (bsdf->isEmitter()) {
+        L += throughput * bsdf->emittance(bRec);
+        break;
+      }
     }
 
-    L = L * bsdf->sample(bRec);
+    throughput = throughput * bsdf->sample(bRec);
     ray = Ray(rec.p, bRec.wi);    
+    applyEmission = bsdf->isSpecular();
+
+    // Russian roulette:
+    if (bounce > 3) {
+      double pr = max(throughput.r, max(throughput.g, throughput.b));
+      if (rng.rand01() > pr)
+        break;
+      throughput *= 1.0 / pr;
+    }
   }
-  return 0;
+  return L;
 }
 
 void Path::render(Scene *scene, int depth) {
@@ -49,8 +102,8 @@ void Path::render(Scene *scene, int depth) {
       printf("\rRendering %d / %d ~ %f", done, scene->sx, done / total); fflush(stdout);
       for (int j = 0; j < scene->sy; j++) {
         Colour col = 0;
-        Ray ray = scene->cam.getRay(i, j, rng);
         for (int sample = 0; sample < PATH_SAMPLES; sample++) {
+          Ray ray = scene->cam.getRay(i, j, rng);
           col += Li(ray, scene, rng) / PATH_SAMPLES;
         }
         im.set(i, j, col);

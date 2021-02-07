@@ -9,18 +9,20 @@
 
 struct Scene {
   std::vector<Primitive *> obj_list;
+  std::vector<Object *> lights;
   Aggregate *world;
-  // PrimitiveList als_list;
   Camera cam;
   int sx;
   int sy;
-  // std::vector<PointLS> pls_list;
 
   void add(Object *obj) { 
     // Finalize object first...
     obj->finalize();
     // Add it to internal list
     obj_list.push_back((Primitive *)obj); 
+    // If it's an emitter, add it to light list
+    if (obj->bsdf && obj->bsdf->isEmitter())
+      lights.push_back(obj);
   };
 
   void finalize() { 

@@ -9,16 +9,16 @@ void LSystem::createLSystem(char type, int depth, Matrix pTransform,
   Object *curNode;
 
   if (type == 'a') {
-    curNode = new Cylinder(new Lambertian(Colour(1,0,0)));
+    curNode = new Cylinder(new Transmissive(1.47, Colour(1,.5,.5)));
     curNode->Scale(0.3, 0.3, 1);
   } else if (type == 'b') {
-    curNode = new Cylinder(new Lambertian(Colour(1,0,0)));
+    curNode = new Cylinder(new Transmissive(1.47, Colour(1,.5,.5)));
     curNode->Scale(0.3, 0.3, 1);
   } else if (type == 'c') {
-    curNode = new Sphere(new Lambertian(Colour(1,0,0)));
+    curNode = new Sphere(new Transmissive(1.47, Colour(.5,1,.5)));
     curNode->Scale(0.1, 0.7, 1);
   } else if (type == 'd') {
-    curNode = new Sphere(new Lambertian(Colour(1,0,0)));
+    curNode = new Sphere(new Transmissive(1.47, Colour(.5,1,1)));
   }
   curNode->Translate(0, 0, 1);
 
