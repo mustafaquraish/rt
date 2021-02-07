@@ -6,11 +6,12 @@ Colour Emitter::eval(BSDFRec& bRec) {
 }
 
 Colour Emitter::sample(BSDFRec& bRec) {
-  printf("Emitter::sample() unimplemented\n"); exit(1);
+  bRec.wi = bRec.rng.randomVectorCosineHemisphere(bRec.n);
+  return col;
 }
 
 double Emitter::pdf(BSDFRec& bRec) {
-  printf("Emitter::pdf() unimplemented\n"); exit(1);
+  return dot(bRec.wi, bRec.n) * INV_PI;
 }
 
 Colour Emitter::emittance(BSDFRec& rec) {
