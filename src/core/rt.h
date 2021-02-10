@@ -16,6 +16,7 @@ using std::endl;
 // Utilities
 #include "util/image.h"
 #include "util/obj_loader.h"
+#include "util/params.h"
 
 // Individual Objects
 #include "objects/plane.h"
@@ -47,15 +48,6 @@ using std::endl;
 #include "materials/emitter.h"
 #include "materials/mirror.h"
 #include "materials/transmissive.h"
-
-// Scene definitions
-Scene *A2Scene(int sx, int sy);
-Scene *RoomScene(int sx, int sy);
-Scene *OcclusionScene(int sx, int sy);
-Scene *ImplicitScene(int sx, int sy);
-Scene *SORScene(int sx, int sy);
-Scene *LsystemsScene(int sx, int sy);
-Scene *AjaxScene(int sx, int sy);
 
 
 #endif // __RT_COMMON_H__

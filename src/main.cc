@@ -1,26 +1,22 @@
 #include "core/rt.h"
 
-Scene *CornellScene(int sx, int sy);
-
 int main(int argc, char **argv) {
-  int resolution = 1024;
-  if (argc > 1) resolution = atoi(argv[1]);
+  RenderParams params(argc, argv);
+  if (!params.exists("resolution")) params.setInt("resolution", 512);
+  if (!params.exists("samples"))    params.setInt("samples", 10);
+  if (!params.exists("output"))     params.setStr("output", "test.ppm");
 
-  // Scene *scene = A2Scene(resolution, resolution);
-  // Scene *scene = SORScene(resolution, resolution);
-  // Scene *scene = AjaxScene(resolution, resolution);
-  Scene *scene = CornellScene(resolution, resolution);
-  // Scene *scene = ImplicitScene(resolution, resolution);
-  // Scene *scene = RoomScene(resolution, resolution);
-  // Scene *scene = OcclusionScene(resolution, resolution);
-  // Scene *scene = LsystemsScene(resolution, resolution);
+  // Scene *scene = SceneFactory::Create("A2", params);
+  // Scene *scene = SceneFactory::Create("SOR", params);
+  // Scene *scene = SceneFactory::Create("Ajax", params);
+  // Scene *scene = SceneFactory::Create("Cornell", params);
+  // Scene *scene = SceneFactory::Create("Implicit", params);
+  // Scene *scene = SceneFactory::Create("Lsystems", params);
+  Scene *scene = SceneFactory::Create("Occlusion", params);
 
   Ray kk = Ray(Vec(), Vec());
-  if (scene->integrator) scene->integrator->render(scene, 10);
-  else {
-    cout << "No integrator set in scene, using DebugShader" << endl;
-    DebugShader ns;
-    ns.render(scene, 10);
-  }
+  if (scene->integrator) 
+    scene->integrator->render(scene, 10);
+
   return 0;
 }

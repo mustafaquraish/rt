@@ -1,16 +1,15 @@
 #include "core/rt.h"
 
-Scene *LsystemsScene(int sx, int sy) {
+SCENE(Lsystems) {
 
   Scene *scene = new Scene();
-  scene->sx = sx;
-  scene->sy = sy;
-  scene->integrator = new DebugShader();
   
-  Vec e = Vec(0, 2, -15);
+  Vec e = Vec(0, 0, -15);
   Vec g = -e;
   Vec up = Vec(0, 1, 0);
-  scene->cam = Camera(e, g, up, -4, -2, 2, 4, sx, sy);
+  scene->cam = Camera(e, g, up, -4, params);
+
+  scene->integrator = new DebugShader(params);
 
   Object *s;
   

@@ -1,19 +1,16 @@
 #include "core/rt.h"
 
-Scene *A2Scene(int sx, int sy) {
+SCENE(A2) {
 
   Scene *scene = new Scene();
-  scene->sx = sx;
-  scene->sy = sy;
-  scene->integrator = new DebugShader();
   
   Vec e = Vec(0, 0, -15);
   Vec g = -e;
   Vec up = Vec(0, 1, 0);
-  scene->cam = Camera(e, g, up, -4, -2, 2, 4, sx, sy);
+  scene->cam = Camera(e, g, up, -4, params);
 
-  // PrimitiveList world = PrimitiveList();
-  // std::vector<PointLS> ls = std::vector<PointLS>();
+  scene->integrator = new DebugShader(params);
+  
   Object *s;
 
    for (int i = -4; i < 5; i++) {

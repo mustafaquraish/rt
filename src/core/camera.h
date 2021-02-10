@@ -3,11 +3,11 @@
 
 #include "core/rng.h"
 #include "core/ray.h"
+#include "util/params.h"
 
 struct Camera {
   Camera() {}
-  Camera(Vec e, Vec g, Vec u, double f, double wl, double wt,
-         double wsize, int sx, int sy);
+  Camera(Vec e, Vec g, Vec u, double f, RenderParams& params);
 
   virtual Ray getRay(int i, int j, RNG& rng);
   virtual Ray getRay(int i, int j);
