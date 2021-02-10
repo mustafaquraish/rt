@@ -3,36 +3,35 @@
 #include "core/bsdf.h"
 #include "time.h"
 
-#define PATH_SAMPLES 1000
+#define PATH_SAMPLES 50
 #define PATH_MAX_BOUNCES 10
 
-Vec DiscSample(Object *obj, RNG& rng) {
-  double x, y;
-  do {
-    x = rng.rand01();
-    y = rng.rand01();
-  } while (x*x + y*y > 1);
-
-  // double x = rng.rand01();
-  // double y = rng.rand01();
-  
-  return obj->T * Vec(x, y, 0);
-}
-
-Colour SampleLight(Vec& p, BSDF *bsdf, Scene *scene, RNG& rng) {
-  Object *light = scene->lights[ 0 ];
-  Vec lp = DiscSample(light, rng);
-
-  Vec wi = lp - p;
-  Ray shadowRay = Ray(p, norm(wi));
+Colour SampleLight(HitRec& rec, Scene *scene, RNG& rng) {
+  double pdf;
   HitRec tmp;
+  
+  // Pick a light source
+  Object *light = scene->lights[ 0 ];
 
-  BSDFRec bRec(p, tmp, rng);
+
+  // Light source point
+  Vec lp = light->sample(&pdf, rng);
+  // Vector from intersection pt to lightsource
+  Vec wi = norm(lp - rec.p);
+
+  Ray shadowRay = Ray(rec.p, wi);
+
   if (scene->hit(shadowRay, tmp) && tmp.obj == light) {
+    BSDFRec bRec(rec.p, tmp, rng);
     if (dot(wi, tmp.n) > 0) return 0;
-    double factor = PI * -dot(norm(wi), tmp.n) / (lengthSq(wi));
-    return bsdf->col * light->bsdf->emittance(bRec) * factor; 
+
+    pdf *= (tmp.t * tmp.t) / abs(dot(norm(wi), tmp.n));
+    
+
+    return rec.obj->bsdf->eval(bRec) * light->bsdf->emittance(bRec) / pdf; 
   }
+
+  // Not visible to the lightsource.
   return Vec(0);
 }
 
@@ -59,7 +58,7 @@ Colour Path::Li(Ray &r, Scene *scene, RNG& rng) {
       if (applyEmission)
         L += throughput * bsdf->emittance(bRec);
       if (!bsdf->isSpecular()) 
-        L += throughput * SampleLight(rec.p, bsdf, scene, rng);
+        L += throughput * SampleLight(rec, scene, rng);
       if (bsdf->isEmitter()) 
         break;
 

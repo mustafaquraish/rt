@@ -66,7 +66,7 @@ void Implicit::finalize() {
 }
 
 
-Vec Implicit::sample() {
+Vec Implicit::sample(double *pdf, RNG& rng) {
   return T * Vec();
 }
 

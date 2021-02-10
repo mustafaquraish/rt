@@ -17,7 +17,7 @@ struct TriangleMesh : Object {
   void loadObj(const char *fname);
 
   bool hit(Ray& r, HitRec &rec);
-  Vec sample() { return T * Vec(); };
+  Vec sample(double *pdf, RNG& rng) { return T * Vec(); };
   
   Aggregate *mesh;
   bool bothSides = false;

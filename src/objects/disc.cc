@@ -23,6 +23,13 @@ bool Disc::hit(Ray& r, HitRec& rec) {
   return true;
 }
 
-Vec Disc::sample() {
-  return T * Vec(0,0,0);
+Vec Disc::sample(double *pdf, RNG& rng) {
+  double x, y;
+  do {
+    x = 2 * rng.rand01() - 1;
+    y = 2 * rng.rand01() - 1;
+  } while (x*x + y*y > 1);
+
+  *pdf = 1 / surfaceArea;
+  return T * Vec(x, y, 0);
 }

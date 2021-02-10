@@ -29,6 +29,6 @@ bool Sphere::hit(Ray& r, HitRec& rec) {
   return true;
 }
 
-Vec Sphere::sample() {
+Vec Sphere::sample(double *pdf, RNG& rng) {
   return T * Vec(0,0,0);
 }

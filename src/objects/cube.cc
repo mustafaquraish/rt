@@ -36,7 +36,7 @@ bool Cube::hit(Ray& r, HitRec& rec) {
 
 }
 
-Vec Cube::sample() {
+Vec Cube::sample(double *pdf, RNG& rng) {
   Vec p = Vec(rand01(), rand01(), 0.5) * 2 - 1;
   return T * p;
 }
