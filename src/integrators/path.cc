@@ -83,8 +83,8 @@ Colour Path::Li(Ray &r, Scene *scene, RNG& rng) {
 
 void Path::render(Scene *scene, int depth) {
   int total_samples = params.getInt("samples");
-  int sx = params.getInt("resolution");
-  int sy = params.getInt("resolution");
+  int sx = params.getInt("width");
+  int sy = params.getInt("height");
   
   Image im = Image(sx, sy);
 

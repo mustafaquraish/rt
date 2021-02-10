@@ -21,8 +21,8 @@ Colour AmbientOcclusion::Li(Ray &ray, Scene *scene, RNG& rng) {
 
 void AmbientOcclusion::render(Scene *scene, int depth) {
   int total_samples = params.getInt("samples");
-  int sx = params.getInt("resolution");
-  int sy = params.getInt("resolution");
+  int sx = params.getInt("width");
+  int sy = params.getInt("height");
 
   int done = 0;
   Image im = Image(sx, sy);

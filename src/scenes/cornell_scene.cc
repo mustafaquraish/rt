@@ -70,7 +70,7 @@ SCENE(Cornell) {
   // s->Translate(0, -5, 6);
   // scene->add(s);
 
-  s = new TriangleMesh("assets/obj/dragon.obj", new Lambertian(Colour(1)));
+  s = new TriangleMesh("assets/obj/dragon.obj", new Lambertian(Colour(0.9)));
   s->Scale(2.5, 2.5, 2.5);
   s->Translate(0, -10, 6);
   scene->add(s);
@@ -85,12 +85,12 @@ SCENE(Cornell) {
   // s->Translate(-5.5, 4, 6);
   // scene->add(s);
 
-  // s = new LSystem(12);
-  // s->Scale(2.5, 2.5, 2.5);
-  // s->RotateX(-PI/2);
-  // s->RotateY(PI/2);
-  // s->Translate(-3, -15, 6);
-  // scene->add(s);
+  s = new LSystem(12);
+  s->Scale(2.5, 2.5, 2.5);
+  s->RotateX(-PI/2);
+  s->RotateY(PI/2);
+  s->Translate(-3, -15, 6);
+  scene->add(s);
 
   s = new Disc(new Emitter(Colour(12, 12, 12)));
   s->Scale(2.5,2.5,2);

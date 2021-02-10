@@ -2,21 +2,22 @@
 
 int main(int argc, char **argv) {
   RenderParams params(argc, argv);
-  if (!params.exists("resolution")) params.setInt("resolution", 512);
-  if (!params.exists("samples"))    params.setInt("samples", 10);
-  if (!params.exists("output"))     params.setStr("output", "test.ppm");
+  if (!params.exists("width"))   params.setInt("width", 512);
+  if (!params.exists("height"))  params.setInt("height", 512);
+  if (!params.exists("samples")) params.setInt("samples", 10);
+  if (!params.exists("output"))  params.setStr("output", "test.ppm");
 
-  // Scene *scene = SceneFactory::Create("A2", params);
-  // Scene *scene = SceneFactory::Create("SOR", params);
-  // Scene *scene = SceneFactory::Create("Ajax", params);
-  // Scene *scene = SceneFactory::Create("Cornell", params);
-  // Scene *scene = SceneFactory::Create("Implicit", params);
-  // Scene *scene = SceneFactory::Create("Lsystems", params);
-  Scene *scene = SceneFactory::Create("Occlusion", params);
+  if (!params.exists("scene")) params.setStr("scene", "A2");
+  if (!params.exists("scene")) params.setStr("scene", "SOR");
+  if (!params.exists("scene")) params.setStr("scene", "Ajax");
+  if (!params.exists("scene")) params.setStr("scene", "Cornell");
+  if (!params.exists("scene")) params.setStr("scene", "Implicit");
+  if (!params.exists("scene")) params.setStr("scene", "Lsystems");
+  if (!params.exists("scene")) params.setStr("scene", "Occlusion");
 
-  Ray kk = Ray(Vec(), Vec());
+  Scene *scene = SceneFactory::Create(params);
+
   if (scene->integrator) 
     scene->integrator->render(scene, 10);
-
   return 0;
 }

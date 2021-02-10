@@ -14,14 +14,18 @@ void Scene::finalize() {
   world = new AGGREGATE(obj_list);
 };
 
-Scene *SceneFactory::Create(const char *name, RenderParams &params) {
-  if (SceneFactory::mapping.find(name) == SceneFactory::mapping.end()) {
-    printf("ERROR: Scene %s is not defined.\n", name);
+Scene *SceneFactory::Create(const std::string &name, RenderParams &params) {
+  if (mapping.find(name) == mapping.end()) {
+    printf("ERROR: Scene %s is not defined.\n", name.c_str());
     exit(1);
   }
-  return SceneFactory::mapping[name](params);
+  return mapping[name](params);
 }
 
-void SceneFactory::Register(const char *name, SceneDefinition func) {
-  SceneFactory::mapping[name] = func;
+Scene *SceneFactory::Create(RenderParams &params) {
+  return Create(params.getStr("scene"), params);
+}
+
+void SceneFactory::Register(const std::string &name, SceneDefinition func) {
+  mapping[name] = func;
 }
