@@ -4,19 +4,18 @@
 
 using namespace std;
 
-Scene *CornellScene(int sx, int sy) {
+SCENE(Cornell) {
 
   Scene *scene = new Scene();
-  scene->sx = sx;
-  scene->sy = sy;
-  scene->integrator = new Path();
-  // scene->integrator = new DebugShader();
   
   Vec e = Vec(0, 0, -15);
   Vec g = -e;
   Vec up = Vec(0, 1, 0);
-  scene->cam = Camera(e, g, up, -3, -2, 2, 4, sx, sy);
+  scene->cam = Camera(e, g, up, -3, params);
 
+  scene->integrator = new Path(params);
+  // scene->integrator = new DebugShader(params);
+  
   Object *s;
 
   // Right

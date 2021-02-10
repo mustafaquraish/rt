@@ -1,9 +1,9 @@
 #include "core/camera.h"
 #include "core/math.h"
 
-Camera::Camera(Vec e, Vec g, Vec up, double f, double wl, double wt,
-               double wsize, int sx, int sy) :
-               e(e), f(f), wl(wl), wt(wt), wsize(wsize) {
+
+Camera::Camera(Vec e, Vec g, Vec up, double f, RenderParams& params) :
+               e(e), f(f) {
   w = norm(-g);
   u = norm(cross(w, up));
   v = norm(cross(u, w));
@@ -13,6 +13,12 @@ Camera::Camera(Vec e, Vec g, Vec up, double f, double wl, double wt,
                u.z, v.z, w.z, e.z,
                  0,   0,   0,   1);
   W2C = invert(C2W);
+
+  // TODO: Separate X/Y
+  int sx = params.getInt("resolution");
+  int sy = params.getInt("resolution");
+  // TODO: Compute ratio w.r.t X/Y
+  wsize = 4, wl = -2, wt =  2;
 
   du =  wsize / (sx - 1);
   dv = -wsize / (sy - 1);

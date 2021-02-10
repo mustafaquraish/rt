@@ -3,7 +3,6 @@
 #include "core/bsdf.h"
 #include "time.h"
 
-#define PATH_SAMPLES 50
 #define PATH_MAX_BOUNCES 10
 
 Colour SampleLight(HitRec& rec, Scene *scene, RNG& rng) {
@@ -50,17 +49,15 @@ Colour Path::Li(Ray &r, Scene *scene, RNG& rng) {
     if (!scene->world->hit(ray, rec)) break;
     
     BSDF *bsdf = rec.obj->bsdf;
-
     BSDFRec bRec = BSDFRec(ray.d, rec, rng);
-
     
     if (USE_ELS) {
-      if (applyEmission)
+      if (applyEmission) 
         L += throughput * bsdf->emittance(bRec);
-      if (!bsdf->isSpecular()) 
-        L += throughput * SampleLight(rec, scene, rng);
       if (bsdf->isEmitter()) 
         break;
+      if (!bsdf->isSpecular()) 
+        L += throughput * SampleLight(rec, scene, rng);
 
     } else {
       if (bsdf->isEmitter()) {
@@ -85,35 +82,41 @@ Colour Path::Li(Ray &r, Scene *scene, RNG& rng) {
 }
 
 void Path::render(Scene *scene, int depth) {
-  Image im = Image(scene->sx, scene->sy);
+  int total_samples = params.getInt("samples");
+  int sx = params.getInt("resolution");
+  int sy = params.getInt("resolution");
+  
+  Image im = Image(sx, sy);
+
+  int done = 0;
+  float total = sx / 100;
   
   clock_t timeBegin = clock();
-  int done = 0;
-  float total = im.sx / 100;
 
-// #pragma omp parallel
-  {
-    #pragma omp parallel for schedule(dynamic)
-    for (int i = 0; i < scene->sx; i++) {
-      // Seed RNG with some random function based on row number
-      RNG rng = RNG((i * i) ^ 0xdeadbeef);
 
-      printf("\rRendering %d / %d ~ %f", done, scene->sx, done / total); fflush(stdout);
-      for (int j = 0; j < scene->sy; j++) {
-        Colour col = 0;
-        for (int sample = 0; sample < PATH_SAMPLES; sample++) {
-          Ray ray = scene->cam.getRay(i, j, rng);
-          col += Li(ray, scene, rng) / PATH_SAMPLES;
-        }
-        im.set(i, j, col);
+  #pragma omp parallel for schedule(dynamic)
+  for (int i = 0; i < sx; i++) {
+    // Seed RNG with some random function based on row number
+    RNG rng = RNG((i * i) ^ 0xdeadbeef);
+
+    printf("\rRendering %d / %d ~ %.2f", done, sx, done/total); fflush(stdout);
+    for (int j = 0; j < sy; j++) {
+      Colour col = 0;
+      for (int sample = 0; sample < total_samples; sample++) {
+        Ray ray = scene->cam.getRay(i, j, rng);
+        col += Li(ray, scene, rng) / total_samples;
       }
-      done++;
+      im.set(i, j, col);
     }
+    done++;
   }
+
   clock_t timeEnd = clock();
   double buildTime = (double)(timeEnd - timeBegin) / CLOCKS_PER_SEC;
   printf("\n[+] Rendering completed in %.3fs\n", buildTime);
   cout << endl;
-  im.save("output.ppm");
+
+  const char *output_file = params.getStr("output");
+  im.save(output_file);
   return;
 }

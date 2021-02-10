@@ -5,18 +5,22 @@
 int DEBUG = 0;
 
 void DebugShader::render(Scene *scene, int depth) {
-  Image im = Image(scene->sx, scene->sy);
-  clock_t timeBegin = clock();
+  int sx = params.getInt("resolution");
+  int sy = params.getInt("resolution");
 
   int done = 0;
+  Image im = Image(sx, sy);
+  clock_t timeBegin = clock();
+
   // #pragma omp parallel for schedule(dynamic, 64)
-  for (int i = 0; i < scene->sx; i++) {
-    printf("\rRendering row %d / %d ~ %02.2f%% ???", done, scene->sx, 100 * (float)done/scene->sx);
+  for (int i = 0; i < sx; i++) {
+    
+    printf("\rRendering row %d / %d ~ %.2f%%", done, sx, 100 * (float)done/sx);
     fflush(stdout);
-    for (int j = 0; j < scene->sy; j++) {
+
+    for (int j = 0; j < sy; j++) {
       // DEBUG = i == 182 && j == 145;
       Ray ray = scene->cam.getRay(i, j);
-      if (DEBUG) cout << "init ray:  p: " << ray.p << "  d: " << ray.d << endl; 
       Vec col = Vec(0);
 
       HitRec rec;
@@ -32,13 +36,15 @@ void DebugShader::render(Scene *scene, int depth) {
 
       im.set(i, j, col);
     }
-    // #pragma omp atomic
     done++;
   }
+  
   clock_t timeEnd = clock();
   double buildTime = (double)(timeEnd - timeBegin) / CLOCKS_PER_SEC;
+
   printf("\n[+] Rendering completed in %.3fs\n", buildTime);
-  cout << endl;
-  im.save("output.ppm", false);
+
+  const char *output_file = params.getStr("output");
+  im.save(output_file, false);
   return;
 }
