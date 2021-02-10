@@ -15,13 +15,20 @@ Camera::Camera(Vec e, Vec g, Vec up, double f, RenderParams& params) :
   W2C = invert(C2W);
 
   // TODO: Separate X/Y
-  int sx = params.getInt("resolution");
-  int sy = params.getInt("resolution");
-  // TODO: Compute ratio w.r.t X/Y
-  wsize = 4, wl = -2, wt =  2;
+  int sx = params.getInt("width");
+  int sy = params.getInt("height");
 
-  du =  wsize / (sx - 1);
-  dv = -wsize / (sy - 1);
+  double xsize = 4; 
+  double ysize = 4;
+
+  if (sx > sy) xsize = ((double)sx / (double)sy) * xsize; 
+  if (sy > sx) ysize = ((double)sy / (double)sx) * ysize;
+
+  wl = -xsize / 2;
+  wt =  ysize / 2;
+
+  du =  xsize / (sx - 1);
+  dv = -ysize / (sy - 1);
 }
 
 Ray Camera::getRay(int i, int j, RNG& rng) {

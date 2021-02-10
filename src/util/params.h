@@ -1,6 +1,7 @@
 #ifndef __RT_PARAMS_H__
 #define __RT_PARAMS_H__
 
+#include <string>
 #include <unordered_map>
 
 union RenderParamItem {
@@ -13,19 +14,19 @@ struct RenderParams {
   RenderParams() {} ;
   RenderParams(int argc, char **argv);
 
-  void setInt(const char *key, int    value);
-  void setDbl(const char *key, double value);
-  void setStr(const char *key, const char * value);
+  void setInt(const std::string &key, int    value);
+  void setDbl(const std::string &key, double value);
+  void setStr(const std::string &key, const char * value);
 
-  int          getInt(const char *key);
-  double       getDbl(const char *key);
-  const char * getStr(const char *key);
+  int          getInt(const std::string &key);
+  double       getDbl(const std::string &key);
+  const char * getStr(const std::string &key);
 
-  bool exists(const char *key);
+  bool exists(const std::string &key);
 
 private:
-  std::unordered_map<const char *, RenderParamItem> data;
-  void assertExists(const char *key);
+  std::unordered_map<std::string, RenderParamItem> data;
+  void assertExists(const std::string &key);
 };
 
 

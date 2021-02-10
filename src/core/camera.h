@@ -13,7 +13,7 @@ struct Camera {
   virtual Ray getRay(int i, int j);
   
   Vec e, u, v, w;
-  double du, dv, wl, wt, f, wsize;
+  double du, dv, wl, wt, f;
   Matrix C2W, W2C;
 };
 

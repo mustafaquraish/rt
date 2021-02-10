@@ -5,8 +5,8 @@
 int DEBUG = 0;
 
 void DebugShader::render(Scene *scene, int depth) {
-  int sx = params.getInt("resolution");
-  int sy = params.getInt("resolution");
+  int sx = params.getInt("width");
+  int sy = params.getInt("height");
 
   int done = 0;
   Image im = Image(sx, sy);

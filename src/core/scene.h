@@ -27,13 +27,14 @@ struct Scene {
   bool hit(Ray &ray, HitRec &rec) { return world->hit(ray, rec); }
 };
 
-typedef Scene *(*SceneDefinition)(RenderParams &params);
 
 struct SceneFactory {
-  inline static std::unordered_map<const char *, SceneDefinition> mapping;
+  typedef Scene *(*SceneDefinition)(RenderParams &params);
+  inline static std::unordered_map<std::string , SceneDefinition> mapping;
 
-  static Scene *Create(const char *name, RenderParams &params);
-  static void Register(const char *name, SceneDefinition func);
+  static Scene *Create(RenderParams &params);
+  static Scene *Create(const std::string &name, RenderParams &params);
+  static void Register(const std::string &name, SceneDefinition func);
 };
 
 // Define and register a scene
