@@ -1,12 +1,22 @@
-*.dSYM
-*.out
-*.ppm
+# Development related
 *.vscode
-*.DS_Store
-*.png
-
+*.out
 .idea
 
+# MacOS stuff
+*.dSYM
+*.DS_Store
+
+# Ignore renders
+renders
+*.ppm
+*.png
+*.gif
+
+# Ignore build and executable
 build
 raytrace
-assets/obj/ajax.obj
+
+# Ignore assets by default. 
+#   (some small ones are added manually for convenience)
+assets/
