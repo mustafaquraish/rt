@@ -25,9 +25,10 @@ struct Object : Primitive {
   BSDF *getBSDF(HitRec& rec) { return bsdf; }
   
   virtual bool hit(Ray& r, HitRec &rec) = 0;
-  virtual Vec sample() = 0;
+  virtual Vec sample(double *pdf, RNG& rng) = 0;
 
   BSDF *bsdf = NULL;
+  double surfaceArea = 1;
   Primitive *prim = NULL;
   Matrix T, T_inv;
   int both = 0;

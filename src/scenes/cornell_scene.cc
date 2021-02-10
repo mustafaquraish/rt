@@ -71,10 +71,20 @@ Scene *CornellScene(int sx, int sy) {
   // s->Translate(0, -5, 6);
   // scene->add(s);
 
-  s = new TriangleMesh("assets/obj/dragon.obj", new Transmissive(1.47, Colour(1)));
+  s = new TriangleMesh("assets/obj/dragon.obj", new Lambertian(Colour(1)));
   s->Scale(2.5, 2.5, 2.5);
   s->Translate(0, -10, 6);
   scene->add(s);
+
+  // s = new TriangleMesh("assets/obj/dragon.obj", new Mirror(Colour(1)));
+  // s->Scale(1, 1, 1);
+  // s->Translate(-4, 0, 6);
+  // scene->add(s);
+
+  // s = new TriangleMesh("assets/obj/dragon.obj", new Transmissive(1.47, Colour(1)));
+  // s->Scale(.4, .4, .4);
+  // s->Translate(-5.5, 4, 6);
+  // scene->add(s);
 
   // s = new LSystem(12);
   // s->Scale(2.5, 2.5, 2.5);

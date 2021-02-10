@@ -15,7 +15,7 @@ struct LSystem : Object {
   void finalize();
 
   bool hit(Ray& r, HitRec &rec);
-  Vec sample() { return T * Vec(); };
+  Vec sample(double *pdf, RNG& rng) { return T * Vec(); };
 
   int maxDepth;
   double p0;

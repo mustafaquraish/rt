@@ -4,6 +4,8 @@ using namespace std;
 
 void Object::Scale(double x, double y, double z) {
   T = ScaleMatrix(x,y,z) * T; 
+  // Hacky approximation for surface area scaling
+  surfaceArea *= x * y * z;
 }
 
 void Object::Translate(double x, double y, double z) {

@@ -121,8 +121,8 @@ BVH::BVH(std::vector<Primitive *>& prims, int start, int end) {
   // int dim = rand() % 3;
 
   // Split algorithm:
-  // int mid = surfaceAreaHueristic(prims, start, end, totalBounds, dim);
-  int mid = equalCounts(prims, start, end, totalBounds, dim);  
+  int mid = surfaceAreaHueristic(prims, start, end, totalBounds, dim);
+  // int mid = equalCounts(prims, start, end, totalBounds, dim);  
   
   a = new BVH(prims, start, mid);
   b = new BVH(prims, mid, end);

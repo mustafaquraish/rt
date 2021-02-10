@@ -7,7 +7,7 @@ struct Implicit : Object {
   Implicit(BSDF *mat) : Object(mat){};
   bool hit(Ray &r, HitRec &rec);
   void finalize();
-  Vec sample();
+  Vec sample(double *pdf, RNG& rng);
 
   virtual double F(double x, double y, double z) = 0;
 

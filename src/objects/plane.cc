@@ -19,8 +19,10 @@ bool Plane::hit(Ray& r, HitRec& rec) {
   }
 }
 
-Vec Plane::sample() {
-  Vec p = Vec(rand01(), rand01(), 0.5) * 2 - 1;
-  return T * p;
+Vec Plane::sample(double *pdf, RNG& rng) {
+  double x = rng.rand01() * 2 - 1;
+  double y = rng.rand01() * 2 - 1;
+  *pdf = 1 / surfaceArea;
+  return T * Vec(x, y, 0);
 }
 

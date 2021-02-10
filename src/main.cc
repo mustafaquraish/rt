@@ -2,7 +2,6 @@
 
 Scene *CornellScene(int sx, int sy);
 
-
 int main(int argc, char **argv) {
   int resolution = 1024;
   if (argc > 1) resolution = atoi(argv[1]);
