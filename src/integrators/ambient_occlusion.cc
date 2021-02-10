@@ -38,7 +38,7 @@ void AmbientOcclusion::render(Scene *scene, int depth) {
     for (int j = 0; j < sy; j++) {
       Colour col = 0;
       for (int sample = 0; sample < total_samples; sample++) {
-        Ray ray = scene->cam.getRay(i, j);
+        Ray ray = scene->cam.getRay(i, j, rng);
         col += Li(ray, scene, rng);
       }
       im.set(i, j, col / total_samples);
