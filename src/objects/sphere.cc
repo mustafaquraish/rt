@@ -30,5 +30,12 @@ bool Sphere::hit(Ray& r, HitRec& rec) {
 }
 
 Vec Sphere::sample(double *pdf, RNG& rng) {
-  return T * Vec(0,0,0);
+  double theta = 2 * PI * rng.rand01();
+  double phi = acos(2 * rng.rand01() - 1);
+  
+  *pdf = 1.0 / surfaceArea;
+  
+  return T * Vec(cos(theta) * sin(phi),
+                 sin(theta) * sin(phi),
+                 cos(phi));
 }

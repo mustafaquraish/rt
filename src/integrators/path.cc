@@ -24,10 +24,14 @@ Colour SampleLight(const Vec& rayd, HitRec& rec, Scene *scene, RNG& rng) {
     BSDFRec bRec(rayd, tmp, rng);
     if (dot(wi, tmp.n) > 0) return 0;
 
-    pdf *= (tmp.t * tmp.t) / abs(dot(norm(wi), tmp.n));
-    
-
+    pdf *= (tmp.t * tmp.t);
+    pdf /= dot(norm(wi), rec.n) * -dot(norm(wi), tmp.n);
     return rec.obj->bsdf->eval(bRec) * light->bsdf->emittance(bRec) / pdf; 
+
+    // Colour f = rec.obj->bsdf->eval(bRec) * abs(dot(norm(wi), tmp.n));
+    // double Pdf = tmp.t*tmp.t;
+    // // rec.obj->bsdf->pdf(bRec) * tmp.t*tmp.t;
+    // return f * light->bsdf->emittance(bRec) / Pdf; 
   }
 
   // Not visible to the lightsource.
