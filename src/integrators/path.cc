@@ -5,7 +5,7 @@
 
 #define PATH_MAX_BOUNCES 10
 
-Colour SampleLight(HitRec& rec, Scene *scene, RNG& rng) {
+Colour SampleLight(const Vec& rayd, HitRec& rec, Scene *scene, RNG& rng) {
   double pdf;
   HitRec tmp;
   
@@ -21,7 +21,7 @@ Colour SampleLight(HitRec& rec, Scene *scene, RNG& rng) {
   Ray shadowRay = Ray(rec.p, wi);
 
   if (scene->hit(shadowRay, tmp) && tmp.obj == light) {
-    BSDFRec bRec(rec.p, tmp, rng);
+    BSDFRec bRec(rayd, tmp, rng);
     if (dot(wi, tmp.n) > 0) return 0;
 
     pdf *= (tmp.t * tmp.t) / abs(dot(norm(wi), tmp.n));
@@ -57,7 +57,7 @@ Colour Path::Li(Ray &r, Scene *scene, RNG& rng) {
       if (bsdf->isEmitter()) 
         break;
       if (!bsdf->isSpecular()) 
-        L += throughput * SampleLight(rec, scene, rng);
+        L += throughput * SampleLight(ray.d, rec, scene, rng);
 
     } else {
       if (bsdf->isEmitter()) {

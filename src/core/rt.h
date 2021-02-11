@@ -48,6 +48,7 @@ using std::endl;
 #include "materials/emitter.h"
 #include "materials/mirror.h"
 #include "materials/transmissive.h"
+#include "materials/orennayar.h"
 
 
 #endif // __RT_COMMON_H__
