@@ -70,8 +70,12 @@ SCENE(Cornell) {
   // s->Translate(0, -5, 6);
   // scene->add(s);
 
-  // s = new TriangleMesh("assets/obj/dragon.obj", new Lambertian(Colour(0.9)));
-  s = new TriangleMesh("assets/obj/dragon.obj", new OrenNayar(PI, Colour(0.9)));
+  double frame = 0;
+  if (params.exists("frame")) frame = params.getInt("frame");
+  double R = map(frame, 0, 60, 0, PI);
+
+  s = new TriangleMesh("assets/obj/dragon.obj", new Lambertian(Colour(0.9)));
+  // s = new TriangleMesh("assets/obj/dragon.obj", new OrenNayar(R, Colour(0.9)));
   s->Scale(2.5, 2.5, 2.5);
   s->Translate(0, -10, 6);
   scene->add(s);

@@ -1,8 +1,4 @@
-//
-// Created by Mustafa Quraish on 2021-02-01.
-//
-
-#include "lambertian.h"
+#include "materials/lambertian.h"
 
 Colour Lambertian::eval(BSDFRec &bRec) {
   return col * INV_PI;
