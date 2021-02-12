@@ -122,5 +122,6 @@ void Path::render(Scene *scene, int depth) {
 
   const char *output_file = params.getStr("output");
   im.save(output_file);
+  // im.saveHDR(output_file);
   return;
 }

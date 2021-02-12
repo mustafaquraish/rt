@@ -1,7 +1,3 @@
-//
-// Created by Mustafa Quraish on 2021-02-01.
-//
-
 #ifndef __LAMBERTIAN_H__
 #define __LAMBERTIAN_H__
 

@@ -3,26 +3,33 @@
 Mustafa Quraish (2021)
 
 ---
-A ray-tracer written in C++. Heavily WIP. Currently does not do any shading,
-will just display normals. Only geometry intersections implemented
+
+A ray-tracer written in C++. Heavily WIP.
 
 ---
 
-Implemented:
+## Implemented
+
+Geometry:
 - Arbitrary object transformations
-- Triangle meshes 
-- Wavefront OBJ file parsing
+- Wavefront OBJ parser (only triangle meshes)
 - Two level Bounded Volume Hierarchies
 - Implicit surfaces through Ray Marching
 - Parametric Surfaces (Paraboloids, etc)*
 - Surfaces of revolution*
 - Beveled curves and knots*
-- Ambient Occulusion Shader
+- Basic L-Systems
 
+> \* Converted to meshes
 
-* Converted to meshes
+Shading:
+- Ambient Occlusion
+- Path tracing with next event estimation
+
+Materials (Path tracing):
+- Specular reflection
+- Specular transmission
+- Lambertian
+- Oren Nayar
 
 ---
-
-Backlog:
-- Pretty much everything else in a ray-tracer.

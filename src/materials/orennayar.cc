@@ -1,7 +1,3 @@
-//
-// Created by Mustafa Quraish on 2021-02-01.
-//
-
 #include "materials/orennayar.h"
 
 OrenNayar::OrenNayar(double roughness, Colour col) 
