@@ -9,12 +9,12 @@ OrenNayar::OrenNayar(double roughness, Colour col)
 }
 
 
-Colour OrenNayar::eval(BSDFRec &bRec) {
-  Vec wi = toLocalFrame(bRec.wi, bRec.n);
-  Vec wo = toLocalFrame(bRec.wo, bRec.n);
+Colour OrenNayar::eval(HitRec &rec) {
+  Vec wi = toLocalFrame(rec.wi, rec.n);
+  Vec wo = toLocalFrame(rec.wo, rec.n);
   // std::cout << "---------------- START-----------------" << std::endl;
-  // std::cout << bRec.wi << "---> " <<wi << std::endl;
-  // std::cout << bRec.wo << "---> " <<wo << std::endl;
+  // std::cout << rec.wi << "---> " <<wi << std::endl;
+  // std::cout << rec.wo << "---> " <<wo << std::endl;
   // std::cout << "----------------  END -----------------" << std::endl;
 
 
@@ -39,15 +39,15 @@ Colour OrenNayar::eval(BSDFRec &bRec) {
       tanBeta = sinThetaO / absCosTheta(wo);
   }
   // printf("maxCos: %f, sinAlpha: %f, tanBeta: %f\n", maxCos , sinAlpha , tanBeta);
-  return col * INV_PI * (A + B * maxCos * sinAlpha * tanBeta);
+  return col(rec) * INV_PI * (A + B * maxCos * sinAlpha * tanBeta);
 }
 
-Colour OrenNayar::sample(BSDFRec &bRec) {
-  bRec.wi = bRec.rng.randomVectorCosineHemisphere(bRec.n);
-  double cosTheta = dot(bRec.n, bRec.wi);
-  return (cosTheta * eval(bRec)) / pdf(bRec);
+Colour OrenNayar::sample(HitRec &rec, RNG& rng) {
+  rec.wi = rng.randomVectorCosineHemisphere(rec.n);
+  double cosTheta = dot(rec.n, rec.wi);
+  return (cosTheta * eval(rec)) / pdf(rec);
 }
 
-double OrenNayar::pdf(BSDFRec &bRec) {
-  return dot(bRec.wi, bRec.n) * INV_PI;
+double OrenNayar::pdf(HitRec &rec) {
+  return dot(rec.wi, rec.n) * INV_PI;
 }

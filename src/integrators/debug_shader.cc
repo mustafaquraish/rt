@@ -32,6 +32,9 @@ void DebugShader::render(Scene *scene, int depth) {
         /****************** DISTANCE ***************/
         if (type == DEBUG_DEPTH) col = 1 / rec.t;
 
+        /****************** DISTANCE ***************/
+        if (type == DEBUG_COLOUR) col = rec.obj->bsdf->col(rec);
+
       }
 
       im.set(i, j, col);

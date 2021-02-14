@@ -6,10 +6,10 @@
 struct Emitter : BSDF {
   Emitter(Colour col) : BSDF(col) { emitter = true; }
   
-  Colour eval(BSDFRec& bRec);
-  Colour sample(BSDFRec& bRec);
-  double pdf(BSDFRec& bRec);
-  Colour emittance(BSDFRec& rec);
+  Colour eval(HitRec& rec);
+  Colour sample(HitRec& rec, RNG& rng);
+  double pdf(HitRec& rec);
+  Colour emittance(HitRec& rec);
 };
 
 #endif // __EMITTER_H__

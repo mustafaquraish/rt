@@ -13,6 +13,7 @@ SCENE(A4) {
 
   scene->integrator = new Path(params);
   // scene->integrator = new DebugShader(params);
+  // scene->integrator = new DirectLighting(params);
   
   Object *s;
 
@@ -21,7 +22,6 @@ SCENE(A4) {
   s->Scale(500, 500, 500);
   s->RotateY(PI / 2);
   s->Translate(510, 0, 5);
-  cout << s->T << endl;
   scene->add(s);
 
   // Left
