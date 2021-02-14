@@ -1,7 +1,3 @@
-//
-// Created by Mustafa Quraish on 2021-02-01.
-//
-
 #ifndef __LAMBERTIAN_H__
 #define __LAMBERTIAN_H__
 
@@ -9,9 +5,10 @@
 
 struct Lambertian : BSDF {
   Lambertian(Colour col) : BSDF(col) { diffuse = true; }
-  Colour eval(BSDFRec& bRec);
-  Colour sample(BSDFRec& bRec);
-  double pdf(BSDFRec& bRec);
+  Lambertian(Texture *tx) : BSDF(tx) { diffuse = true; }
+  Colour eval(HitRec& rec);
+  Colour sample(HitRec& rec, RNG& rng);
+  double pdf(HitRec& rec);
 };
 
 #endif //__LAMBERTIAN_H__

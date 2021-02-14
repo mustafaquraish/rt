@@ -14,7 +14,8 @@ SCENE(Cornell) {
   scene->cam = Camera(e, g, up, -3, params);
 
   scene->integrator = new Path(params);
-  // scene->integrator = new DebugShader(params);
+  // scene->integrator = new DirectLighting(params);
+  // scene->integrator = new DebugShader(params, DEBUG_COLOUR);
   
   Object *s;
 
@@ -23,7 +24,6 @@ SCENE(Cornell) {
   s->Scale(500, 500, 500);
   s->RotateY(PI / 2);
   s->Translate(510, 0, 5);
-  cout << s->T << endl;
   scene->add(s);
 
   // Left
@@ -34,7 +34,7 @@ SCENE(Cornell) {
   scene->add(s);
 
   // Back
-  s = new Sphere(new Lambertian(Colour(.95, .95, .95)));
+  s = new Sphere(new Lambertian(new CheckerTexture(0.001)));
   s->Scale(500, 500, 500);
   s->Translate(0, 0, 515);
   scene->add(s);
@@ -70,10 +70,40 @@ SCENE(Cornell) {
   // s->Translate(0, -5, 6);
   // scene->add(s);
 
-  s = new TriangleMesh("assets/obj/dragon.obj", new Lambertian(Colour(0.9)));
-  s->Scale(2.5, 2.5, 2.5);
-  s->Translate(0, -10, 6);
+  double frame = 0;
+  if (params.exists("frame")) frame = params.getInt("frame");
+  double R = map(frame, 0, 60, 0, PI);
+
+  // // s = new TriangleMesh("assets/obj/dragon.obj", new Transmissive(1.47, Colour(1)));
+  // s = new TriangleMesh("assets/obj/dragon.obj", new Mirror(Colour(1)));
+  // // s = new TriangleMesh("assets/obj/dragon.obj", new Lambertian(Colour(0.9)));
+  // // s = new TriangleMesh("assets/obj/dragon.obj", new OrenNayar(R, Colour(0.9)));
+  // s->Scale(2.5, 2.5, 2.5);
+  // s->Translate(0, -10, 6);
+  // scene->add(s);
+
+  s = new TriangleMesh("assets/obj/teapot_lo.obj", 
+        new Lambertian( 
+          new ImageTexture("assets/tex/bouncy.ppm")
+        )
+      );
+  s->Scale(-10,10,10);
+  s->RotateX(-PI/2);
+  s->Translate(0, 0, 6);
   scene->add(s);
+
+
+  // Texture *myim = new CheckerTexture();
+  // // Texture *myim = new ImageTexture("cornell_is_es.ppm");
+  // s = new Sphere(new Transmissive(1.47, Colour(1)));
+  // // s = new Sphere(new Lambertian(myim));
+  // // s = new Plane(new Lambertian(Colour(0.5)));
+  // // s = new TriangleMesh("assets/obj/dragon.obj", new OrenNayar(R, Colour(0.9)));
+  // s->Scale(4,4,4);
+  // s->RotateX(-PI/4);
+  // s->Translate(0, 0, 6);
+  // scene->add(s);
+
 
   // s = new TriangleMesh("assets/obj/dragon.obj", new Mirror(Colour(1)));
   // s->Scale(1, 1, 1);
@@ -85,12 +115,12 @@ SCENE(Cornell) {
   // s->Translate(-5.5, 4, 6);
   // scene->add(s);
 
-  s = new LSystem(12);
-  s->Scale(2.5, 2.5, 2.5);
-  s->RotateX(-PI/2);
-  s->RotateY(PI/2);
-  s->Translate(-3, -15, 6);
-  scene->add(s);
+  // s = new LSystem(12);
+  // s->Scale(2.5, 2.5, 2.5);
+  // s->RotateX(-PI/2);
+  // s->RotateY(PI/2);
+  // s->Translate(-3, -15, 6);
+  // scene->add(s);
 
   s = new Disc(new Emitter(Colour(12, 12, 12)));
   s->Scale(2.5,2.5,2);

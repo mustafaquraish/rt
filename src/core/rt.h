@@ -33,6 +33,7 @@ using std::endl;
 // Integrators
 #include "integrators/debug_shader.h"
 #include "integrators/ambient_occlusion.h"
+#include "integrators/direct_lighting.h"
 #include "integrators/path.h"
 
 
@@ -48,6 +49,7 @@ using std::endl;
 #include "materials/emitter.h"
 #include "materials/mirror.h"
 #include "materials/transmissive.h"
+#include "materials/orennayar.h"
 
 
 #endif // __RT_COMMON_H__

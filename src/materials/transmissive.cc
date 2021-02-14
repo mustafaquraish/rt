@@ -1,19 +1,19 @@
 #include "materials/transmissive.h"
 
 
-Colour Transmissive::eval(BSDFRec& bRec) {
+Colour Transmissive::eval(HitRec& rec) {
   return 0; // Delta BSDF
 }
 
 
-Colour Transmissive::reflect(BSDFRec& bRec) {
-  Vec d = -bRec.wo, n = bRec.n;
-  bRec.wi = d - 2 * dot(d, n) * n;
-  return col;
+Colour Transmissive::reflect(HitRec& rec) {
+  Vec d = -rec.wo, n = rec.n;
+  rec.wi = d - 2 * dot(d, n) * n;
+  return col(rec);
 }
 
-Colour Transmissive::sample(BSDFRec& bRec) {  
-  Vec d = -bRec.wo, n = bRec.n;
+Colour Transmissive::sample(HitRec& rec, RNG& rng) {  
+  Vec d = -rec.wo, n = rec.n;
   double etaI = 1, etaT = ior;
 
   if (dot(d, n) > 0) {
@@ -27,7 +27,7 @@ Colour Transmissive::sample(BSDFRec& bRec) {
   
   // Check for total internal reflection
   if (disc < 0) 
-    return reflect(bRec);   // Total internal Reflection
+    return reflect(rec);   // Total internal Reflection
 
   double cosThetaT = sqrt(disc);
 
@@ -41,14 +41,14 @@ Colour Transmissive::sample(BSDFRec& bRec) {
   double reflectPct = (Rs * Rs + Rp * Rp) / 2.0;
 
   // Reflect with probability computed
-  if (bRec.rng.rand01() < reflectPct) 
-    return reflect(bRec);
+  if (rng.rand01() < reflectPct) 
+    return reflect(rec);
 
   // Compute refracted direction
-  bRec.wi = eta * norm(d) + (eta * cosThetaI - cosThetaT) * n;
-  return col;
+  rec.wi = eta * norm(d) + (eta * cosThetaI - cosThetaT) * n;
+  return col(rec);
 }
 
-double Transmissive::pdf(BSDFRec& bRec) {
+double Transmissive::pdf(HitRec& rec) {
   return 0; // Delta BSDF
 }

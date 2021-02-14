@@ -7,7 +7,7 @@ int main(int argc, char **argv) {
   if (!params.exists("samples")) params.setInt("samples", 10);
   if (!params.exists("output"))  params.setStr("output", "output.ppm");
 
-  // if (!params.exists("scene")) params.setStr("scene", "A2");
+  // if (!params.exists("scene")) params.setStr("scene", "A4");
   // if (!params.exists("scene")) params.setStr("scene", "SOR");
   // if (!params.exists("scene")) params.setStr("scene", "Ajax");
   if (!params.exists("scene")) params.setStr("scene", "Cornell");
