@@ -28,6 +28,9 @@ build/scenes/implicit_scene.o: src/objects/implicit.h
 build/scenes/sor_scene.o: src/objects/surface_revolution.h
 build/scenes/sor_scene.o: src/objects/bevel_curve.h
 build/scenes/sor_scene.o: src/objects/parametric_surface.h
+build/scenes/cornell_scene.o: src/core/texture.h
+build/scenes/cornell_scene.o: src/core/bsdf.h
+build/scenes/cornell_scene.o: src/util/image.h
 
 $(OBJ)/%.o: $(SRC)/%.cc | $(OBJ)
 	@mkdir -p "$(@D)"

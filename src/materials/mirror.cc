@@ -1,16 +1,16 @@
 #include "materials/mirror.h"
 
 
-Colour Mirror::eval(BSDFRec& bRec) {
+Colour Mirror::eval(HitRec& rec) {
   return 0; // Delta BSDF    
 }
 
-Colour Mirror::sample(BSDFRec& bRec) {
-  Vec d = -bRec.wo, n = bRec.n;
-  bRec.wi = d - 2 * dot(d, n) * n;
-  return col;
+Colour Mirror::sample(HitRec& rec, RNG& rng) {
+  Vec d = -rec.wo, n = rec.n;
+  rec.wi = d - 2 * dot(d, n) * n;
+  return col(rec);
 }
 
-double Mirror::pdf(BSDFRec& bRec) {
+double Mirror::pdf(HitRec& rec) {
   return 0; // Delta BSDF
 }

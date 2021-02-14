@@ -3,9 +3,7 @@
 #define ABORT()
 
 RenderParams::RenderParams(int argc, char **argv) {
-  if (argc > 1) {
-    setStr("scene", argv[1]);
-  }
+  if (argc > 1) setStr("scene", argv[1]);
 
   if (argc > 2) {
     int sx, sy;
@@ -15,14 +13,10 @@ RenderParams::RenderParams(int argc, char **argv) {
     setInt("height", sy);
   }
 
-  if (argc > 3) {
-    setInt("samples", atoi(argv[3]));
-  }
+  if (argc > 3) setInt("samples", atoi(argv[3]));
+  if (argc > 4) setStr("output", argv[4]);
+  if (argc > 5) setInt("frame", atoi(argv[5]));
 
-  if (argc > 4) {
-    setStr("output", argv[4]);
-  }
-  
   return;
 }
 

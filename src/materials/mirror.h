@@ -9,9 +9,10 @@
 
 struct Mirror : BSDF {
   Mirror(Colour col) : BSDF(col) { specular = true; }
-  Colour eval(BSDFRec& bRec);
-  Colour sample(BSDFRec& bRec);
-  double pdf(BSDFRec& bRec);
+  Mirror(Texture *tx) : BSDF(tx) { specular = true; }
+  Colour eval(HitRec& rec);
+  Colour sample(HitRec& rec, RNG& rng);
+  double pdf(HitRec& rec);
 };
 
 #endif //__MIRROR_H__
