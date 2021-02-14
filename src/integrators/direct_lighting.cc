@@ -1,11 +1,20 @@
-#include "integrators/path.h"
+#include "integrators/direct_lighting.h"
 #include "core/rt.h"
-#include "core/bsdf.h"
 #include "time.h"
+#include "core/bsdf.h"
 
 #define PATH_MAX_BOUNCES 10
+#define AMBIENT_LIGHT 0.05
 
-Colour Path::SampleLight(HitRec& rec, Scene *scene, RNG& rng) {
+Vec cmpWiseMax(const Vec& a, const Vec& b) {
+  return Vec(
+    max(a.x, b.x),
+    max(a.y, b.y),
+    max(a.z, b.z)
+  );
+}
+
+Colour DirectLighting::SampleLight(HitRec& rec, Scene *scene, RNG& rng) {
   double pdf;
   HitRec tmp;
   
@@ -17,79 +26,51 @@ Colour Path::SampleLight(HitRec& rec, Scene *scene, RNG& rng) {
   Vec lp = light->sample(&pdf, rng);
   // Vector from intersection pt to lightsource
   Vec wi = norm(lp - rec.p);
+  rec.wi = wi;
+
+  Vec contrib = AMBIENT_LIGHT;
 
   Ray shadowRay = Ray(rec.p, wi);
-
   if (scene->hit(shadowRay, tmp) && tmp.obj == light) {
-    // Light ray from bad direction
-    if (dot(wi, tmp.n) > 0 || dot(wi, rec.n) < 0) return 0;
-    
-    tmp.wo = -shadowRay.d;
-    rec.wi = wi;
+      // Light ray from bad direction
+      if (dot(wi, tmp.n) < 0 || dot(wi, rec.n) > 0) {
+      
+      tmp.wo = -shadowRay.d;
 
-
-    pdf *= (tmp.t * tmp.t);
-    pdf /= dot(norm(wi), rec.n) * -dot(norm(wi), tmp.n);
-    return rec.obj->bsdf->eval(rec) * light->bsdf->emittance(tmp) / pdf; 
-
-    // Colour f = rec.obj->bsdf->eval(bRec) * abs(dot(norm(wi), tmp.n));
-    // double Pdf = tmp.t*tmp.t;
-    // // rec.obj->bsdf->pdf(bRec) * tmp.t*tmp.t;
-    // return f * light->bsdf->emittance(bRec) / Pdf; 
+      pdf *= (tmp.t * tmp.t);
+      pdf /= dot(norm(wi), rec.n) * -dot(norm(wi), tmp.n);
+      contrib = cmpWiseMax(contrib, light->bsdf->emittance(tmp) / pdf);
+    }
   }
 
   // Not visible to the lightsource.
-  return Vec(0);
+  return rec.obj->bsdf->eval(rec) * contrib;
 }
 
-#define USE_ELS 1
-
-Colour Path::Li(Ray &r, Scene *scene, RNG& rng) {
+Colour DirectLighting::Li(Ray &r, Scene *scene, RNG& rng) {
   HitRec rec;
   
-  Colour L = 0;
   Colour throughput = 1;
-  bool applyEmission = true;
 
   Ray ray = Ray(r.p, r.d);
-  for (int bounce = 0; bounce < PATH_MAX_BOUNCES; bounce++) {
-    
+  for (int bounce = 0; bounce < PATH_MAX_BOUNCES; bounce++) {    
     if (!scene->world->hit(ray, rec)) break;
     
     BSDF *bsdf = rec.obj->bsdf;
     rec.wo = -ray.d;
 
-    if (USE_ELS) {
-      if (applyEmission) 
-        L += throughput * bsdf->emittance(rec);
-      if (bsdf->isEmitter()) 
-        break;
-      if (!bsdf->isSpecular()) 
-        L += throughput * SampleLight(rec, scene, rng);
-
-    } else {
-      if (bsdf->isEmitter()) {
-        L += throughput * bsdf->emittance(rec);
-        break;
-      }
-    }
+    if (bsdf->isEmitter()) 
+      return throughput * bsdf->emittance(rec);
+    if (!bsdf->isSpecular()) 
+      return throughput * SampleLight(rec, scene, rng);
 
     throughput = throughput * bsdf->sample(rec, rng);
     ray = Ray(rec.p, rec.wi);    
-    applyEmission = bsdf->isSpecular();
-
-    // Russian roulette:
-    if (bounce > 3) {
-      double pr = max(throughput.r, max(throughput.g, throughput.b));
-      if (rng.rand01() > pr)
-        break;
-      throughput *= 1.0 / pr;
-    }
   }
-  return L;
+  return 0;
 }
 
-void Path::render(Scene *scene, int depth) {
+void DirectLighting::render(Scene *scene, int depth) {
   int total_samples = params.getInt("samples");
   int sx = params.getInt("width");
   int sy = params.getInt("height");

@@ -42,6 +42,8 @@ Image::Image(char const *fname) {
   // Read the data
   un = fread(raw, sx * sy * 3, sizeof(unsigned char), f);
 
+  printf("Loaded image with res: %d x %d\n", sx, sy);
+
   data = new double[sx * sy * 3];
   for (int i = 0; i < sx * sy * 3; i++)
     data[i] = raw[i] / 255.0;
@@ -49,6 +51,23 @@ Image::Image(char const *fname) {
   un = un || tmp; // Use both temp variables so compiler doesn't shout
   delete[] raw;
   fclose(f);
+}
+
+Vec Image::get(int i, int j) {
+  return Vec(
+    data[(i + j * sx)*3 + 0],
+    data[(i + j * sx)*3 + 1],
+    data[(i + j * sx)*3 + 2]
+  );
+}
+
+Vec Image::get(double u, double v) {
+  double dx = u * sx, dy = v * sy;
+  int f_x = dx, c_x = dx + 1 - TOL;
+  int f_y = dy, c_y = dy + 1 - TOL;
+
+  return bilerp(dx - f_x, dy - f_y, get(f_x, f_y), get(c_x, f_y),
+                                    get(f_x, c_y), get(c_x, c_y));
 }
 
 double linearToSRGB(double L) {

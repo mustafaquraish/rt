@@ -1,14 +1,14 @@
 #include "materials/lambertian.h"
 
-Colour Lambertian::eval(BSDFRec &bRec) {
-  return col * INV_PI;
+Colour Lambertian::eval(HitRec &rec) {
+  return col(rec) * INV_PI;
 }
 
-Colour Lambertian::sample(BSDFRec &bRec) {
-  bRec.wi = bRec.rng.randomVectorCosineHemisphere(bRec.n);
-  return col;
+Colour Lambertian::sample(HitRec &rec, RNG& rng) {
+  rec.wi = rng.randomVectorCosineHemisphere(rec.n);
+  return col(rec);
 }
 
-double Lambertian::pdf(BSDFRec &bRec) {
-  return dot(bRec.wi, bRec.n) * INV_PI;
+double Lambertian::pdf(HitRec &rec) {
+  return dot(rec.wi, rec.n) * INV_PI;
 }

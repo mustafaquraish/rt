@@ -46,10 +46,8 @@ AABB transformed(const Matrix& T, const AABB& b) {
     T * Vec(b.max.x, b.max.y, b.min.z),
     T * Vec(b.max.x, b.max.y, b.max.z),
   };
-  // AABB tBounds = AABB(0);
   AABB tBounds = AABB(pts[0]);
   for (int i = 0; i < 8; i++) {
-    // std::cout << "pt: " << pts[i] << "  new bounds: " << tBounds << std::endl;
     tBounds.addPoint(pts[i]);
   }
   return tBounds;

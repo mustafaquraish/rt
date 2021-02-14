@@ -1,19 +1,19 @@
 #include "materials/emitter.h"
 
 
-Colour Emitter::eval(BSDFRec& bRec) {
-  return col * INV_PI;
+Colour Emitter::eval(HitRec& rec) {
+  return col(rec) * INV_PI;
 }
 
-Colour Emitter::sample(BSDFRec& bRec) {
-  bRec.wi = bRec.rng.randomVectorCosineHemisphere(bRec.n);
-  return col;
+Colour Emitter::sample(HitRec& rec, RNG& rng) {
+  rec.wi = rng.randomVectorCosineHemisphere(rec.n);
+  return col(rec);
 }
 
-double Emitter::pdf(BSDFRec& bRec) {
-  return dot(bRec.wi, bRec.n) * INV_PI;
+double Emitter::pdf(HitRec& rec) {
+  return dot(rec.wi, rec.n) * INV_PI;
 }
 
-Colour Emitter::emittance(BSDFRec& rec) {
-  return col;
+Colour Emitter::emittance(HitRec& rec) {
+  return col(rec);
 }

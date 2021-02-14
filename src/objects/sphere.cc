@@ -19,11 +19,13 @@ bool Sphere::hit(Ray& r, HitRec& rec) {
   if (t2 > TOL && (t2 < t1 || t1 < TOL)) t1 = t2;
   if (t1 > r.tMax) return false;
 
+  Vec it = transformed.at(t1);
+
   rec.t = t1;
   rec.p = r.at(t1);
   rec.n = normalTransform(transformed.at(t1));
-  rec.u = atan2(rec.p.z, rec.p.x) / (2 * PI) + 0.5;
-  rec.v = 0.5 - asin(rec.p.y) / PI;
+  rec.u = atan2(it.z, it.x) / (2 * PI) + 0.5;
+  rec.v = 0.5 - asin(it.y) / PI;
   rec.obj = this;
   r.tMax = min(r.tMax, rec.t);
   return true;

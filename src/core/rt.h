@@ -33,6 +33,7 @@ using std::endl;
 // Integrators
 #include "integrators/debug_shader.h"
 #include "integrators/ambient_occlusion.h"
+#include "integrators/direct_lighting.h"
 #include "integrators/path.h"
 
 

@@ -9,9 +9,9 @@
 
 struct OrenNayar : BSDF {
   OrenNayar(double roughness, Colour col);
-  Colour eval(BSDFRec& bRec);
-  Colour sample(BSDFRec& bRec);
-  double pdf(BSDFRec& bRec);
+  Colour eval(HitRec& rec);
+  Colour sample(HitRec& rec, RNG& rng);
+  double pdf(HitRec& rec);
 
   double A;
   double B;
