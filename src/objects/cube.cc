@@ -14,29 +14,34 @@ bool Cube::hit(Ray& r, HitRec& rec) {
   rec.t = t1;
   rec.p = r.at(rec.t);
 
-  Vec canon_p = transformed.at(rec.t);
-  if (fabs(canon_p.x - 1) < TOL)
-    rec.n = normalTransform(Vec(+1, 0, 0));
-  else if (fabs(canon_p.x + 1) < TOL)
-    rec.n = normalTransform(Vec(-1, 0, 0));
-  else if (fabs(canon_p.y - 1) < TOL)
-    rec.n = normalTransform(Vec(0, +1, 0));
-  else if (fabs(canon_p.y + 1) < TOL)
-    rec.n = normalTransform(Vec(0, -1, 0));
-  else if (fabs(canon_p.z - 1) < TOL)
-    rec.n = normalTransform(Vec(0, 0, +1));
+  Vec it = transformed.at(rec.t);
+  Vec canon_n;
+  if (fabs(it.x - 1) < TOL)
+    canon_n = Vec(+1, 0, 0), rec.u = it.y, rec.v = it.z;
+  else if (fabs(it.x + 1) < TOL)
+    canon_n = Vec(-1, 0, 0), rec.u = it.y, rec.v = it.z;
+  else if (fabs(it.y - 1) < TOL)
+    canon_n = Vec(0, +1, 0), rec.u = it.x, rec.v = it.z;
+  else if (fabs(it.y + 1) < TOL)
+    canon_n = Vec(0, -1, 0), rec.u = it.x, rec.v = it.z;
+  else if (fabs(it.z - 1) < TOL)
+    canon_n = Vec(0, 0, +1), rec.u = it.x, rec.v = it.y;
   else // (fabs(rec.p.z + 1) < TOL) 
-    rec.n = normalTransform(Vec(0, 0, -1));
+    canon_n = Vec(0, 0, -1), rec.u = it.x, rec.v = it.y;
 
+  rec.u = (rec.u + 1) / 2;
+  rec.v = (rec.v + 1) / 2;
+  
+  canon_n = normalMapped(canon_n, rec);
+  rec.n = normalTransform(canon_n);
   rec.obj = this;
-  rec.u = 0;
-  rec.v = 0;
   r.tMax = min(r.tMax, t1);
   return true;    
 
 }
 
 Vec Cube::sample(double *pdf, RNG& rng) {
+  *pdf = 1 / surfaceArea;
   Vec p = Vec(rand01(), rand01(), 0.5) * 2 - 1;
   return T * p;
 }

@@ -10,13 +10,16 @@ Colour Path::SampleLight(HitRec& rec, Scene *scene, RNG& rng) {
   HitRec tmp;
   
   // Pick a light source
-  Object *light = scene->lights[ 0 ];
+  // Object *light = scene->lights[ 0 ];
+  Object *light = scene->lights[ rng.randint() % scene->lights.size() ];
 
 
   // Light source point
   Vec lp = light->sample(&pdf, rng);
+  
   // Vector from intersection pt to lightsource
   Vec wi = norm(lp - rec.p);
+  rec.wi = wi;
 
   Ray shadowRay = Ray(rec.p, wi);
 
@@ -25,17 +28,14 @@ Colour Path::SampleLight(HitRec& rec, Scene *scene, RNG& rng) {
     if (dot(wi, tmp.n) > 0 || dot(wi, rec.n) < 0) return 0;
     
     tmp.wo = -shadowRay.d;
-    rec.wi = wi;
-
 
     pdf *= (tmp.t * tmp.t);
-    pdf /= dot(norm(wi), rec.n) * -dot(norm(wi), tmp.n);
-    return rec.obj->bsdf->eval(rec) * light->bsdf->emittance(tmp) / pdf; 
+    pdf /= fabs(dot(norm(wi), rec.n) * -dot(norm(wi), tmp.n));
+    pdf /= scene->lights.size();
 
-    // Colour f = rec.obj->bsdf->eval(bRec) * abs(dot(norm(wi), tmp.n));
-    // double Pdf = tmp.t*tmp.t;
-    // // rec.obj->bsdf->pdf(bRec) * tmp.t*tmp.t;
-    // return f * light->bsdf->emittance(bRec) / Pdf; 
+    if (pdf < 1) pdf = 1;
+
+    return rec.obj->bsdf->eval(rec) * light->bsdf->emittance(tmp) / pdf; 
   }
 
   // Not visible to the lightsource.

@@ -23,9 +23,11 @@ bool Sphere::hit(Ray& r, HitRec& rec) {
 
   rec.t = t1;
   rec.p = r.at(t1);
-  rec.n = normalTransform(transformed.at(t1));
   rec.u = atan2(it.z, it.x) / (2 * PI) + 0.5;
   rec.v = 0.5 - asin(it.y) / PI;
+
+  Vec canon_n = normalMapped(it, rec);
+  rec.n = normalTransform(canon_n);
   rec.obj = this;
   r.tMax = min(r.tMax, rec.t);
   return true;
@@ -36,7 +38,7 @@ Vec Sphere::sample(double *pdf, RNG& rng) {
   double phi = acos(2 * rng.rand01() - 1);
   
   *pdf = 1.0 / surfaceArea;
-  
+
   return T * Vec(cos(theta) * sin(phi),
                  sin(theta) * sin(phi),
                  cos(phi));
