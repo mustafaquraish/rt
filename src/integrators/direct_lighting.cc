@@ -3,7 +3,7 @@
 #include "time.h"
 #include "core/bsdf.h"
 
-#define PATH_MAX_BOUNCES 10
+#define PATH_MAX_BOUNCES 30
 #define AMBIENT_LIGHT 0.01
 
 Vec cmpWiseMax(const Vec& a, const Vec& b) {
