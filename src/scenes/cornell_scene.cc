@@ -15,7 +15,7 @@ SCENE(Cornell) {
 
   scene->integrator = new Path(params);
   // scene->integrator = new DirectLighting(params);
-  // scene->integrator = new DebugShader(params, DEBUG_COLOUR);
+  // scene->integrator = new DebugShader(params);
   
   Object *s;
 
@@ -82,15 +82,15 @@ SCENE(Cornell) {
   // s->Translate(0, -10, 6);
   // scene->add(s);
 
-  s = new TriangleMesh("assets/obj/teapot_lo.obj", 
-        new Lambertian( 
-          new ImageTexture("assets/tex/bouncy.ppm")
-        )
-      );
-  s->Scale(-10,10,10);
-  s->RotateX(-PI/2);
-  s->Translate(0, 0, 6);
-  scene->add(s);
+  // s = new TriangleMesh("assets/obj/teapot_lo.obj", 
+  //       new Lambertian( 
+  //         new ImageTexture("assets/tex/bouncy.ppm")
+  //       )
+  //     );
+  // s->Scale(-10,10,10);
+  // s->RotateX(-PI/2);
+  // s->Translate(0, 0, 6);
+  // scene->add(s);
 
 
   // Texture *myim = new CheckerTexture();
@@ -105,10 +105,14 @@ SCENE(Cornell) {
   // scene->add(s);
 
 
-  // s = new TriangleMesh("assets/obj/dragon.obj", new Mirror(Colour(1)));
-  // s->Scale(1, 1, 1);
-  // s->Translate(-4, 0, 6);
-  // scene->add(s);
+  s = new TriangleMesh("assets/obj/klein.obj", 
+                       new Transmissive(1.47, Colour(1)), 
+                       true);
+  s->Scale(3);
+  // s->RotateX(PI/4);
+  // s->RotateY(PI/4);
+  s->Translate(0, 0, 6);
+  scene->add(s);
 
   // s = new TriangleMesh("assets/obj/dragon.obj", new Transmissive(1.47, Colour(1)));
   // s->Scale(.4, .4, .4);
