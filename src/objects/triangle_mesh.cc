@@ -22,7 +22,7 @@ bool TriangleMesh::hit(Ray& r, HitRec &rec) {
   if (!mesh->hit(transformed, rec)) return false;
 
   rec.p = r.at(rec.t);
-  rec.n = normalTransform(rec.n);
+  rec.n = normalTransform( normalMapped(rec.n, rec) );
   rec.obj = this;
   r.tMax = min(r.tMax, rec.t);
 

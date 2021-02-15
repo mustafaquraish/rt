@@ -14,10 +14,12 @@ bool Disc::hit(Ray& r, HitRec& rec) {
 
   rec.p = r.at(t);
   rec.t = t;
-  rec.n = normalTransform(Vec(0, 0, 1));
   rec.u = (it.x + 1) / 2;
   rec.v = (it.y + 1) / 2;
   rec.obj = this;
+
+  Vec canon_n = normalMapped(Vec(0, 0, 1), rec);
+  rec.n = normalTransform(canon_n);
   r.tMax = min(r.tMax, rec.t);
 
   return true;

@@ -63,8 +63,8 @@ Vec Image::get(int i, int j) {
 
 Vec Image::get(double u, double v) {
   double dx = u * sx, dy = v * sy;
-  int f_x = dx, c_x = dx + 1 - TOL;
-  int f_y = dy, c_y = dy + 1 - TOL;
+  int f_x = dx, c_x = min(f_x + 1, sx - 1);
+  int f_y = dy, c_y = min(f_x + 1, sy - 1);
 
   return bilerp(dx - f_x, dy - f_y, get(f_x, f_y), get(c_x, f_y),
                                     get(f_x, c_y), get(c_x, c_y));
