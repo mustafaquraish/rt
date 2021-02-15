@@ -8,10 +8,11 @@
 struct TriangleMesh : Object {
   TriangleMesh(BSDF *mat) : Object(mat) {}
 
-  TriangleMesh(const char *fname, BSDF *mat) : Object(mat) { 
+  TriangleMesh(const char *fname, BSDF *mat, bool bothSides=false) 
+    : Object(mat), bothSides(bothSides) { 
     loadObj(fname); 
   };
-
+  
   // Caller should set the `prims` vector to contain all the Triangles.
   void loadTriangles(std::vector<Primitive *>& prims);
   void loadObj(const char *fname);
@@ -20,7 +21,7 @@ struct TriangleMesh : Object {
   Vec sample(double *pdf, RNG& rng) { return T * Vec(); };
   
   Aggregate *mesh;
-  bool bothSides = false;
+  bool bothSides = true;
 };
 
 #endif // __TRIANGLE_MESH_H__
