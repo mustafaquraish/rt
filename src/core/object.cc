@@ -8,6 +8,13 @@ void Object::Scale(double x, double y, double z) {
   surfaceArea *= x * y * z;
 }
 
+// Uniform scale
+void Object::Scale(double s) {
+  T = ScaleMatrix(s,s,s) * T; 
+  // Hacky approximation for surface area scaling
+  surfaceArea *= s * s * s;
+}
+
 void Object::Translate(double x, double y, double z) {
   T = TranslateMatrix(x,y,z) * T; 
 }
@@ -23,6 +30,25 @@ void Object::RotateY(double a) {
 void Object::RotateZ(double a) {
   T = RotateZMatrix(a) * T; 
 }
+
+void Object::addNormalMap(Texture *tx) {
+  normalMap = tx;
+};
+
+void Object::addTextureMap(Texture *tx) {
+  bsdf->m_tx = tx;
+};
+
+Vec Object::normalMapped(const Vec& canon_n, HitRec& rec) {
+  if (normalMap == NULL) return canon_n;
+
+  // Vec tex_normal = 2 * normalMap->get(rec) - 1;
+  Vec tex_normal = 2 * normalMap->get(rec) - 1;
+  Vec n = alignTo(tex_normal, canon_n);
+  // Vec n = norm(canon_n - tex_normal);
+  return n;
+}
+
 
 Ray Object::rayTransform(const Ray& r) {
   return Ray(T_inv * r.p, T_inv % r.d, r.tMax);

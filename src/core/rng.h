@@ -26,6 +26,12 @@ struct RNG {
     return (w = w ^ (w >> 19) ^ (t ^ (t >> 8))) * (1/2147483647.0);
   }
 
+  inline int randint() {
+    int t = x ^ (x << 11);
+    x = y, y = z, z = w;
+    return (w = w ^ (w >> 19) ^ (t ^ (t >> 8)));
+  }
+
   inline Vec randomVector() {
     return 2 * Vec(rand01(), rand01(), rand01()) - 1;
   }
