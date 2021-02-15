@@ -42,10 +42,8 @@ void Object::addTextureMap(Texture *tx) {
 Vec Object::normalMapped(const Vec& canon_n, HitRec& rec) {
   if (normalMap == NULL) return canon_n;
 
-  // Vec tex_normal = 2 * normalMap->get(rec) - 1;
   Vec tex_normal = 2 * normalMap->get(rec) - 1;
-  Vec n = alignTo(tex_normal, canon_n);
-  // Vec n = norm(canon_n - tex_normal);
+  Vec n = norm(alignTo(tex_normal, canon_n));
   return n;
 }
 

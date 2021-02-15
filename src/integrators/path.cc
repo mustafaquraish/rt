@@ -3,7 +3,7 @@
 #include "core/bsdf.h"
 #include "time.h"
 
-#define PATH_MAX_BOUNCES 10
+#define PATH_MAX_BOUNCES 30
 
 Colour Path::SampleLight(HitRec& rec, Scene *scene, RNG& rng) {
   double pdf;
