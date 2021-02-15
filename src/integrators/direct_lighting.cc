@@ -4,7 +4,7 @@
 #include "core/bsdf.h"
 
 #define PATH_MAX_BOUNCES 10
-#define AMBIENT_LIGHT 0.05
+#define AMBIENT_LIGHT 0.01
 
 Vec cmpWiseMax(const Vec& a, const Vec& b) {
   return Vec(
@@ -19,7 +19,7 @@ Colour DirectLighting::SampleLight(HitRec& rec, Scene *scene, RNG& rng) {
   HitRec tmp;
   
   // Pick a light source
-  Object *light = scene->lights[ 0 ];
+  Object *light = scene->lights[ rng.randint() % scene->lights.size() ];
 
 
   // Light source point
@@ -38,7 +38,11 @@ Colour DirectLighting::SampleLight(HitRec& rec, Scene *scene, RNG& rng) {
       tmp.wo = -shadowRay.d;
 
       pdf *= (tmp.t * tmp.t);
-      pdf /= dot(norm(wi), rec.n) * -dot(norm(wi), tmp.n);
+      pdf /= fabs(dot(norm(wi), rec.n) * -dot(norm(wi), tmp.n));
+      pdf /= scene->lights.size();
+
+      if (pdf < 1) pdf = 1;
+
       contrib = cmpWiseMax(contrib, light->bsdf->emittance(tmp) / pdf);
     }
   }

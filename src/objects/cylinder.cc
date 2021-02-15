@@ -3,22 +3,21 @@
 
 // extern int DEBUG;
 
-template <int Z>
-bool hitBase(Ray &r, HitRec &rec) {
+bool Cylinder::hitBase(double Z, Ray &r, HitRec &rec) {
   double t =  (Z - r.p.z) / r.d.z;
   if (t < TOL || t > r.tMax) return false;
   Vec it = r.at(t);
   double xy_dist = it.x * it.x + it.y * it.y;
   if (fabs(xy_dist) > 1+TOL) return false;
   rec.t = t;
-  rec.n = Z * Vec(0, 0, 1);
   rec.u = (it.x + 1) / 2;
   rec.v = (it.y + 1) / 2;
+  rec.n = normalMapped(Vec(0, 0, Z), rec);
   r.tMax = min(r.tMax, rec.t);
   return true;
 }
 
-bool hitSide(Ray &r, HitRec &rec) {
+bool Cylinder::hitSide(Ray &r, HitRec &rec) {
   double A = r.d.x * r.d.x + r.d.y * r.d.y;
   double B = (r.p.x * r.d.x + r.p.y * r.d.y) * 2;
   double C = (r.p.x * r.p.x + r.p.y * r.p.y) - 1;
@@ -34,9 +33,9 @@ bool hitSide(Ray &r, HitRec &rec) {
   if (fabs(it.z) > 1+TOL) return false;
 
   rec.t = t1;
-  rec.n = Vec(it.x, it.y, 0);
   rec.u = atan2(rec.p.z, rec.p.x) / (2 * PI) + 0.5;
   rec.v = 0.5 - asin(rec.p.y) / PI;
+  rec.n = normalMapped(Vec(it.x, it.y, 0), rec);
   r.tMax = min(r.tMax, rec.t);
   return true;
 }
@@ -45,8 +44,8 @@ bool Cylinder::hit(Ray& r, HitRec& rec) {
   Ray transformed = rayTransform(r);
 
   bool hit = false;
-  if (hitBase<1>(transformed, rec)) hit = true;
-  if (hitBase<-1>(transformed, rec)) hit = true;
+  if (hitBase( 1, transformed, rec)) hit = true;
+  if (hitBase(-1, transformed, rec)) hit = true;
   if (hitSide(transformed, rec)) hit = true;
   if (hit) {
     rec.p = r.at(rec.t);
