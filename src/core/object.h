@@ -15,11 +15,16 @@ struct Object : Primitive {
   void RotateY(double t);
   void RotateZ(double t);
   void Scale(double x, double y, double z);
+  void Scale(double s);
   void Translate(double x, double y, double z);
   
+  void addNormalMap(Texture *tx);
+  void addTextureMap(Texture *tx);
+
   virtual void finalize();
 
   // Internal utiliies
+  Vec normalMapped(const Vec& canon_n, HitRec& rec);
   Ray rayTransform(const Ray& r);
   Vec normalTransform(const Vec& n);
   BSDF *getBSDF(HitRec& rec) { return bsdf; }
@@ -28,6 +33,7 @@ struct Object : Primitive {
   virtual Vec sample(double *pdf, RNG& rng) = 0;
 
   BSDF *bsdf = NULL;
+  Texture *normalMap = NULL;
   double surfaceArea = 1;
   Primitive *prim = NULL;
   Matrix T, T_inv;
