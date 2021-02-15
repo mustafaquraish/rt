@@ -38,8 +38,6 @@ Vec Sphere::sample(double *pdf, RNG& rng) {
   double phi = acos(2 * rng.rand01() - 1);
   
   *pdf = 1.0 / surfaceArea;
-  
-  // return T * Vec(0,.01,0);
 
   return T * Vec(cos(theta) * sin(phi),
                  sin(theta) * sin(phi),
