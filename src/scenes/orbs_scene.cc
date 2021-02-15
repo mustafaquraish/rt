@@ -161,7 +161,7 @@ SCENE(Orbs) {
 
   // TODO: Figure out where the sphere light breaks everything??
 
-  s = new Sphere(new Emitter(Colour(.99, .7, .5)*50));
+  s = new Sphere(new Emitter(Colour(.99, .7, .5)*15));
   s->Scale(3, 1, 3);
   // s->RotateX(PI/2);
   s->Translate(0,10,5);

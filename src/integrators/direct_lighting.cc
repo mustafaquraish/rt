@@ -38,8 +38,11 @@ Colour DirectLighting::SampleLight(HitRec& rec, Scene *scene, RNG& rng) {
       tmp.wo = -shadowRay.d;
 
       pdf *= (tmp.t * tmp.t);
-      pdf /= dot(norm(wi), rec.n) * -dot(norm(wi), tmp.n);
+      pdf /= fabs(dot(norm(wi), rec.n) * -dot(norm(wi), tmp.n));
       pdf /= scene->lights.size();
+
+      if (pdf < 1) pdf = 1;
+
       contrib = cmpWiseMax(contrib, light->bsdf->emittance(tmp) / pdf);
     }
   }

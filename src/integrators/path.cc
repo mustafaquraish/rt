@@ -35,7 +35,6 @@ Colour Path::SampleLight(HitRec& rec, Scene *scene, RNG& rng) {
 
     if (pdf < 1) pdf = 1;
 
-
     return rec.obj->bsdf->eval(rec) * light->bsdf->emittance(tmp) / pdf; 
   }
 
