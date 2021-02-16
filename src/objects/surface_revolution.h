@@ -69,8 +69,8 @@ struct TorusSOR : SurfaceOfRevolution {
 
 struct SinSOR : SurfaceOfRevolution {
   SinSOR(BSDF *mat, 
-         int tCount = 4, 
-         int rCount = 4, 
+         int tCount = 20, 
+         int rCount = 20, 
          double tMin = 0,
          double tMax = 2 * PI)
       : SurfaceOfRevolution(mat, tCount, rCount, tMin, tMax){
