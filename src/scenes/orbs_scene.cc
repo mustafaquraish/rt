@@ -61,9 +61,12 @@ SCENE(Orbs) {
   scene->add(s);
 
   // Center
-  s = new Sphere(new Transmissive(2.2, Colour(.95)));
-  s->Scale(3.6);
-  s->Translate(0, -6.4, -5);
+  // s = new Sphere(new Transmissive(2.2, Colour(.95)));
+  s = new TriangleMesh("assets/obj/dragon.obj", new Transmissive(1.47, Colour(.95)));
+  // s = new TorusKnotBevel(new Transmissive(2.2, Colour(.95)), 0.15);
+  // s->RotateX(PI/2);
+  s->Scale(1.5);
+  s->Translate(0, -10, -5);
   scene->add(s);
 
   // Right
@@ -95,6 +98,20 @@ SCENE(Orbs) {
       scene->add(s);
     }
   }
+
+  s = new LSystem(0);
+  s->Scale(2.5, 2.5, 2.5);
+  s->RotateX(-PI/2);
+  s->RotateY(PI/2);
+  s->Translate(-8, -15, 1);
+  scene->add(s);
+
+  s = new LSystem(0);
+  s->Scale(2.5, 2.5, 2.5);
+  s->RotateX(-PI/2);
+  s->RotateY(-PI/2);
+  s->Translate(8, -15, 1);
+  scene->add(s);
 
 
    ///////////////////// A1 ///////////////////////
@@ -156,7 +173,7 @@ SCENE(Orbs) {
   s->Scale(3);
   s->RotateX(PI/2);
   s->Translate(0,9.99,5);
-  scene->add(s); 
+  // scene->add(s); 
 
 
   // TODO: Figure out where the sphere light breaks everything??
@@ -165,7 +182,7 @@ SCENE(Orbs) {
   s->Scale(3, 1, 3);
   // s->RotateX(PI/2);
   s->Translate(0,10,5);
-  // scene->add(s);
+  scene->add(s);
 
   scene->world = new AGGREGATE(scene->obj_list);
   // scene->world = new PrimitiveList(scene->obj_list);
