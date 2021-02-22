@@ -44,6 +44,12 @@ struct RNG {
     }
   }
 
+  inline Vec randomUnitDisk() {
+    double ang = rand01() * 2 * PI;
+    double r = sqrt(rand01());
+    return Vec(cos(ang) * r, sin(ang) * r, 0);
+  }
+
   inline Vec randomVectorCosineHemisphere(const Vec &n) {
     return norm(n + norm(randomVectorUnitSphere()));
   }

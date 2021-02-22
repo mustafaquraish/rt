@@ -18,6 +18,13 @@ Camera::Camera(Vec e, Vec g, Vec up, double f, RenderParams& params) :
   int sx = params.getInt("width");
   int sy = params.getInt("height");
 
+  if (params.exists("aperture") && params.exists("focus_dist")) {
+    DOF = true;
+    aperture = params.getDbl("aperture");
+    focus_dist = params.getDbl("focus_dist");
+    printf("Dof??? aperture = %f, fd = %f\n", aperture, focus_dist);
+  }
+
   double xsize = 4; 
   double ysize = 4;
 
@@ -32,9 +39,19 @@ Camera::Camera(Vec e, Vec g, Vec up, double f, RenderParams& params) :
 }
 
 Ray Camera::getRay(int i, int j, RNG& rng) {
-  Vec pij = Vec(wl + (i + rng.rand01())*du, wt + (j + rng.rand01())*dv, f);
-  Vec p = C2W * pij;
-  return Ray(p, norm(p - e));
+  if (!DOF) {
+    Vec pij = Vec(wl + (i+rng.rand01())*du, wt + (j+rng.rand01())*dv, f);
+    Vec p = C2W * pij;
+    return Ray(p, norm(p - e));
+  
+  } else {
+    // printf("Dof ray...\n");
+    Vec pij = Vec(wl + i*du, wt + j*dv, f);
+    Vec aperture_point = pij + rng.randomUnitDisk() * aperture;
+    Vec p = C2W * (norm(pij) * focus_dist);
+    Vec o = C2W * aperture_point;
+    return Ray(o, norm(p - o));
+  }
 }
 
 Ray Camera::getRay(int i, int j) {
