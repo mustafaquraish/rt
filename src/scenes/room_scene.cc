@@ -9,6 +9,14 @@ SCENE(Room) {
   Vec e = Vec(0, -4, -40);
   Vec g = Vec(0, -1, 0) - e;
   Vec up = Vec(0, 1, 0);
+
+  double dist = length(Vec(-2, -2, -7.5) - e);
+  // double dist = length(Vec(-6.5, -9, 1) - e);
+
+  params.setDbl("aperture", .7);
+  params.setDbl("focus_dist", 35);
+
+
   scene->cam = Camera(e, g, up, -7, params);
 
   scene->integrator = new Path(params);
@@ -66,6 +74,11 @@ SCENE(Room) {
   s->Scale(2);
   s->Translate(0, -10, -5);
   scene->add(s);
+
+  s = new Sphere(new Lambertian(Colour(.95)));
+  s->Scale(1,1,0.1);
+  s->Translate(-2, -2, -7);
+  // scene->add(s);
 
   // Right
   s = new Sphere(new Transmissive(2.2, Colour(.95)));
