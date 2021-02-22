@@ -6,7 +6,7 @@
 #include "util/params.h"
 
 struct Camera {
-  Camera() {}
+  Camera() {};
   Camera(Vec e, Vec g, Vec u, double f, RenderParams& params);
 
   virtual Ray getRay(int i, int j, RNG& rng);
@@ -15,6 +15,9 @@ struct Camera {
   Vec e, u, v, w;
   double du, dv, wl, wt, f;
   Matrix C2W, W2C;
+
+  bool DOF = false;
+  double aperture, focus_dist;
 };
 
 #endif // __CAMERA_H__
