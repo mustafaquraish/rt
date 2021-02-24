@@ -29,12 +29,14 @@ using std::endl;
 #include "objects/triangle_mesh.h"
 #include "objects/bevel_curve.h"
 #include "objects/surface_revolution.h"
+#include "objects/terrain.h"
 
 // Integrators
 #include "integrators/debug_shader.h"
 #include "integrators/ambient_occlusion.h"
 #include "integrators/direct_lighting.h"
 #include "integrators/path.h"
+#include "integrators/base_colour.h"
 
 
 // Aggregates

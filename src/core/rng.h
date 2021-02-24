@@ -32,6 +32,13 @@ struct RNG {
     return (w = w ^ (w >> 19) ^ (t ^ (t >> 8)));
   }
 
+  inline int randint(int min, int max) {
+    int t = x ^ (x << 11);
+    x = y, y = z, z = w;
+    int r = (w = w ^ (w >> 19) ^ (t ^ (t >> 8)));
+    return r % (max - min + 1) + min;
+  }
+
   inline Vec randomVector() {
     return 2 * Vec(rand01(), rand01(), rand01()) - 1;
   }
