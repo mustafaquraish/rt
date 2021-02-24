@@ -31,6 +31,7 @@ build/scenes/sor_scene.o: src/objects/parametric_surface.h
 build/scenes/cornell_scene.o: src/core/texture.h
 build/scenes/cornell_scene.o: src/core/bsdf.h
 build/scenes/cornell_scene.o: src/util/image.h
+build/scenes/perlin_scene.o: src/objects/terrain.h
 
 $(OBJ)/%.o: $(SRC)/%.cc | $(OBJ)
 	@mkdir -p "$(@D)"

@@ -50,7 +50,7 @@ bool Triangle::hit(Ray& r, HitRec& rec) {
 
   Vec h = cross(r.d, e1);
   double a1 = dot(e0, h);
-  if (a1 < TOL && a1 > -TOL) return false;
+  if (a1 == 0) return false;
 
   double f = 1.0 / a1;
 

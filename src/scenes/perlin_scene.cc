@@ -2,7 +2,7 @@
 
 using namespace std;
 
-SCENE(A4) {
+SCENE(Perlin) {
 
   Scene *scene = new Scene();
   
@@ -11,10 +11,9 @@ SCENE(A4) {
   Vec up = Vec(0, 1, 0);
   scene->cam = Camera(e, g, up, -3, params);
 
-  scene->integrator = new Path(params);
-  // scene->integrator = new DebugShader(params);
+  // scene->integrator = new Path(params);
+  scene->integrator = new DebugShader(params);
   // scene->integrator = new DirectLighting(params);
-  scene->integrator = new BaseColour(params);
   
   Object *s;
 
@@ -52,18 +51,20 @@ SCENE(A4) {
   s->Translate(0, 510, 5);
   scene->add(s);
 
-  // left sphere
-  s = new Sphere(new Transmissive(1.47, Colour(1, 1, 1)));
-  s->Scale(3.75, 3.75, 3.75);
-  s->Translate(-5, -4, 4.5);
+  s = new TriangleMesh("assets/obj/water.obj", new Transmissive(1.47, Colour(1)));
+  s->Scale(10, 20, 10);
+  s->Translate(0, -10, 6);
   scene->add(s);
 
-  // right sphere
-  s = new Sphere(new Mirror(Colour(.99, .99, .99)));
-  s->Scale(3.75, 3.75, 3.75);
-  s->Translate(4, -3.75, 6.5);
-  scene->add(s);
-  
+  //  s = new SaddleParametric(new Lambertian(1));
+   s = new PerlinTerrain(new Lambertian(1), 100);
+  // s = new TorusKnotBevel(new Lambertian(1));
+  s->Scale(10, 10, 4);
+  s->RotateX(PI/2);
+  s->Translate(0,0,5);  
+  scene->add(s); 
+
+
   s = new Plane(new Emitter(Colour(12, 12, 12)));
   s->Scale(.5,2.5,10);
   s->RotateX(PI/2);

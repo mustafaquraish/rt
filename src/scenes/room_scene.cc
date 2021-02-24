@@ -13,15 +13,16 @@ SCENE(Room) {
   double dist = length(Vec(-2, -2, -7.5) - e);
   // double dist = length(Vec(-6.5, -9, 1) - e);
 
-  params.setDbl("aperture", .7);
-  params.setDbl("focus_dist", 35);
+  // params.setDbl("aperture", .7);
+  // params.setDbl("focus_dist", 35);
 
 
   scene->cam = Camera(e, g, up, -7, params);
 
   scene->integrator = new Path(params);
   // scene->integrator = new DebugShader(params);
-  // scene->integrator = new DirectLighting(params);
+  // scene->integrator = new BaseColour(params);
+  scene->integrator = new DirectLighting(params);
   
   Object *s;
 
@@ -106,7 +107,7 @@ SCENE(Room) {
       s = new Sphere(new Emitter( Colour(1, .6, .3)*30 ));
       s->Scale(.2, .5, .2);
       s->Translate(xOff, -9, zOff);
-      scene->add(s);
+      // scene->add(s);
     }
   }
 
@@ -197,7 +198,7 @@ SCENE(Room) {
   s = new Sphere(new Emitter(Colour(.99, .7, .5)*15));
   s->Scale(3, 1, 3);
   // s->RotateX(PI/2);
-  s->Translate(0,10,5);
+  s->Translate(0,6.5,5);
   scene->add(s);
 
   scene->world = new AGGREGATE(scene->obj_list);
