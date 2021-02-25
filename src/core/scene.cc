@@ -23,9 +23,6 @@ void Scene::finalize() {
 
 Scene::~Scene() {
   RTMeshList::cleanup();
-  for (auto prim : obj_list) {
-    delete prim;
-  }
   delete world;
   delete integrator;
 }

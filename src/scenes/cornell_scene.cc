@@ -13,7 +13,7 @@ SCENE(Cornell) {
 
   scene->integrator = new Path(params);
   // scene->integrator = new DirectLighting(params);
-  // scene->integrator = new DebugShader(params);
+  scene->integrator = new DebugShader(params);
   
   Object *s;
 
@@ -32,7 +32,7 @@ SCENE(Cornell) {
   scene->add(s);
 
   // Back
-  s = new Sphere(new Lambertian(new CheckerTexture(0.001)));
+  s = new Sphere(new Lambertian(new PerlinTexture(Marble, 512)));
   s->Scale(500, 500, 500);
   s->Translate(0, 0, 515);
   scene->add(s);
@@ -58,10 +58,30 @@ SCENE(Cornell) {
   // scene->add(s);
 
   // // right sphere
-  // s = new Sphere(new Mirror(Colour(.99, .99, .99)));
+  // s = new Sphere(new Lambertian(
+  //   new PerlinTexture(Turbulence, 16)
+  // ));
   // s->Scale(3.75, 3.75, 3.75);
   // s->Translate(4, -6.25, 6.5);
   // scene->add(s);
+
+  // Middle sphere
+  s = new DisplacedSphere(
+    // new PerlinTexture(Layered, 8),
+    new ImageTexture("assets/tex/water-norm.ppm"),
+    new Transmissive(1.47, 1)
+  );
+  s->Scale(3.5);
+  s->RotateX(PI/2);
+  s->Translate(-5, 0, 6.5);
+  scene->add(s);
+
+  s = new Sphere(new Transmissive(1.47, 1));
+  s->addNormalMap(new ImageTexture("assets/tex/water-norm.ppm"));
+  s->Scale(-4,4,4);
+  s->RotateY(PI);
+  s->Translate(5, 0, 6.5);
+  scene->add(s);
 
   // s = new TriangleMesh("assets/obj/water.obj", new Transmissive(1.47, Colour(1)));
   // s->Scale(10, 10, 10);
@@ -103,14 +123,14 @@ SCENE(Cornell) {
   // scene->add(s);
 
 
-  s = new TriangleMesh("assets/obj/klein.obj", 
-                       new Transmissive(1.47, Colour(1)), 
-                       true);
-  s->Scale(3);
-  // s->RotateX(PI/4);
-  // s->RotateY(PI/4);
-  s->Translate(0, 0, 6);
-  scene->add(s);
+  // s = new TriangleMesh("assets/obj/klein.obj", 
+  //                      new Transmissive(1.47, Colour(1)), 
+  //                      true);
+  // s->Scale(3);
+  // // s->RotateX(PI/4);
+  // // s->RotateY(PI/4);
+  // s->Translate(0, 0, 6);
+  // scene->add(s);
 
   // s = new TriangleMesh("assets/obj/dragon.obj", new Transmissive(1.47, Colour(1)));
   // s->Scale(.4, .4, .4);

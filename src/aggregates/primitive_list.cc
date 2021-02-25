@@ -7,3 +7,9 @@ bool PrimitiveList::hit(Ray& ray, HitRec& rec) {
         hit = true;
   return hit;
 }
+
+PrimitiveList::~PrimitiveList() {
+  for (auto prim : list) {
+    delete prim;
+  }
+}

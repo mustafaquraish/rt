@@ -31,6 +31,9 @@
 inline double min(double a, double b) { return (a < b) ? a : b; }
 inline double max(double a, double b) { return (a > b) ? a : b; }
 inline double clamp01(double a) { return min(1, max(a, 0)); }
+inline double clamp(double a, double _min, double _max) { 
+  return min(_max, max(a, _min)); 
+}
 
 /************************** RANDOM NUMBERS ***********************************/
 
@@ -97,6 +100,7 @@ inline double lengthSq(const Vec& a) { return a.x * a.x + a.y * a.y + a.z * a.z;
 inline Vec norm(const Vec& a) { return a * (1 / sqrt(a.x * a.x + a.y * a.y + a.z * a.z)); }
 inline Vec mult(const Vec& a, const Vec& b) { return Vec(a.x * b.x, a.y * b.y, a.z * b.z); }
 
+inline Vec floor(const Vec& a) { return Vec(floor(a.x), floor(a.y), floor(a.z)); }
 inline Vec sqrt(const Vec& v) { return Vec(sqrt(v.x), sqrt(v.y), sqrt(v.z)); }
 inline double dot(const Vec& a, const Vec& b) { return a.x * b.x + a.y * b.y + a.z * b.z; }
 inline Vec cross(const Vec& a, const Vec& b) { 
@@ -119,6 +123,12 @@ inline Vec clamp01(const Vec& a) {
   return Vec(min(1, max(a.x, 0)),
              min(1, max(a.y, 0)),
              min(1, max(a.z, 0)));
+}
+
+inline Vec clamp01(const Vec& a, double _min, double _max) {
+  return Vec(min(_max, max(a.x, _min)),
+             min(_max, max(a.y, _min)),
+             min(_max, max(a.z, _min)));
 }
 
 // Return the index of the maximum element
@@ -358,13 +368,32 @@ inline Vec alignTo(const Vec& a, const Vec& n) {
 
 template<typename T>
 inline T lerp(double fac, const T a, const T b) {
-  return fac * a + (1-fac) * b;
+  return a + fac * (b - a);
 }
 
 template<typename T>
-inline T bilerp(double facX, double facY, const T tl, const T tr,
-                                          const T bl, const T br) {
-  return lerp(facY, lerp(facX, tl, tr), lerp(facX, bl, br));
+inline T inverseLerp(double _min, double _max, const T value) {
+  return map(value, _min, _max, 0, 1);
+}
+
+template<typename T>
+inline T bilerp(double facX, double facY, const T xy, const T Xy,
+                                          const T xY, const T XY) {
+  return lerp(facY, lerp(facX, xy, Xy), lerp(facX, xY, XY));
+}
+
+template<typename T>
+inline T trilerp(double facX, double facY, double facZ, 
+                 const T xyz, const T Xyz, const T xYz, const T XYz,
+                 const T xyZ, const T XyZ, const T xYZ, const T XYZ) {
+  return lerp(facZ, bilerp(facX, facY, xyz, Xyz, xYz, XYz), 
+                    bilerp(facX, facY, xyZ, XyZ, xYZ, XYZ));
+}
+
+template<typename T>
+// Input: x ∈ [0,1], output: Faded value ∈ [0,1]
+inline T fade(const T x) {
+  return x * x * x * (x * (x * 6 - 15) + 10);
 }
 
 // Map value(s) from [sMin-sMax] to the new range [tMin-tMax]
@@ -375,8 +404,8 @@ inline T map(const T a, double sMin=0 , double sMax=1,
   return (a - sMin) * ratio + tMin; 
 }
 
-inline double randf(double rmin, double rmax) {
-  return lerp(rand01(), rmin, rmax);
+inline double luminance(const Colour& c) {
+  return 0.2126 * c.r + 0.7152 * c.g + 0.0722 * c.b;
 }
 
 /***************************** QUADRATIC SOLVING *****************************/
