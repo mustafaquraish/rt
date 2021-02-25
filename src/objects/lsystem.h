@@ -2,6 +2,7 @@
 #define __LSYSTEM_H__
 
 #include "core/object.h"
+#include <vector>
 
 struct LSystem : Object {
   LSystem(int seed) : seed(seed) {};

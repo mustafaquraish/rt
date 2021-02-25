@@ -1,4 +1,5 @@
-#include "core/rt.h"
+#include "core/scene.h"
+#include "core/integrator.h"
 
 int main(int argc, char **argv) {
   RenderParams params(argc, argv);
@@ -7,17 +8,12 @@ int main(int argc, char **argv) {
   if (!params.exists("samples")) params.setInt("samples", 10);
   if (!params.exists("output"))  params.setStr("output", "output.ppm");
 
-  // if (!params.exists("scene")) params.setStr("scene", "A4");
-  // if (!params.exists("scene")) params.setStr("scene", "SOR");
-  // if (!params.exists("scene")) params.setStr("scene", "Ajax");
   if (!params.exists("scene")) params.setStr("scene", "Cornell");
-  // if (!params.exists("scene")) params.setStr("scene", "Implicit");
-  // if (!params.exists("scene")) params.setStr("scene", "Lsystems");
-  // if (!params.exists("scene")) params.setStr("scene", "Occlusion");
 
   Scene *scene = RTSceneFactory::Create(params);
 
-  if (scene->integrator) 
-    scene->integrator->render(scene, 10);
+  if (scene->integrator) scene->integrator->render(scene, 10);
+
+  delete scene;
   return 0;
 }
