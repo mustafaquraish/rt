@@ -13,7 +13,8 @@ SCENE(Cornell) {
 
   scene->integrator = new Path(params);
   // scene->integrator = new DirectLighting(params);
-  scene->integrator = new DebugShader(params);
+  // scene->integrator = new DebugShader(params);
+  // scene->integrator = new BaseColour(params);
   
   Object *s;
 
@@ -24,6 +25,8 @@ SCENE(Cornell) {
   s->Translate(510, 0, 5);
   scene->add(s);
 
+  
+
   // Left
   s = new Sphere(new Lambertian(Colour(.75, .25, .25)));
   s->Scale(500, 500, 500);
@@ -32,7 +35,7 @@ SCENE(Cornell) {
   scene->add(s);
 
   // Back
-  s = new Sphere(new Lambertian(new PerlinTexture(Marble, 512)));
+  s = new Sphere(new Lambertian(Colour(.75)));
   s->Scale(500, 500, 500);
   s->Translate(0, 0, 515);
   scene->add(s);
@@ -66,22 +69,28 @@ SCENE(Cornell) {
   // scene->add(s);
 
   // Middle sphere
-  s = new DisplacedSphere(
-    // new PerlinTexture(Layered, 8),
-    new ImageTexture("assets/tex/water-norm.ppm"),
-    new Transmissive(1.47, 1)
-  );
-  s->Scale(3.5);
-  s->RotateX(PI/2);
-  s->Translate(-5, 0, 6.5);
-  scene->add(s);
+  // s = new DisplacedSphere(
+  //                         // new PerlinTexture(Layered, 8),
+  //                         // new CheckerTexture(),
+  //                         new ImageTexture("assets/tex/sand-bump.ppm"),
+  //                         new Lambertian(1), 
+  //                         .1,   // Scale
+  //                         100,  // Resolution
+  //                         true  // Interpolate Normals
+  //                       );
+  // s->addTextureMap(new ImageTexture("assets/tex/sand-bump.ppm"));
+  // s->Scale(3.5);
+  // s->RotateX(PI/2);
+  // s->Translate(-5, -3, 4);
+  // scene->add(s);
 
-  s = new Sphere(new Transmissive(1.47, 1));
-  s->addNormalMap(new ImageTexture("assets/tex/water-norm.ppm"));
-  s->Scale(-4,4,4);
-  s->RotateY(PI);
-  s->Translate(5, 0, 6.5);
-  scene->add(s);
+  // s = new Sphere(new Lambertian(1));
+  // s->addTextureMap(new ImageTexture("assets/tex/sand-bump.ppm"));
+  // s->addNormalMap(new ImageTexture("assets/tex/sand-norm.ppm"));
+  // s->Scale(-4,4,4);
+  // s->RotateY(PI);
+  // s->Translate(5, -3, 4);
+  // scene->add(s);
 
   // s = new TriangleMesh("assets/obj/water.obj", new Transmissive(1.47, Colour(1)));
   // s->Scale(10, 10, 10);
@@ -89,8 +98,18 @@ SCENE(Cornell) {
   // scene->add(s);
 
   double frame = 0;
+  double speed = 0.5;
   if (params.exists("frame")) frame = params.getInt("frame");
-  double R = map(frame, 0, 60, 0, PI);
+  double R = map(frame, 0, 60, 0, 1) * speed;
+
+  s = new DisplacedPlane(
+                          new PerlinTexture(Layered, 4, 4, 0.5, 2, R),
+                          new Transmissive(1.2, Colour(0.5, 0.7, 1))
+                          );
+  s->Scale(12, 12, 12);
+  s->RotateX(PI/2);
+  s->Translate(0, -2, 8);
+  scene->add(s);
 
   // // s = new TriangleMesh("assets/obj/dragon.obj", new Transmissive(1.47, Colour(1)));
   // s = new TriangleMesh("assets/obj/dragon.obj", new Mirror(Colour(1)));
@@ -145,7 +164,7 @@ SCENE(Cornell) {
   // scene->add(s);
 
   s = new Disc(new Emitter(Colour(12, 12, 12)));
-  s->Scale(2.5,2.5,2);
+  s->Scale(2.5);
   s->RotateX(PI/2);
   s->Translate(0,9.9995,5);
   scene->add(s);

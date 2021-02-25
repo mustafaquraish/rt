@@ -35,14 +35,15 @@ struct CheckerTexture : Texture {
 enum PerlinType {Layered, Turbulence, Marble};
 struct PerlinTexture : Texture {
   PerlinTexture(PerlinType type = Layered, double scale = 8, int octaves = 4, 
-                double persistence = 0.5, double lacunarity = 2) 
+                double persistence = 0.5, double lacunarity = 2, double seed=0) 
       : scale(scale), octaves(octaves), persistence(persistence), 
-        lacunarity(lacunarity), type(type) {};
+        lacunarity(lacunarity), type(type), seed(seed) {};
   
   Colour get(HitRec& rec) {
     double x = rec.u * scale;
     double y = rec.v * scale;
-    double perlin = Perlin::layered(x, y, 0, octaves, persistence, lacunarity); 
+    double z = seed * scale;
+    double perlin = Perlin::layered(x, y, z, octaves, persistence, lacunarity); 
     switch (type) {
     case Layered:    return map(perlin, -1, 1, 0, 1); break;
     case Turbulence: return abs(perlin);              break;
@@ -55,6 +56,7 @@ struct PerlinTexture : Texture {
   double scale;
   double persistence;
   double lacunarity;
+  double seed;
   int octaves;
 };
 

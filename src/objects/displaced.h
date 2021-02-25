@@ -8,10 +8,17 @@
 #include "objects/parametric_surface.h"
 
 struct DisplacedSphere : ParametricSurface {
-  DisplacedSphere(Texture *displacementMap, BSDF *mat, 
-                  double scale=.2, int resolution = 100) 
-    : ParametricSurface(mat, resolution, resolution, 0, TAU, 0, PI),
-      displacementMap(displacementMap), scale(scale) {};
+  DisplacedSphere(
+    Texture *displacementMap, 
+    BSDF *mat, 
+    double scale=.2, 
+    int resolution = 100, 
+    bool interpNormals=true
+  ) : ParametricSurface(mat, resolution, resolution, 0, TAU, 0, PI),
+      displacementMap(displacementMap), 
+      scale(scale) {
+    interpolateNormals = interpNormals;
+  };
 
   Vec P(double a, double b) {
     double u = map(a, aMin, aMax, 0, 1);
@@ -26,10 +33,17 @@ struct DisplacedSphere : ParametricSurface {
 };
 
 struct DisplacedPlane : ParametricSurface {
-  DisplacedPlane(Texture *displacementMap, BSDF *mat, 
-                  double scale=.2, int resolution = 100) 
-    : ParametricSurface(mat, resolution, resolution, -1, 1, -1, 1),
-      displacementMap(displacementMap), scale(scale) {};
+  DisplacedPlane(
+    Texture *displacementMap, 
+    BSDF *mat, 
+    double scale=.2,
+    int resolution = 100, 
+    bool interpNormals=true
+  ) : ParametricSurface(mat, resolution, resolution, -1, 1, -1, 1),
+      displacementMap(displacementMap), 
+      scale(scale) {
+    interpolateNormals = interpNormals;
+  };
 
   Vec P(double a, double b) {
     double u = map(a, aMin, aMax, 0, 1);
