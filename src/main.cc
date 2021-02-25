@@ -15,7 +15,7 @@ int main(int argc, char **argv) {
   // if (!params.exists("scene")) params.setStr("scene", "Lsystems");
   // if (!params.exists("scene")) params.setStr("scene", "Occlusion");
 
-  Scene *scene = SceneFactory::Create(params);
+  Scene *scene = RTSceneFactory::Create(params);
 
   if (scene->integrator) 
     scene->integrator->render(scene, 10);

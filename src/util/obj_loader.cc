@@ -1,23 +1,17 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
 #include "util/obj_loader.h"
+#include "objects/triangle.h"
 
-#include "core/rt.h"
-#include "stdio.h"
-#include "string.h"
-#include "stdlib.h"
-#include <unordered_map>
-
-std::unordered_map<const char *, Aggregate *> OBJ_CACHE; 
 
 /* Quick utility function to check if a string is a prefix of another */
 int prefix(const char *pre, const char *str) {
   return strncmp(pre, str, strlen(pre)) == 0;
 }
 
-Aggregate *wavefrontObjLoader(const char *fname) {
-  if (OBJ_CACHE.find(fname) != OBJ_CACHE.end()) {
-    return OBJ_CACHE[fname];
-  }
-
+std::vector<Primitive *> wavefrontObjLoader(const char *fname) {
   FILE *f = fopen(fname, "r");
   if (f == NULL) {
     fprintf(stderr, "Couldn't open %s. Please check name/path.\n", fname);
@@ -79,7 +73,5 @@ Aggregate *wavefrontObjLoader(const char *fname) {
     
   }
   printf("[+] Loaded %s; vert=%lu, face=%lu\n", fname, vs.size(), faces.size());
-  Aggregate *mesh = new AGGREGATE(faces);
-  OBJ_CACHE[fname] = mesh;
-  return mesh;
+  return faces;
 }

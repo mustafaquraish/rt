@@ -1,10 +1,7 @@
 #ifndef __LSYSTEM_H__
 #define __LSYSTEM_H__
 
-#include "core/rt.h"
 #include "core/object.h"
-#include "core/rng.h"
-#include <unordered_map>
 
 struct LSystem : Object {
   LSystem(int seed) : seed(seed) {};

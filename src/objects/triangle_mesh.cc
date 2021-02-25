@@ -1,17 +1,41 @@
-#include "core/rt.h"
+#include "util/obj_loader.h"
 #include "objects/triangle_mesh.h"
+#include "aggregates/bvh.h"
+
+void RTMeshList::registerMesh(Aggregate *mesh) {
+  allMeshes.insert(mesh);
+}
+
+void RTMeshList::registerObj(std::string filename, Aggregate *mesh) {
+  objFileMapping[filename] = mesh;
+  allMeshes.insert(mesh);
+}
+
+Aggregate *RTMeshList::getObjMesh(std::string filename) {
+  if (objFileMapping.find(filename) == objFileMapping.end())
+    return NULL;
+  return objFileMapping[filename];
+}
+
+TriangleMesh::TriangleMesh(BSDF *mat) : Object(mat) {}
+
+TriangleMesh::TriangleMesh(const char *fname, BSDF *mat, bool bothSides) 
+    : Object(mat), bothSides(bothSides) { 
+
+  mesh = RTMeshList::getObjMesh(fname);
+  if (mesh == NULL) {
+    std::vector<Primitive *> prims_list = wavefrontObjLoader(fname);
+    loadTriangles(prims_list);
+    RTMeshList::registerObj(fname, mesh);
+  }
+};
 
 // Caller should set the `prims` vector to contain all the Triangles.
 void TriangleMesh::loadTriangles(std::vector<Primitive *>& prims) {
-  mesh = new AGGREGATE(prims);
+  mesh = new BVH(prims);
   bounds = mesh->bounds;
+  RTMeshList::registerMesh(mesh);
 }
-
-void TriangleMesh::loadObj(const char *fname) {
-  mesh = wavefrontObjLoader(fname);
-  bounds = mesh->bounds;
-}
-
 
 bool TriangleMesh::hit(Ray& r, HitRec &rec) {
   Ray transformed = rayTransform(r);
