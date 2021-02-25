@@ -1,10 +1,10 @@
 #include "integrators/direct_lighting.h"
-#include "core/rt.h"
-#include "time.h"
-#include "core/bsdf.h"
 
 #define PATH_MAX_BOUNCES 30
 #define AMBIENT_LIGHT 0.01
+
+using namespace std;
+
 
 Vec cmpWiseMax(const Vec& a, const Vec& b) {
   return Vec(

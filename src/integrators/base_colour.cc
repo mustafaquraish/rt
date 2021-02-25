@@ -1,9 +1,9 @@
 #include "integrators/base_colour.h"
-#include "core/rt.h"
-#include "time.h"
-#include "core/bsdf.h"
 
 #define PATH_MAX_BOUNCES 30
+
+bool _DBG = false;
+using namespace std;
 
 Colour BaseColour::Li(Ray &r, Scene *scene, RNG& rng) {
   HitRec rec;
@@ -17,6 +17,7 @@ Colour BaseColour::Li(Ray &r, Scene *scene, RNG& rng) {
     rec.wo = -ray.d;
 
     throughput = throughput * bsdf->col(rec);
+    if (_DBG) cout << "Throughput: " << throughput << endl;
 
     if (!bsdf->isSpecular()) return throughput;
 
@@ -39,19 +40,19 @@ void BaseColour::render(Scene *scene, int depth) {
   clock_t timeBegin = clock();
 
 
-  #pragma omp parallel for schedule(dynamic)
   for (int i = 0; i < sx; i++) {
     // Seed RNG with some random function based on row number
-    RNG rng;
+    RNG rng = RNG(1);
 
-    printf("\rRendering %d / %d ~ %.2f", done, sx, done/total); fflush(stdout);
+    // printf("\rRendering %d / %d ~ %.2f", done, sx, done/total); fflush(stdout);
     for (int j = 0; j < sy; j++) {
       Colour col = 0;
       for (int sample = 0; sample < total_samples; sample++) {
         Ray ray = scene->cam.getRay(i, j);
+        _DBG = (i == 14 && j == 33);
         col += Li(ray, scene, rng) / total_samples;
-        if (i == 11 && j == 34)
-          col = Colour(0, 1, 0);
+      if (_DBG) cout << "Col: " << col << endl;
+        // if (i == 14 && j == 33) col = Colour(0, 1, 0);
       }
       im.set(i, j, col);
     }

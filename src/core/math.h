@@ -294,7 +294,7 @@ inline Matrix invert(const Matrix &m) {
   if (fabs(det) < TOL) return Matrix();
 
   return inv / det;
-}
+} 
 
 /*************************** TRANSFORM MATRICES ******************************/
 

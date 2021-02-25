@@ -1,9 +1,8 @@
 #include "integrators/path.h"
-#include "core/rt.h"
-#include "core/bsdf.h"
-#include "time.h"
 
 #define PATH_MAX_BOUNCES 30
+
+using namespace std;
 
 Colour Path::SampleLight(HitRec& rec, Scene *scene, RNG& rng) {
   double pdf;

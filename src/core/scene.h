@@ -2,12 +2,12 @@
 #define __SCENE_H__
 
 #include "core/camera.h"
-#include "core/integrator.h"
 #include "core/object.h"
-#include "core/rt.h"
 
 #include <unordered_map>
 #include <vector>
+
+struct Integrator;
 
 struct Scene {
   std::vector<Primitive *> obj_list;
@@ -28,7 +28,7 @@ struct Scene {
 };
 
 
-struct SceneFactory {
+struct RTSceneFactory {
   typedef Scene *(*SceneDefinition)(RenderParams &params);
   inline static std::unordered_map<std::string , SceneDefinition> mapping;
 
@@ -38,13 +38,13 @@ struct SceneFactory {
 };
 
 // Define and register a scene
-#define SCENE(name)                                                            \
-  Scene *RT_Scene_##name(RenderParams &params);                                \
-  static struct RT_Scene_constructor_##name {                                  \
-    RT_Scene_constructor_##name() {                                            \
-      SceneFactory::Register(#name, RT_Scene_##name);                          \
-    };                                                                         \
-  } RT_Scene_instance_##name;                                                  \
+#define SCENE(name)                                                           \
+  Scene *RT_Scene_##name(RenderParams &params);                               \
+  static struct RT_Scene_constructor_##name {                                 \
+    RT_Scene_constructor_##name() {                                           \
+      RTSceneFactory::Register(#name, RT_Scene_##name);                       \
+    };                                                                        \
+  } RT_Scene_instance_##name;                                                 \
   Scene *RT_Scene_##name(RenderParams &params)
 
 #endif // __SCENE_H__
