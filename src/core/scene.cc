@@ -1,6 +1,8 @@
 #include "core/scene.h"
 #include "aggregates/bvh.h"
 #include "aggregates/primitive_list.h"
+#include "objects/triangle_mesh.h"
+#include "core/integrator.h"
 
 void Scene::add(Object *obj) { 
   // Finalize object first...
@@ -18,6 +20,16 @@ void Scene::finalize() {
   else 
     world = new PrimitiveList(obj_list);
 };
+
+Scene::~Scene() {
+  RTMeshList::cleanup();
+  for (auto prim : obj_list) {
+    delete prim;
+  }
+  delete world;
+  delete integrator;
+}
+
 
 Scene *RTSceneFactory::Create(const std::string &name, RenderParams &params) {
   if (mapping.find(name) == mapping.end()) {

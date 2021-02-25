@@ -22,6 +22,7 @@ struct Scene {
 
   void add(Object *obj);
   void finalize();
+  ~Scene();
 
   // In header so compiler can inline it easier; performance critical.
   bool hit(Ray &ray, HitRec &rec) { return world->hit(ray, rec); }

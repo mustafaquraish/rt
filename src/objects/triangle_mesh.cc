@@ -17,6 +17,14 @@ Aggregate *RTMeshList::getObjMesh(std::string filename) {
   return objFileMapping[filename];
 }
 
+void RTMeshList::cleanup() {
+  for (auto agg : allMeshes) {
+    delete agg;
+  }
+}
+
+/*****************************************************************************/
+
 TriangleMesh::TriangleMesh(BSDF *mat) : Object(mat) {}
 
 TriangleMesh::TriangleMesh(const char *fname, BSDF *mat, bool bothSides) 

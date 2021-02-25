@@ -29,6 +29,7 @@ struct HitRec {
 };
 
 struct Primitive {
+  virtual ~Primitive() {};
   virtual bool hit(Ray& r, HitRec &rec) = 0;
   // Primitive bounds
   AABB bounds = AABB(Vec(-INFINITY), Vec(INFINITY));
