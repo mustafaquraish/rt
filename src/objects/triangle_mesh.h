@@ -2,26 +2,33 @@
 #define __TRIANGLE_MESH_H__
 
 #include "core/object.h"
-#include "util/obj_loader.h"
+#include "objects/triangle.h"
 #include <vector>
+#include <unordered_map>
+#include <unordered_set>
+
+struct RTMeshList {
+  inline static std::unordered_map<std::string, Aggregate *> objFileMapping;
+  inline static std::unordered_set<Aggregate *> allMeshes;
+
+  static void registerMesh(Aggregate *mesh);
+  static void registerObj(std::string filename, Aggregate *mesh);
+  static Aggregate *getObjMesh(std::string filename);
+
+  static void cleanup();
+};
 
 struct TriangleMesh : Object {
-  TriangleMesh(BSDF *mat) : Object(mat) {}
+  TriangleMesh(BSDF *mat);
+  TriangleMesh(const char *fname, BSDF *mat, bool bothSides=false);
 
-  TriangleMesh(const char *fname, BSDF *mat, bool bothSides=false) 
-    : Object(mat), bothSides(bothSides) { 
-    loadObj(fname); 
-  };
-  
   // Caller should set the `prims` vector to contain all the Triangles.
   void loadTriangles(std::vector<Primitive *>& prims);
-  void loadObj(const char *fname);
 
   bool hit(Ray& r, HitRec &rec);
-  Vec sample(double *pdf, RNG& rng) { return T * Vec(); };
   
   Aggregate *mesh;
-  bool bothSides = true;
+  bool bothSides = false;
 };
 
 #endif // __TRIANGLE_MESH_H__

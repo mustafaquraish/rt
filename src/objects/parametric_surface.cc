@@ -26,12 +26,12 @@ void ParametricSurface::createSurface() {
   std::vector<Primitive *> tris_list;
 
   for (int i = 0; i < aCount; i++) {
-    double a1 = aMin + i * d_a;
-    double a2 = a1 + d_a;
+    double a1 = aMin + d_a * i;
+    double a2 = aMin + d_a * (i + 1);
 
     for (int j = 0; j < bCount; j++) {
-      double b1 = bMin + j * d_b;
-      double b2 = b1 + d_b;
+      double b1 = bMin + d_b * j;
+      double b2 = bMin + d_b * (j + 1);
 
       // Get current circle points / normals./ tex coords..
       //   names represent p_ab, n_ab and t_ab

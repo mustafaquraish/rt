@@ -1,4 +1,7 @@
 #include "objects/lsystem.h"
+#include "core/rt.h"
+#include <unordered_map>
+
 
 void LSystem::createLSystem(char type, int depth, Matrix pTransform,
                             std::vector<Primitive *>& obj_list, RNG& rng) {
@@ -49,7 +52,7 @@ void LSystem::finalize() {
   std::vector<Primitive *> obj_list;
   RNG rng = RNG(seed);
   createLSystem('a', 0, Matrix(), obj_list, rng);
-  objs = new AGGREGATE(obj_list);
+  objs = new BVH(obj_list);
   bounds = objs->bounds;
   Object::finalize();
 }

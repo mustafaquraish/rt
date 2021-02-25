@@ -11,5 +11,5 @@ struct Path : Integrator {
   Colour SampleLight(HitRec& rec, Scene *scene, RNG& rng);
   Colour Li(Ray& r, Scene *scene, RNG& rng);
 };
-
+ 
 #endif // __PATH_H__

@@ -1,7 +1,4 @@
 #include "integrators/ambient_occlusion.h"
-#include "core/rt.h"
-#include "time.h"
-
 
 Colour AmbientOcclusion::Li(Ray &ray, Scene *scene, RNG& rng) {
   HitRec rec, tmp;
