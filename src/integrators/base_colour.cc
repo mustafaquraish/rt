@@ -56,7 +56,6 @@ void BaseColour::render(Scene *scene, int depth) {
   clock_t timeEnd = clock();
   double buildTime = (double)(timeEnd - timeBegin) / CLOCKS_PER_SEC;
   printf("\n[+] Rendering completed in %.3fs\n", buildTime);
-  cout << endl;
 
   const char *output_file = params.getStr("output");
   im.save(output_file);
