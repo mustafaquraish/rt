@@ -99,9 +99,9 @@ BVH::BVH(std::vector<Primitive *>& prims, int start, int end) {
   // Now onto the regular recursive building...
 
   if (num == 1) {
-    a = b = prims[start];
+    a = prims[start];
+    b = NULL;
     bounds = a->bounds;
-    // b = NULL;
     isLeaf = 1;
     return;
 
@@ -124,8 +124,8 @@ BVH::BVH(std::vector<Primitive *>& prims, int start, int end) {
   int mid = surfaceAreaHueristic(prims, start, end, totalBounds, dim);
   // int mid = equalCounts(prims, start, end, totalBounds, dim);  
   
-  a = new BVH(prims, start, mid);
-  b = new BVH(prims, mid, end);
+  bva = new BVH(prims, start, mid);
+  bvb = new BVH(prims, mid, end);
   
   bounds = totalBounds;
 
@@ -133,7 +133,7 @@ BVH::BVH(std::vector<Primitive *>& prims, int start, int end) {
   if (topLevel) {
     clock_t timeEnd = clock();
     double buildTime = (double)(timeEnd - timeBegin) / CLOCKS_PER_SEC;
-    printf(": %.3fs\n", buildTime);
+    printf(": %.3fs, address: %p\n", buildTime, this);
   }
 #endif
   return;
@@ -144,24 +144,24 @@ bool BVH::hit(Ray& ray, HitRec& rec) {
     // Intersect both children
     HitRec ra, rb;
     bool hit_a = a->hit(ray, rec);
-    bool hit_b = b->hit(ray, rec);
+    bool hit_b = (b == NULL) ? false : b->hit(ray, rec);
     return hit_a || hit_b;
   }
 
   // Check both children's bounding boxes
   double a1, a2, b1, b2;
-  int hit_a = a->bounds.hit(ray, a1, a2);
-  int hit_b = b->bounds.hit(ray, b1, b2);
+  int hit_a = bva->bounds.hit(ray, a1, a2);
+  int hit_b = bvb->bounds.hit(ray, b1, b2);
 
   if (!hit_a && !hit_b) return false;  // Hit none of them
-  if (!hit_b) return a->hit(ray, rec); // Didn't hit b, recurse on a
-  if (!hit_a) return b->hit(ray, rec); // Didn't hit a, recurse on b
+  if (!hit_b) return bva->hit(ray, rec); // Didn't hit b, recurse on a
+  if (!hit_a) return bvb->hit(ray, rec); // Didn't hit a, recurse on b
 
   // OK, we hit both children. Want to see which bounding box is 
   // closer to the ray
   HitRec r1, r2;
-  Primitive *first = a1 <  b1 ? a : b;  // `first` is the child starting closer
-  Primitive *secnd = a1 >= b1 ? a : b;  // 'secnd` is the child starting after
+  BVH *first = a1 <  b1 ? bva : bvb;  // `first` is the child starting closer
+  BVH *secnd = a1 >= b1 ? bva : bvb;  // 'secnd` is the child starting after
 
   int hit_first = first->hit(ray, rec);
   int hit_secnd = secnd->hit(ray, rec);

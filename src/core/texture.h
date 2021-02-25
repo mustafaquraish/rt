@@ -13,7 +13,7 @@ struct ImageTexture : Texture {
   ImageTexture(const char *fname) { im = new Image(fname); }
   Colour get(HitRec& rec) { return im->get(rec.u, 1-rec.v); }
 private:
-  Image *im = NULL;
+  Image *im = NULL; 
 };
 
 struct CheckerTexture : Texture {

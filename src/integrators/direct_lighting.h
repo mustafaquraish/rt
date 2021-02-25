@@ -2,8 +2,6 @@
 #define __DIRECT_LIGHTING_H__
 
 #include "core/integrator.h"
-#include "util/params.h"
-#include "core/primitive.h"
 
 struct DirectLighting : Integrator {
   DirectLighting(RenderParams params) : Integrator(params) {};

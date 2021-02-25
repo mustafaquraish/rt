@@ -1,6 +1,4 @@
-#include "core/rt.h"
 #include "integrators/debug_shader.h"
-#include "time.h"
 
 int DEBUG = 0;
 

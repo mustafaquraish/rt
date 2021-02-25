@@ -47,9 +47,13 @@ Vec Object::normalMapped(const Vec& canon_n, HitRec& rec) {
   return n;
 }
 
-
 Ray Object::rayTransform(const Ray& r) {
   return Ray(T_inv * r.p, T_inv % r.d, r.tMax);
+}
+
+Vec Object::sample(double *pdf, RNG& rng) {
+  *pdf = 1 / surfaceArea;
+  return T * Vec();
 }
 
 Vec Object::normalTransform(const Vec& n) {

@@ -1,7 +1,4 @@
 #include "integrators/base_colour.h"
-#include "core/rt.h"
-#include "time.h"
-#include "core/bsdf.h"
 
 #define PATH_MAX_BOUNCES 30
 
@@ -42,7 +39,7 @@ void BaseColour::render(Scene *scene, int depth) {
   #pragma omp parallel for schedule(dynamic)
   for (int i = 0; i < sx; i++) {
     // Seed RNG with some random function based on row number
-    RNG rng;
+    RNG rng = RNG(1);
 
     printf("\rRendering %d / %d ~ %.2f", done, sx, done/total); fflush(stdout);
     for (int j = 0; j < sy; j++) {
@@ -50,8 +47,6 @@ void BaseColour::render(Scene *scene, int depth) {
       for (int sample = 0; sample < total_samples; sample++) {
         Ray ray = scene->cam.getRay(i, j);
         col += Li(ray, scene, rng) / total_samples;
-        if (i == 11 && j == 34)
-          col = Colour(0, 1, 0);
       }
       im.set(i, j, col);
     }

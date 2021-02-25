@@ -1,6 +1,4 @@
 #include "core/rt.h"
-#include "materials/emitter.h"
-#include "materials/mirror.h"
 
 using namespace std;
 

@@ -1,4 +1,8 @@
 #include "core/scene.h"
+#include "aggregates/bvh.h"
+#include "aggregates/primitive_list.h"
+#include "objects/triangle_mesh.h"
+#include "core/integrator.h"
 
 void Scene::add(Object *obj) { 
   // Finalize object first...
@@ -11,10 +15,23 @@ void Scene::add(Object *obj) {
 };
 
 void Scene::finalize() { 
-  world = new AGGREGATE(obj_list);
+  if (obj_list.size() > 15) 
+    world = new BVH(obj_list);
+  else 
+    world = new PrimitiveList(obj_list);
 };
 
-Scene *SceneFactory::Create(const std::string &name, RenderParams &params) {
+Scene::~Scene() {
+  RTMeshList::cleanup();
+  for (auto prim : obj_list) {
+    delete prim;
+  }
+  delete world;
+  delete integrator;
+}
+
+
+Scene *RTSceneFactory::Create(const std::string &name, RenderParams &params) {
   if (mapping.find(name) == mapping.end()) {
     printf("ERROR: Scene %s is not defined.\n", name.c_str());
     exit(1);
@@ -22,10 +39,10 @@ Scene *SceneFactory::Create(const std::string &name, RenderParams &params) {
   return mapping[name](params);
 }
 
-Scene *SceneFactory::Create(RenderParams &params) {
+Scene *RTSceneFactory::Create(RenderParams &params) {
   return Create(params.getStr("scene"), params);
 }
 
-void SceneFactory::Register(const std::string &name, SceneDefinition func) {
+void RTSceneFactory::Register(const std::string &name, SceneDefinition func) {
   mapping[name] = func;
 }
