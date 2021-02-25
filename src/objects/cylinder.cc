@@ -1,5 +1,4 @@
 #include "objects/cylinder.h"
-#include "core/rt.h"
 
 // extern int DEBUG;
 
