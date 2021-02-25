@@ -16,5 +16,8 @@ test_img: test_img.cc ../src/util/image.cc
 test_sphere: test_sphere.cc ../src/objects/sphere.cc ../src/core/object.cc
 	$(CC) $(CFLAGS) -o $@ $^
 
+test_perlin: test_perlin.cc ../src/util/image.cc
+	$(CC) $(CFLAGS) -o $@ $^
+
 clean:
 	rm -f test_math test_ray test_cam test_sphere test_img test*.ppm

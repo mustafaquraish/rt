@@ -30,7 +30,7 @@ struct Object : Primitive {
   BSDF *getBSDF(HitRec& rec) { return bsdf; }
   
   virtual bool hit(Ray& r, HitRec &rec) = 0;
-  virtual Vec sample(double *pdf, RNG& rng) = 0;
+  virtual Vec sample(double *pdf, RNG& rng);
 
   BSDF *bsdf = NULL;
   Texture *normalMap = NULL;

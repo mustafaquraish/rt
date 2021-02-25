@@ -3,7 +3,10 @@
 
 #include "core/rng.h"
 #include "core/ray.h"
+#include "core/object.h"
+#include "core/scene.h"
 #include "util/params.h"
+#include "time.h"
 
 struct Scene;
 

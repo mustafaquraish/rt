@@ -49,11 +49,17 @@ bool Implicit::hit(Ray& r, HitRec& rec) {
   Vec canon_n = (Vec(F(p.x + EPS, p.y , p.z),
                      F(p.x , p.y + EPS, p.z),
                      F(p.x , p.y , p.z + EPS)) - v0) / EPS;
+  canon_n = norm(canon_n);
 
   rec.t = lambda;
   rec.p = r.at(lambda);
+
+  rec.u = atan2(canon_n.z, canon_n.x) / (2 * PI) + 0.5;
+  rec.v = 0.5 - asin(canon_n.y) / PI;
+
+  canon_n = normalMapped(canon_n, rec);
   rec.n = normalTransform(canon_n);
-  rec.u = rec.v = 0;
+
   rec.obj = this;
   r.tMax = min(r.tMax, lambda);
   return true;

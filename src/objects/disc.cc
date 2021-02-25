@@ -1,5 +1,4 @@
 #include "objects/disc.h"
-#include "core/rt.h"
 
 
 bool Disc::hit(Ray& r, HitRec& rec) {

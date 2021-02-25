@@ -1,12 +1,15 @@
-CC       = g++
-INCLUDE  = src
-OBJ      = build
-SRC      = src
-SRCS     = $(wildcard $(SRC)/**/*.cc) src/main.cc
-OBJS     = $(patsubst $(SRC)/%.cc,$(OBJ)/%.o,$(SRCS))
-EXE      = raytrace
-CFLAGS   = -g -I$(INCLUDE) -std=c++17
-LDLIBS   = -lm
+CC        = g++
+INCLUDE   = src
+OBJ       = build
+SRC       = src
+SRCS      = $(wildcard $(SRC)/**/*.cc) src/main.cc
+DEPDIR   := $(OBJ)/deps
+DEPFILES := $(patsubst $(SRC)/%.cc,$(DEPDIR)/%.d,$(SRCS))
+OBJS      = $(patsubst $(SRC)/%.cc,$(OBJ)/%.o,$(SRCS))
+DEPFLAGS  = -MT $@ -MMD -MP -MF $(DEPDIR)/$*.d
+EXE       = raytrace
+CFLAGS    = -g -I$(INCLUDE) -std=c++17
+LDLIBS    = -lm
 
 .PHONY: all run clean release debug
 
@@ -21,23 +24,24 @@ ifeq ($(UNAME_S),Darwin)
 	LDLIBS += -lomp
 endif
 
-$(EXE): $(OBJS) | $(BIN)
-	$(CC) $(CFLAGS) $^ -o $@ $(LDLIBS)
-
-build/scenes/implicit_scene.o: src/objects/implicit.h
-build/scenes/sor_scene.o: src/objects/surface_revolution.h
-build/scenes/sor_scene.o: src/objects/bevel_curve.h
-build/scenes/sor_scene.o: src/objects/parametric_surface.h
-build/scenes/cornell_scene.o: src/core/texture.h
-build/scenes/cornell_scene.o: src/core/bsdf.h
-build/scenes/cornell_scene.o: src/util/image.h
-
-$(OBJ)/%.o: $(SRC)/%.cc | $(OBJ)
+$(DEPFILES):
 	@mkdir -p "$(@D)"
-	$(CC) $(CFLAGS) -c $< -o $@ 
+	
+$(EXE): $(OBJS) | $(BIN)
+	@echo "Building final executable $@"
+	@$(CC) $(CFLAGS) $^ -o $@ $(LDLIBS)
+
+$(OBJ)/%.o : $(SRC)/%.cc $(DEPDIR)/%.d | $(DEPDIR)
+	@echo "Compiling $@"
+	@mkdir -p "$(@D)"
+	@$(CC) $(DEPFLAGS) $(CFLAGS) -c $< -o $@ 
 
 $(OBJ):
-	mkdir -p $@
+	@mkdir -p $@
+
+$(DEPDIR): 
+	@mkdir -p $@
+
 
 # No compiler optimizations enabled, use default flags.
 debug: $(EXE)
@@ -50,3 +54,4 @@ release: $(EXE)
 clean:
 	rm -rf $(OBJ) $(EXE)
 
+include $(wildcard $(DEPFILES))
