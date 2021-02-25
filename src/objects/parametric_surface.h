@@ -7,6 +7,7 @@
 #define __PARAMETRIC_SURFACE_H__
 
 #include "objects/triangle_mesh.h"
+#include <vector>
 
 struct ParametricSurface : TriangleMesh {
   ParametricSurface(BSDF *mat,
@@ -20,16 +21,15 @@ struct ParametricSurface : TriangleMesh {
       : TriangleMesh(mat), aCount(aCount), aMin(aMin), aMax(aMax),
         bCount(bCount), bMin(bMin), bMax(bMax) {}
 
-  void createSurface();
+  std::vector<Primitive *> createSurface();
 
-  void finalize() {
-    createSurface();
-    Object::finalize();
-  }
+  void finalize();
 
   int aCount, bCount;
   double aMin, aMax;
   double bMin, bMax;
+
+  bool interpolateNormals = true;
 
   // Parametric function to give points along surface
   virtual Vec P(double a, double b) = 0;

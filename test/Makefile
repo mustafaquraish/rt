@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -I ../src/ -std=c++17
+CFLAGS = -ggdb3 -I ../src/ -std=c++17
 
 test_math: test_math.cc ../src/core/math.cc
 	$(CC) $(CFLAGS) -o $@ $^
@@ -17,6 +17,9 @@ test_sphere: test_sphere.cc ../src/objects/sphere.cc ../src/core/object.cc
 	$(CC) $(CFLAGS) -o $@ $^
 
 test_perlin: test_perlin.cc ../src/util/image.cc
+	$(CC) $(CFLAGS) -o $@ $^
+
+test_converter: test_converter.cc ../src/util/map_converter.cc ../src/util/image.cc
 	$(CC) $(CFLAGS) -o $@ $^
 
 clean:

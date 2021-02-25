@@ -101,6 +101,7 @@ void Image::save(char const *fname, bool gammaCorrect) {
   fwrite(bits24, sx * sy * 3 * sizeof(unsigned char), 1, f);
   fclose(f);
   delete[] bits24;
+  printf("[+] Saved output file: %s\n", fname);
   return;
 }
 

@@ -4,10 +4,12 @@
 using namespace std;
 
 Vec ParametricSurface::N(double a, double b) {
-  double EPS = 10e-4;
+  double EPS = 10e-5;
   Vec p_ab = P(a, b);
-  Vec ta = norm((P(a+EPS, b) - p_ab) / EPS);
-  Vec tb = norm((P(a, b+EPS) - p_ab) / EPS);
+  double a2 = clamp(a+EPS, aMin, aMax);
+  double b2 = clamp(b+EPS, bMin, bMax);
+  Vec ta = norm((P(a2, b ) - p_ab) / EPS);
+  Vec tb = norm((P(a , b2) - p_ab) / EPS);
   return cross(tb, ta);
 }
 
@@ -19,7 +21,13 @@ Vec ParametricSurface::T(double a, double b) {
   );
 }
 
-void ParametricSurface::createSurface() {
+void ParametricSurface::finalize() {
+  auto prims = createSurface();
+  loadTriangles(prims);
+  Object::finalize();
+}
+
+std::vector<Primitive *> ParametricSurface::createSurface() {
   double d_a = (aMax - aMin) / (double)aCount;
   double d_b = (bMax - bMin) / (double)bCount;
 
@@ -35,23 +43,28 @@ void ParametricSurface::createSurface() {
 
       // Get current circle points / normals./ tex coords..
       //   names represent p_ab, n_ab and t_ab
-      Vec p_11 = P(a1, b1); Vec n_11 = N(a1, b1); Vec t_11 = T(a1, b1);
-      Vec p_12 = P(a1, b2); Vec n_12 = N(a1, b2); Vec t_12 = T(a1, b2);
+      Vec p_11 = P(a1, b1); Vec t_11 = T(a1, b1);
+      Vec p_12 = P(a1, b2); Vec t_12 = T(a1, b2);
 
-      Vec p_21 = P(a2, b1); Vec n_21 = N(a2, b1); Vec t_21 = T(a2, b1);
-      Vec p_22 = P(a2, b2); Vec n_22 = N(a2, b2); Vec t_22 = T(a2, b2);
+      Vec p_21 = P(a2, b1); Vec t_21 = T(a2, b1);
+      Vec p_22 = P(a2, b2); Vec t_22 = T(a2, b2);
       
-      Triangle *tri1 = new Triangle(p_11, p_12, p_22,
-                                    n_11, n_12, n_22,
-                                    t_11, t_12, t_22);
+      Triangle *t1, *t2;
+      if (interpolateNormals) {
+        Vec n_11 = N(a1, b1), n_12 = N(a1, b2); 
+        Vec n_21 = N(a2, b1), n_22 = N(a2, b2);
+        t1 = new Triangle(p_11, p_12, p_22, n_11, n_12, n_22, t_11, t_12, t_22);
+        t2 = new Triangle(p_11, p_22, p_21, n_11, n_22, n_21, t_11, t_22, t_21);
+      } else {
+        Vec n1 = cross(p_12 - p_11, p_22 - p_11);
+        Vec n2 = cross(p_22 - p_11, p_21 - p_11);
+        t1 = new Triangle(p_11, p_12, p_22, n1, n1, n1, t_11, t_12, t_22);
+        t2 = new Triangle(p_11, p_22, p_21, n2, n2, n2, t_11, t_22, t_21);
+      }
 
-      Triangle *tri2 = new Triangle(p_11, p_22, p_21,
-                                    n_11, n_22, n_21,
-                                    t_11, t_22, t_21);
-
-      tris_list.push_back(tri1);
-      tris_list.push_back(tri2);
+      tris_list.push_back(t1);
+      tris_list.push_back(t2);
     }
   }
-  loadTriangles(tris_list);
+  return tris_list;
 }
