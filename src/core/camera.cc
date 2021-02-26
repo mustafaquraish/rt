@@ -15,14 +15,13 @@ Camera::Camera(Vec e, Vec g, Vec up, double f, RenderParams& params) :
   W2C = invert(C2W);
 
   // TODO: Separate X/Y
-  int sx = params.getInt("width");
-  int sy = params.getInt("height");
+  int sx = params.get<int>("width");
+  int sy = params.get<int>("height");
 
   if (params.exists("aperture") && params.exists("focus_dist")) {
     DOF = true;
-    aperture = params.getDbl("aperture");
-    focus_dist = params.getDbl("focus_dist");
-    printf("Dof??? aperture = %f, fd = %f\n", aperture, focus_dist);
+    aperture = params.get<double>("aperture");
+    focus_dist = params.get<double>("focus_dist");
   }
 
   double xsize = 4; 

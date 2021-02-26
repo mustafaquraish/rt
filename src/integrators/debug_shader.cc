@@ -3,8 +3,8 @@
 int DEBUG = 0;
 
 void DebugShader::render(Scene *scene, int depth) {
-  int sx = params.getInt("width");
-  int sy = params.getInt("height");
+  int sx = params.get<int>("width");
+  int sy = params.get<int>("height");
 
   int done = 0;
   Image im = Image(sx, sy);
@@ -45,7 +45,7 @@ void DebugShader::render(Scene *scene, int depth) {
 
   printf("\n[+] Rendering completed in %.3fs\n", buildTime);
 
-  const char *output_file = params.getStr("output");
+  const char *output_file = params.get<char *>("output");
   im.save(output_file, false);
   return;
 }

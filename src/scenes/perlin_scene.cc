@@ -56,15 +56,6 @@ SCENE(Perlin) {
   s->Translate(0, -10, 6);
   scene->add(s);
 
-  //  s = new SaddleParametric(new Lambertian(1));
-   s = new PerlinTerrain(new Lambertian(1), 100);
-  // s = new TorusKnotBevel(new Lambertian(1));
-  s->Scale(10, 10, 4);
-  s->RotateX(PI/2);
-  s->Translate(0,0,5);  
-  scene->add(s); 
-
-
   s = new Plane(new Emitter(Colour(12, 12, 12)));
   s->Scale(.5,2.5,10);
   s->RotateX(PI/2);

@@ -133,7 +133,7 @@ BVH::BVH(std::vector<Primitive *>& prims, int start, int end) {
   if (topLevel) {
     clock_t timeEnd = clock();
     double buildTime = (double)(timeEnd - timeBegin) / CLOCKS_PER_SEC;
-    printf(": %.3fs, address: %p\n", buildTime, this);
+    printf(": %.3fs\n", buildTime);
   }
 #endif
   return;
