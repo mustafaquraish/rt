@@ -13,7 +13,7 @@ SCENE(Cornell) {
 
   scene->integrator = new Path(params);
   // scene->integrator = new DirectLighting(params);
-  // scene->integrator = new DebugShader(params);
+  scene->integrator = new DebugShader(params);
   // scene->integrator = new BaseColour(params);
   
   Object *s;
@@ -99,7 +99,7 @@ SCENE(Cornell) {
 
   double frame = 0;
   double speed = 0.5;
-  if (params.exists("frame")) frame = params.getInt("frame");
+  if (params.exists("frame")) frame = params.get<int>("frame");
   double R = inverseLerp(frame, 0, 60);
 
 

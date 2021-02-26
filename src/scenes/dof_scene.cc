@@ -10,8 +10,8 @@ SCENE(DOF) {
   Vec g = Vec(0, -2, 0) - e;
   Vec up = Vec(0, 1, 0);
 
-  params.setDbl("aperture", 1);
-  params.setDbl("focus_dist", 15);
+  params.set<double>("aperture", 1);
+  params.set<double>("focus_dist", 15);
 
   scene->cam = Camera(e, g, up, -3, params);
 
