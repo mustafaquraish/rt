@@ -13,9 +13,8 @@ SCENE(Room) {
   double dist = length(Vec(-2, -2, -7.5) - e);
   // double dist = length(Vec(-6.5, -9, 1) - e);
 
-  // params.setDbl("aperture", .7);
-  // params.setDbl("focus_dist", 35);
-
+  // params.set<double>("aperture", 0.7);
+  // params.set<double>("focus_dist", 35.0);
 
   scene->cam = Camera(e, g, up, -7, params);
 

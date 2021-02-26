@@ -37,7 +37,7 @@ Scene *RTSceneFactory::Create(const std::string &name, RenderParams &params) {
 }
 
 Scene *RTSceneFactory::Create(RenderParams &params) {
-  return Create(params.getStr("scene"), params);
+  return Create(params.get<const char *>("scene"), params);
 }
 
 void RTSceneFactory::Register(const std::string &name, SceneDefinition func) {
