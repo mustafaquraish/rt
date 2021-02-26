@@ -372,8 +372,8 @@ inline T lerp(double fac, const T a, const T b) {
 }
 
 template<typename T>
-inline T inverseLerp(double _min, double _max, const T value) {
-  return map(value, _min, _max, 0, 1);
+inline T inverseLerp(const T s, double sMin, double sMax) {
+  return (s - sMin) / (sMax - sMin);
 }
 
 template<typename T>

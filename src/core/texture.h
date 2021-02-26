@@ -4,7 +4,7 @@
 #include "core/primitive.h"
 #include <unordered_map>
 #include "util/image.h"
-#include "core/perlin.h"
+#include "ext/SimplexNoise.h"
 
 struct Texture {
   virtual Colour get(HitRec& rec) = 0;
@@ -42,12 +42,17 @@ struct PerlinTexture : Texture {
   Colour get(HitRec& rec) {
     double x = rec.u * scale;
     double y = rec.v * scale;
-    double z = seed * scale;
-    double perlin = Perlin::layered(x, y, z, octaves, persistence, lacunarity); 
+
+    double theta = lerp(seed, 0.0, TAU);
+    double z = cos(theta);
+    double w = sin(theta);
+
+    double perlin = Simplex::layered(octaves, persistence, x, y, z, w);
+ 
     switch (type) {
-    case Layered:    return map(perlin, -1, 1, 0, 1); break;
-    case Turbulence: return abs(perlin);              break;
-    case Marble:     return (1+sin(10*perlin)) / 2;   break;    
+    case Layered:    return inverseLerp(perlin, -1, 1); break;
+    case Turbulence: return abs(perlin);                break;
+    case Marble:     return (1+sin(10*perlin)) / 2;     break;    
     default:         return perlin; break;
     }
   }
