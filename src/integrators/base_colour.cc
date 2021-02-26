@@ -24,9 +24,9 @@ Colour BaseColour::Li(Ray &r, Scene *scene, RNG& rng) {
 }
 
 void BaseColour::render(Scene *scene, int depth) {
-  int total_samples = params.getInt("samples");
-  int sx = params.getInt("width");
-  int sy = params.getInt("height");
+  int total_samples = params.get<int>("samples");
+  int sx = params.get<int>("width");
+  int sy = params.get<int>("height");
   
   Image im = Image(sx, sy);
 
@@ -56,9 +56,8 @@ void BaseColour::render(Scene *scene, int depth) {
   clock_t timeEnd = clock();
   double buildTime = (double)(timeEnd - timeBegin) / CLOCKS_PER_SEC;
   printf("\n[+] Rendering completed in %.3fs\n", buildTime);
-  cout << endl;
 
-  const char *output_file = params.getStr("output");
+  const char *output_file = params.get<char *>("output");
   im.save(output_file);
   // im.saveHDR(output_file);
   return;

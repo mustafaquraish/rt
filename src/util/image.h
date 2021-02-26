@@ -21,7 +21,7 @@ struct Image {
   
   int sx, sy;
   double *data;
-  double *weights;
+  double *weights = NULL;
 };
 
 #endif // __IMAGE_H__

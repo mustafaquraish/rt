@@ -32,7 +32,7 @@ Triangle::Triangle(Vec  p0, Vec  p1, Vec  p2,
 
 Triangle::Triangle(Vec  p0, Vec  p1, Vec  p2) {
 
-  Vec nn = cross(p2-p0, p1-p0);
+  Vec nn = cross(p1-p0, p2-p0);
   p[0] = p0; n[0] = nn;
   p[1] = p1; n[1] = nn;
   p[2] = p2; n[2] = nn;

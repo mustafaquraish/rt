@@ -12,6 +12,7 @@ struct Scene;
 
 struct Integrator {
   Integrator(RenderParams& params) : params(params) {};
+  virtual ~Integrator() {};
 
   virtual void render(Scene *scene, int depth) = 0;
   virtual Colour Li(Ray& r, Scene *scene, RNG& rng) { return Vec(0); };

@@ -1,19 +1,43 @@
 #include "core/scene.h"
 #include "core/integrator.h"
 
+
 int main(int argc, char **argv) {
   RenderParams params(argc, argv);
-  if (!params.exists("width"))   params.setInt("width", 512);
-  if (!params.exists("height"))  params.setInt("height", 512);
-  if (!params.exists("samples")) params.setInt("samples", 10);
-  if (!params.exists("output"))  params.setStr("output", "output.ppm");
+  
+  if (!params.get<bool>("animate")) {
 
-  if (!params.exists("scene")) params.setStr("scene", "Cornell");
+    Scene *scene = RTSceneFactory::Create(params);
+    if (scene->integrator) scene->integrator->render(scene, 10);
+    delete scene;
 
-  Scene *scene = RTSceneFactory::Create(params);
+  } else {
 
-  if (scene->integrator) scene->integrator->render(scene, 10);
+    int frameBegin = params.get<int>("frameBegin");
+    int frameEnd = params.get<int>("frameEnd");
 
-  delete scene;
+    char origOut[1024];
+    const char *of = params.get<char *>("output");
+    strcpy(origOut, of);
+    printf("Orig output is : %s\n", origOut);
+
+
+    char buffer[1024];
+    params.set<const char *>("output", "temp.ppm");
+    for (int frame = frameBegin; frame < frameEnd; frame++) {
+      printf("\n================ Frame %d ===================\n", frame);
+      params.update(frame);
+
+      Scene *scene = RTSceneFactory::Create(params);
+      if (scene->integrator) scene->integrator->render(scene, 10);
+      delete scene;
+      
+      sprintf(buffer, "convert temp.ppm frames/%02d.png", frame);
+      system(buffer);
+    }
+    sprintf(buffer, "convert frames/*.png %s", origOut);
+    system(buffer);
+  }
+
   return 0;
 }

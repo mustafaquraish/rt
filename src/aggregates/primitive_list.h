@@ -11,11 +11,7 @@ struct PrimitiveList : Aggregate {
     for (Primitive *prim : list) 
       bounds = combine(bounds, prim->bounds);
   };
-  ~PrimitiveList() {
-    for (auto prim : list) {
-      delete prim;
-    }
-  }
+  ~PrimitiveList();
   bool hit(Ray& r, HitRec &rec);
   std::vector<Primitive *> list;
 };

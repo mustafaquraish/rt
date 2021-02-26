@@ -21,6 +21,8 @@ void RTMeshList::cleanup() {
   for (auto agg : allMeshes) {
     delete agg;
   }
+  allMeshes.clear();
+  objFileMapping.clear();
 }
 
 /*****************************************************************************/
