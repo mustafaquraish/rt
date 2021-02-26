@@ -29,7 +29,6 @@ using std::endl;
 #include "objects/triangle_mesh.h"
 #include "objects/bevel_curve.h"
 #include "objects/surface_revolution.h"
-#include "objects/terrain.h"
 #include "objects/displaced.h"
 
 // Integrators

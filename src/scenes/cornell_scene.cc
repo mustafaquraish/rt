@@ -100,7 +100,8 @@ SCENE(Cornell) {
   double frame = 0;
   double speed = 0.5;
   if (params.exists("frame")) frame = params.getInt("frame");
-  double R = map(frame, 0, 60, 0, 1) * speed;
+  double R = inverseLerp(frame, 0, 60);
+
 
   s = new DisplacedPlane(
                           new PerlinTexture(Layered, 4, 4, 0.5, 2, R),
