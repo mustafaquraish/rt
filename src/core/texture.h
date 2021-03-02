@@ -14,7 +14,7 @@ struct Texture {
 
 struct ImageTexture : Texture {
   ImageTexture(const char *fname) { im = new Image(fname); }
-  Colour get(HitRec& rec) { return im->get(rec.u, 1-rec.v); }
+  virtual Colour get(HitRec& rec) { return im->get(rec.u, 1-rec.v); }
 private:
   Image *im = NULL; 
 };
@@ -22,7 +22,7 @@ private:
 struct CheckerTexture : Texture {
   CheckerTexture(double scale = 0.1) : scale(scale) {};
   
-  Colour get(HitRec& rec) {
+  virtual Colour get(HitRec& rec) {
     int fx = rec.u / scale;
     int fy = rec.v / scale;
     bool fac = (fx + fy) % 2;
@@ -32,37 +32,49 @@ struct CheckerTexture : Texture {
   double scale;
 };
 
-enum PerlinType {Layered, Turbulence, Marble};
+
 struct PerlinTexture : Texture {
   PerlinTexture(PerlinType type = Layered, double scale = 8, int octaves = 4, 
-                double persistence = 0.5, double lacunarity = 2, double seed=0) 
-      : scale(scale), octaves(octaves), persistence(persistence), 
-        lacunarity(lacunarity), type(type), seed(seed) {};
+                double persistence = 0.5, double seed=0) 
+      : scale(scale), octaves(octaves), persistence(persistence), type(type), 
+        seed(seed) {};
   
-  Colour get(HitRec& rec) {
+  virtual Colour get(HitRec& rec) {
+    double x = rec.u * scale;
+    double y = rec.v * scale;
+
+    double perlin;
+
+    /* It's more effcient to use the perlin 2D texture if we don't need 3D */
+    if (seed == 0) perlin = Simplex::layered(octaves, persistence, x, y);
+    else           perlin = Simplex::layered(octaves, persistence, x, y, seed);
+    
+    return Simplex::convertTo(perlin, type);
+  }
+
+  PerlinType type;
+  double scale;
+  double persistence;
+  double seed;
+  int octaves;
+};
+
+// 4-Dimensional perlin noise texture, uses `seed` \in [0,1] to perfectly loop
+struct Perlin4DTexture : PerlinTexture {
+  using PerlinTexture::PerlinTexture;
+  
+  virtual Colour get(HitRec& rec) {
     double x = rec.u * scale;
     double y = rec.v * scale;
 
     double theta = lerp(seed, 0.0, TAU);
     double z = cos(theta);
     double w = sin(theta);
-
     double perlin = Simplex::layered(octaves, persistence, x, y, z, w);
  
-    switch (type) {
-    case Layered:    return inverseLerp(perlin, -1, 1); break;
-    case Turbulence: return abs(perlin);                break;
-    case Marble:     return (1+sin(10*perlin)) / 2;     break;    
-    default:         return perlin; break;
-    }
+    return Simplex::convertTo(perlin, type);
   }
-
-  PerlinType type;
-  double scale;
-  double persistence;
-  double lacunarity;
-  double seed;
-  int octaves;
 };
+
 
 #endif // __TEXTURE_H__

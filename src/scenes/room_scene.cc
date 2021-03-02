@@ -7,21 +7,22 @@ SCENE(Room) {
   Scene *scene = new Scene();
   
   Vec e = Vec(0, -4, -40);
-  Vec g = Vec(0, -1, 0) - e;
+  Vec g = Vec(0, -1.2, 0) - e;
   Vec up = Vec(0, 1, 0);
 
   double dist = length(Vec(-2, -2, -7.5) - e);
   // double dist = length(Vec(-6.5, -9, 1) - e);
 
-  // params.set<double>("aperture", 0.7);
-  // params.set<double>("focus_dist", 35.0);
+  params.set<double>("aperture", .5);
+  params.set<double>("focus_dist", 35);
+
 
   scene->cam = Camera(e, g, up, -7, params);
 
   scene->integrator = new Path(params);
   // scene->integrator = new DebugShader(params);
   // scene->integrator = new BaseColour(params);
-  scene->integrator = new DirectLighting(params);
+  // scene->integrator = new DirectLighting(params);
   
   Object *s;
 
@@ -62,10 +63,14 @@ SCENE(Room) {
 /******************* ORBS ****************************************************/
 
   // Left 
-  s = new Sphere(new Transmissive(2.2, Colour(.95)));
-  s->addNormalMap(new ImageTexture("assets/tex/water-norm.ppm"));
+  s = new DisplacedSphere(
+    new ImageTexture("assets/tex/sand-bump.ppm"),
+    new Transmissive(2.2, Colour(.95))
+  );
   s->Scale(2);
-  s->Translate(-10, -8, -5);
+  s->RotateX(PI/2);
+  s->RotateY(-PI/2);
+  s->Translate(-10, -7.8, -5);
   scene->add(s);
 
   // Center
@@ -75,16 +80,10 @@ SCENE(Room) {
   s->Translate(0, -10, -5);
   scene->add(s);
 
-  s = new Sphere(new Lambertian(Colour(.95)));
-  s->Scale(1,1,0.1);
-  s->Translate(-2, -2, -7);
-  // scene->add(s);
-
   // Right
-  s = new Sphere(new Transmissive(2.2, Colour(.95)));
-  s->addNormalMap(new ImageTexture("assets/tex/water-norm.ppm"));
-  s->Scale(2);
-  s->Translate(10, -8, -5);
+  s = new TangleCube(new Transmissive(2.2, Colour(.95)));
+  // s->Scale(2);
+  s->Translate(10, -7.7, -5);
   scene->add(s);
 
 /******************* Candles *************************************************/
@@ -106,27 +105,31 @@ SCENE(Room) {
       s = new Sphere(new Emitter( Colour(1, .6, .3)*30 ));
       s->Scale(.2, .5, .2);
       s->Translate(xOff, -9, zOff);
-      // scene->add(s);
+      scene->add(s);
     }
   }
 
-  int seed = 4340;
+  // srand(time(NULL));
+  // int seed = rand();
+  // printf("========== Seed is : %d\n", seed);
+
+  int seed = 1217349511;
 
   s = new LSystem(seed);
   s->Scale(2.5, 2.5, 2.5);
   s->RotateX(-PI/2);
-  s->RotateY(-PI/2);
-  s->RotateZ(-PI/5);
-  s->Translate(-14, -15, 1);
+  // s->RotateY(-PI/8);
+  s->RotateZ(-PI/15);
+  s->Translate(-13, -14, 1);
   scene->add(s);
 
   s = new LSystem(seed);
   s->Scale(2.5, 2.5, 2.5);
   s->RotateX(-PI/2);
-  s->RotateY(-PI/2);
-  s->RotateZ(-PI/5);
+  // s->RotateY(-PI/8);
+  s->RotateZ(-PI/15);
   s->Scale(-1, 1, 1);
-  s->Translate(14, -15, 1);
+  s->Translate(13, -14, 1);
   scene->add(s);
 
 
@@ -197,7 +200,7 @@ SCENE(Room) {
   s = new Sphere(new Emitter(Colour(.99, .7, .5)*15));
   s->Scale(3, 1, 3);
   // s->RotateX(PI/2);
-  s->Translate(0,6.5,5);
+  s->Translate(0,9.5,5);
   scene->add(s);
 
   scene->world = new AGGREGATE(scene->obj_list);
