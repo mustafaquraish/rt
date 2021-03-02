@@ -461,4 +461,13 @@ double noise(double x, double y, double z, double w) {
   return 27.0 * (n0 + n1 + n2 + n3 + n4);
 }
 
+double convertTo(double perlin, PerlinType type) {
+  switch (type) {
+    case Layered:    return perlin * 0.5 + 0.5;     break;
+    case Turbulence: return abs(perlin);            break;
+    case Marble:     return (1+sin(10*perlin)) / 2; break;    
+    default:         return perlin;                 break;
+  }
+}
+
 }

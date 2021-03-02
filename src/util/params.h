@@ -2,6 +2,7 @@
 #define __RT_PARAMS_H__
 
 #include <string>
+#include "core/math.h"
 #include <unordered_map>
 
 using std::string;
@@ -18,6 +19,7 @@ struct RenderParams {
   RenderParams(int argc, char **argv);
 
   void update(int frame);
+  void setWindow(double xBegin, double xEnd, double yBegin, double yEnd);
 
   template <typename T>
   void set(const std::string &key, T value);

@@ -28,10 +28,10 @@
 
 /**************************** COMMON FUNCTIONS *******************************/
 
-inline double min(double a, double b) { return (a < b) ? a : b; }
-inline double max(double a, double b) { return (a > b) ? a : b; }
-inline double clamp01(double a) { return min(1, max(a, 0)); }
-inline double clamp(double a, double _min, double _max) { 
+inline double min(const double a, const double b) { return (a < b) ? a : b; }
+inline double max(const double a, const double b) { return (a > b) ? a : b; }
+inline double clamp01(const double a) { return min(1, max(a, 0)); }
+inline double clamp(const double a, const double _min, const double _max) { 
   return min(_max, max(a, _min)); 
 }
 
@@ -115,7 +115,9 @@ inline Vec& operator+=(Vec &a, const double& b) { return a = a + b; }
 inline Vec& operator-=(Vec &a, const Vec& b) { return a = a - b; }
 inline Vec& operator-=(Vec &a, const double b) { return a = a - b; }
 
+inline Vec& operator*=(Vec &a, const Vec& b) { return a = a * b; }
 inline Vec& operator*=(Vec &a, const double b) { return a = a * b; }
+
 inline Vec& operator/=(Vec &a, const double b) { return a = a / b; }
 
 
@@ -136,6 +138,20 @@ inline int maxIndex(const Vec& a) {
   if (a.x >= a.y && a.x >= a.z) return 0;
   if (a.y >= a.x && a.y >= a.z) return 1;
   return 2;
+}
+
+// Return the maximum component of the vector 
+inline double max(const Vec& a) {
+  return max(a.x, max(a.y, a.z));
+}
+
+// Component-wise maximum of 2 vectors
+inline Vec cmpWiseMax(const Vec& a, const Vec& b) {
+  return Vec(
+    max(a.x, b.x),
+    max(a.y, b.y),
+    max(a.z, b.z)
+  );
 }
 
 /**************************** MATRIX *****************************************/

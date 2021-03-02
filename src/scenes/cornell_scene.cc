@@ -104,7 +104,7 @@ SCENE(Cornell) {
 
 
   s = new DisplacedPlane(
-                          new PerlinTexture(Layered, 4, 4, 0.5, 2, R),
+                          new Perlin4DTexture(Layered, 4, 4, 0.5, R),
                           new Transmissive(1.2, Colour(0.5, 0.7, 1))
                           );
   s->Scale(12, 12, 12);

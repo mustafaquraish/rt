@@ -20,7 +20,7 @@ struct LSystem : Object {
   double p0 = 0.8;
   double p1 = 0.8;
 
-  int seed = rand();
+  int seed;
   
   Aggregate *objs;
 };

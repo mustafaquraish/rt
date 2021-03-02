@@ -7,7 +7,6 @@
 
 struct Path : Integrator {
   Path(RenderParams params) : Integrator(params) {};
-  void render(Scene *scene, int depth);
   Colour SampleLight(HitRec& rec, Scene *scene, RNG& rng);
   Colour Li(Ray& r, Scene *scene, RNG& rng);
 };

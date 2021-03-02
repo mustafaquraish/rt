@@ -21,8 +21,10 @@
 #ifndef __SIMPLEX_H__
 #define __SIMPLEX_H__
 
-namespace Simplex {
+// Put this in the global namespace for convenience
+enum PerlinType {Layered, Turbulence, Marble};
 
+namespace Simplex {
 // Multi-octave Simplex noise [-1, 1]
 double layered(double octaves, double persistence, double x, double y);
 double layered(double octaves, double persistence, double x, double y, double z);
@@ -33,6 +35,8 @@ double noise(double x);
 double noise(double x, double y);
 double noise(double x, double y, double z);
 double noise(double x, double y, double, double w);
+
+double convertTo(double perlinValue, PerlinType type);
 
 };  // namespace Simplex
 
