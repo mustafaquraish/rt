@@ -41,8 +41,6 @@ Colour Path::SampleLight(HitRec& rec, Scene *scene, RNG& rng) {
   return Vec(0);
 }
 
-#define USE_ELS 1
-
 Colour Path::Li(Ray &r, Scene *scene, RNG& rng) {
   HitRec rec;
   
@@ -52,79 +50,26 @@ Colour Path::Li(Ray &r, Scene *scene, RNG& rng) {
 
   Ray ray = Ray(r.p, r.d);
   for (int bounce = 0; bounce < PATH_MAX_BOUNCES; bounce++) {
-    
     if (!scene->world->hit(ray, rec)) break;
     
     BSDF *bsdf = rec.obj->bsdf;
     rec.wo = -ray.d;
 
-    if (USE_ELS) {
-      if (applyEmission) 
-        L += throughput * bsdf->emittance(rec);
-      if (bsdf->isEmitter()) 
-        break;
-      if (!bsdf->isSpecular()) 
-        L += throughput * SampleLight(rec, scene, rng);
+    if (applyEmission) L += throughput * bsdf->emittance(rec);
+    if (bsdf->isEmitter()) break;
+    if (!bsdf->isSpecular()) L += throughput * SampleLight(rec, scene, rng);
 
-    } else {
-      if (bsdf->isEmitter()) {
-        L += throughput * bsdf->emittance(rec);
-        break;
-      }
-    }
-
-    throughput = throughput * bsdf->sample(rec, rng);
-    ray = Ray(rec.p, rec.wi);    
-    applyEmission = bsdf->isSpecular();
+    throughput *= bsdf->sample(rec, rng);
+    applyEmission = bsdf->isSpecular();  // Only apply direct emission if spec.
 
     // Russian roulette:
     if (bounce > 3) {
-      double pr = max(throughput.r, max(throughput.g, throughput.b));
-      if (rng.rand01() > pr)
-        break;
+      double pr = max(throughput);
+      if (rng.rand01() > pr) break;
       throughput *= 1.0 / pr;
     }
+
+    ray = Ray(rec.p, rec.wi);    
   }
   return L;
-}
-
-void Path::render(Scene *scene, int depth) {
-  int total_samples = params.get<int>("samples");
-  int sx = params.get<int>("width");
-  int sy = params.get<int>("height");
-  
-  Image im = Image(sx, sy);
-
-  int done = 0;
-  float total = sx / 100;
-  
-  clock_t timeBegin = clock();
-
-
-  #pragma omp parallel for schedule(dynamic)
-  for (int i = 0; i < sx; i++) {
-    // Seed RNG with some random function based on row number
-    RNG rng = RNG((i * i) ^ 0xdeadbeef);
-
-    printf("\rRendering %d / %d ~ %.2f", done, sx, done/total); fflush(stdout);
-    for (int j = 0; j < sy; j++) {
-      Colour col = 0;
-      for (int sample = 0; sample < total_samples; sample++) {
-        Ray ray = scene->cam.getRay(i, j, rng);
-        col += Li(ray, scene, rng) / total_samples;
-      }
-      im.set(i, j, col);
-    }
-    done++;
-  }
-
-  clock_t timeEnd = clock();
-  double buildTime = (double)(timeEnd - timeBegin) / CLOCKS_PER_SEC;
-  printf("\n[+] Rendering completed in %.3fs\n", buildTime);
-  cout << endl;
-
-  const char *output_file = params.get<char *>("output");
-  im.save(output_file);
-  // im.saveHDR(output_file);
-  return;
 }

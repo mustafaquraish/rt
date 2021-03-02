@@ -6,8 +6,10 @@
 #include "core/primitive.h"
 
 struct BaseColour : Integrator {
-  BaseColour(RenderParams params) : Integrator(params) {};
-  void render(Scene *scene, int depth);
+  BaseColour(RenderParams params) : Integrator(params) {
+    gammaCorrect = false;
+    enableRNG = false;
+  };
   Colour Li(Ray& r, Scene *scene, RNG& rng);
 };
 
