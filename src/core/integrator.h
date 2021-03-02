@@ -14,10 +14,13 @@ struct Integrator {
   Integrator(RenderParams& params) : params(params) {};
   virtual ~Integrator() {};
 
-  virtual void render(Scene *scene, int depth) = 0;
+  virtual void render(Scene *scene);
   virtual Colour Li(Ray& r, Scene *scene, RNG& rng) { return Vec(0); };
 
   RenderParams params;
+  bool enableRNG = true;
+  bool gammaCorrect = true;
+  int maxSamples = INT32_MAX;
 };
 
 #endif // __INTEGRATOR_H__

@@ -6,7 +6,6 @@
 struct DirectLighting : Integrator {
   DirectLighting(RenderParams params) : Integrator(params) {};
   Colour SampleLight(HitRec& rec, Scene *scene, RNG& rng);
-  void render(Scene *scene, int depth);
   Colour Li(Ray& r, Scene *scene, RNG& rng);
 };
 

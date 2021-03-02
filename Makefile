@@ -10,6 +10,7 @@ DEPFLAGS  = -MT $@ -MMD -MP -MF $(DEPDIR)/$*.d
 EXE       = raytrace
 CFLAGS    = -g -I$(INCLUDE) -std=c++17
 LDLIBS    = -lm
+MODE      = "Debug"
 
 .PHONY: all run clean release debug
 
@@ -32,11 +33,11 @@ $(DEPFILES):
 	@mkdir -p "$(@D)"
 	
 $(EXE): $(OBJS) | $(BIN)
-	@echo "Building final executable $@"
+	@echo "($(MODE)) Building final executable $@"
 	@$(CC) $(CFLAGS) $^ -o $@ $(LDLIBS)
 
 $(OBJ)/%.o : $(SRC)/%.cc $(DEPDIR)/%.d | $(DEPDIR)
-	@echo "Compiling $@"
+	@echo "($(MODE)) Compiling $@"
 	@mkdir -p "$(@D)"
 	@$(CC) $(DEPFLAGS) $(CFLAGS) -c $< -o $@ 
 
@@ -51,6 +52,7 @@ $(DEPDIR):
 debug: $(EXE)
 
 # Optimize in release mode
+release: MODE = "Release"
 release: CFLAGS += -O3 -ffast-math $(OPENMP) -ftree-vectorize -msse2 -mfpmath=sse -flto=full -march=native
 release: LDLIBS += $(OPENMP)
 release: $(EXE)

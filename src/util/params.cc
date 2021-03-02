@@ -10,6 +10,7 @@ void print_usage() {
   printf("  -a, --animate         Render animation                           \n");
   printf("  -f, --frame arg       Frame number(s) A[:B][/Total] (default: 0) \n");
   printf("  -r, --resolution arg  Resolution A[xB] (default: 512x512)        \n");
+  printf("  -t, --tile-size arg   Size of each tile (default: 8)             \n");
   printf("  -h, --help            Print Usage                                \n"); 
   exit(0);
 }
@@ -87,6 +88,15 @@ void RenderParams::update(int frame) {
   set("frameRatio", frameRatio);
 }
 
+void RenderParams::setWindow(double xBegin, double xEnd, 
+                             double yBegin, double yEnd) {
+  set("xBegin", xBegin);
+  set("yBegin", yBegin);
+  set("xEnd", xEnd);
+  set("yEnd", yEnd);
+}
+
+
 RenderParams::RenderParams(int argc, char **argv) {
 
   std::vector<std::string> args(argv, argv + argc);
@@ -102,6 +112,7 @@ RenderParams::RenderParams(int argc, char **argv) {
   int frameEnd = 1;
   int frameCount = 1;
   int frameTotal = 60;
+  int tileSize = 8;
 
 
   // Loop over command-line args
@@ -113,6 +124,8 @@ RenderParams::RenderParams(int argc, char **argv) {
       print_usage();
     } else if (args[i] == "-s" || args[i] == "--samples") {
       samples = stoi(args[++i]);
+    } else if (args[i] == "-t" || args[i] == "--tile-size") {
+      tileSize = stoi(args[++i]);
     } else if (args[i] == "-o" || args[i] == "--output") {
       output = argv[++i];
     } else if (args[i] == "-a" || args[i] == "--animate") {
@@ -169,6 +182,8 @@ RenderParams::RenderParams(int argc, char **argv) {
   set("frameTotal", frameTotal);
   set("output", output);
   set("scene", scene);
+  set("tileSize", 8);
 
+  setWindow(0, 1, 0, 1);
   update(frameBegin);
 }

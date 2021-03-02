@@ -8,7 +8,7 @@ int main(int argc, char **argv) {
   if (!params.get<bool>("animate")) {
 
     Scene *scene = RTSceneFactory::Create(params);
-    if (scene->integrator) scene->integrator->render(scene, 10);
+    if (scene->integrator) scene->integrator->render(scene);
     delete scene;
 
   } else {
@@ -29,14 +29,14 @@ int main(int argc, char **argv) {
       params.update(frame);
 
       Scene *scene = RTSceneFactory::Create(params);
-      if (scene->integrator) scene->integrator->render(scene, 10);
+      if (scene->integrator) scene->integrator->render(scene);
       delete scene;
       
       sprintf(buffer, "convert temp.ppm frames/%02d.png", frame);
-      system(buffer);
+      if (system(buffer)) printf("Error with `system(%s)`", buffer);
     }
     sprintf(buffer, "convert frames/*.png %s", origOut);
-    system(buffer);
+    if (system(buffer)) printf("Error with `system(%s)`", buffer);
   }
 
   return 0;

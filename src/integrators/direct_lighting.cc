@@ -6,14 +6,6 @@
 using namespace std;
 
 
-Vec cmpWiseMax(const Vec& a, const Vec& b) {
-  return Vec(
-    max(a.x, b.x),
-    max(a.y, b.y),
-    max(a.z, b.z)
-  );
-}
-
 Colour DirectLighting::SampleLight(HitRec& rec, Scene *scene, RNG& rng) {
   double pdf;
   HitRec tmp;
@@ -72,45 +64,4 @@ Colour DirectLighting::Li(Ray &r, Scene *scene, RNG& rng) {
     ray = Ray(rec.p, rec.wi);    
   }
   return 0;
-}
-
-void DirectLighting::render(Scene *scene, int depth) {
-  int total_samples = params.get<int>("samples");
-  int sx = params.get<int>("width");
-  int sy = params.get<int>("height");
-  
-  Image im = Image(sx, sy);
-
-  int done = 0;
-  float total = sx / 100;
-  
-  clock_t timeBegin = clock();
-
-
-  #pragma omp parallel for schedule(dynamic)
-  for (int i = 0; i < sx; i++) {
-    // Seed RNG with some random function based on row number
-    RNG rng = RNG((i * i) ^ 0xdeadbeef);
-
-    printf("\rRendering %d / %d ~ %.2f", done, sx, done/total); fflush(stdout);
-    for (int j = 0; j < sy; j++) {
-      Colour col = 0;
-      for (int sample = 0; sample < total_samples; sample++) {
-        Ray ray = scene->cam.getRay(i, j, rng);
-        col += Li(ray, scene, rng) / total_samples;
-      }
-      im.set(i, j, col);
-    }
-    done++;
-  }
-
-  clock_t timeEnd = clock();
-  double buildTime = (double)(timeEnd - timeBegin) / CLOCKS_PER_SEC;
-  printf("\n[+] Rendering completed in %.3fs\n", buildTime);
-  cout << endl;
-
-  const char *output_file = params.get<char *>("output");
-  im.save(output_file);
-  // im.saveHDR(output_file);
-  return;
 }

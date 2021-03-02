@@ -11,17 +11,15 @@ struct Image {
   ~Image();
   
   void save(char const *fname, bool gammaCorrect=true);
-  void saveHDR(char const *fname);
   
-  void set(int i, int j, const Vec& col);
-  void splat(int i, int j, const Vec& col);
+  void set(int i, int j, Colour col);
+  void splat(int i, int j, Colour col);
   
   Colour get(int i, int j);
   Colour get(double u, double v);
   
   int sx, sy;
   double *data;
-  double *weights = NULL;
 };
 
 #endif // __IMAGE_H__
