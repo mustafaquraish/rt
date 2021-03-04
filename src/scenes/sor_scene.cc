@@ -7,7 +7,7 @@ SCENE(SOR) {
   Vec e = Vec(0, 0, -15);
   Vec g = -e;
   Vec up = Vec(0, 1, 0);
-  scene->cam = Camera(e, g, up, -4, params);
+  scene->cam = Camera(e, g, up, 53, params);
 
   scene->integrator = new DebugShader(params);
 

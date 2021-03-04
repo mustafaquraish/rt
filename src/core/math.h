@@ -28,6 +28,9 @@
 
 /**************************** COMMON FUNCTIONS *******************************/
 
+inline double degrees(const double radians) { return radians * 180.0 / PI; }
+inline double radians(const double degrees) { return degrees * PI / 180.0; }
+
 inline double min(const double a, const double b) { return (a < b) ? a : b; }
 inline double max(const double a, const double b) { return (a > b) ? a : b; }
 inline double clamp01(const double a) { return min(1, max(a, 0)); }

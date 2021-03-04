@@ -17,10 +17,10 @@ SCENE(Room) {
   params.set<double>("focus_dist", 35);
 
 
-  scene->cam = Camera(e, g, up, -7, params);
+  scene->cam = Camera(e, g, up, 32, params);
 
   scene->integrator = new Path(params);
-  // scene->integrator = new DebugShader(params);
+  scene->integrator = new DebugShader(params);
   // scene->integrator = new BaseColour(params);
   // scene->integrator = new DirectLighting(params);
   

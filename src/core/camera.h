@@ -7,13 +7,13 @@
 
 struct Camera {
   Camera() {};
-  Camera(Vec e, Vec g, Vec u, double f, RenderParams& params);
+  Camera(Vec e, Vec g, Vec u, double vfov, RenderParams& params);
 
   virtual Ray getRay(int i, int j, RNG& rng);
   virtual Ray getRay(int i, int j);
   
-  Vec e, u, v, w;
-  double du, dv, wl, wt, f;
+  Vec e;
+  double du, dv, wl, wt;
   Matrix C2W, W2C;
 
   bool DOF = false;

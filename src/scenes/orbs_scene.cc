@@ -9,10 +9,10 @@ SCENE(Orbs) {
   Vec e = Vec(0, -4, -20);
   Vec g = Vec(0, -2, 0) - e;
   Vec up = Vec(0, 1, 0);
-  scene->cam = Camera(e, g, up, -3, params);
+  scene->cam = Camera(e, g, up, 70, params);
 
   scene->integrator = new Path(params);
-  // scene->integrator = new DebugShader(params);
+  scene->integrator = new DebugShader(params);
   // scene->integrator = new DirectLighting(params);
   
   Object *s;
@@ -61,12 +61,10 @@ SCENE(Orbs) {
   scene->add(s);
 
   // Center
-  // s = new Sphere(new Transmissive(2.2, Colour(.95)));
-  s = new TriangleMesh("assets/obj/dragon.obj", new Transmissive(1.47, Colour(.95)));
-  // s = new TorusKnotBevel(new Transmissive(2.2, Colour(.95)), 0.15);
+  s = new Sphere(new Transmissive(2.2, Colour(.95)));
   // s->RotateX(PI/2);
-  s->Scale(1.5);
-  s->Translate(0, -10, -5);
+  s->Scale(3.5);
+  s->Translate(0, -6.5, -5);
   scene->add(s);
 
   // Right
@@ -99,28 +97,12 @@ SCENE(Orbs) {
     }
   }
 
-  s = new LSystem(0);
-  s->Scale(2.5, 2.5, 2.5);
-  s->RotateX(-PI/2);
-  s->RotateY(PI/2);
-  s->Translate(-8, -15, 1);
-  scene->add(s);
-
-  s = new LSystem(0);
-  s->Scale(2.5, 2.5, 2.5);
-  s->RotateX(-PI/2);
-  s->RotateY(-PI/2);
-  s->Translate(8, -15, 1);
-  scene->add(s);
-
-
    ///////////////////// A1 ///////////////////////
  s = new Plane(new Lambertian(1));
  s->addTextureMap(new ImageTexture("assets/tex/A1.ppm"));
  s->Scale(4,2.5,1);
  s->Translate(-6.666,1.5,19.9);
  scene->add(s);
-//  loadTexture( "textures/A1.ppm", 1, &texture_list);
 
  s = new Plane(new Lambertian(.2));
  s->Scale(4.3,2.8,1);
@@ -133,7 +115,6 @@ SCENE(Orbs) {
  s->Scale(4,4,1);
  s->Translate(-20,0,19.9);
  scene->add(s);
-//  loadTexture( "textures/A2.ppm", 1, &texture_list);
 
  s = new Plane(new Lambertian(.2));
  s->Scale(4.3,4.3,1);
@@ -145,7 +126,6 @@ SCENE(Orbs) {
  s->addTextureMap(new ImageTexture("assets/tex/A3.ppm"));
  s->Scale(4,4,1);
  s->Translate(6.666,0,19.9);
-//  loadTexture( "textures/A3.ppm", 1, &texture_list);
  scene->add(s);
 
  s = new Plane(new Lambertian(.2));
@@ -158,7 +138,6 @@ SCENE(Orbs) {
  s->addTextureMap(new ImageTexture("assets/tex/A4.ppm"));
  s->Scale(4,4,1);
  s->Translate(20,0,19.9);
-//  loadTexture( "textures/A4.ppm", 1, &texture_list);
  scene->add(s);
 
  s = new Plane(new Lambertian(.2));
@@ -168,15 +147,6 @@ SCENE(Orbs) {
  scene->add(s);
 
 /******************* Light ****************************************************/
-
-  s = new Disc(new Emitter(Colour(.99, .7, .5)*15));
-  s->Scale(3);
-  s->RotateX(PI/2);
-  s->Translate(0,9.99,5);
-  // scene->add(s); 
-
-
-  // TODO: Figure out where the sphere light breaks everything??
 
   s = new Sphere(new Emitter(Colour(.99, .7, .5)*15));
   s->Scale(3, 1, 3);

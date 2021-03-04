@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "core/math.h"
+#include <unordered_map>
 
 struct Image {
   Image(int sx, int sy);
@@ -20,6 +21,15 @@ struct Image {
   
   int sx, sy;
   double *data;
+};
+
+struct RTImageList {
+  inline static std::unordered_map<std::string, Image *> imgFileMapping;
+
+  static void registerImage(std::string filename, Image *img);
+  static Image *getImage(std::string filename);
+
+  static void cleanup();
 };
 
 #endif // __IMAGE_H__

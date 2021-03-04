@@ -1,5 +1,24 @@
 #include "util/image.h"
 
+
+void RTImageList::registerImage(std::string filename, Image *img) {
+  imgFileMapping[filename] = img;
+}
+
+Image *RTImageList::getImage(std::string filename) {
+  if (imgFileMapping.find(filename) == imgFileMapping.end())
+    return NULL;
+  return imgFileMapping[filename];
+}
+
+void RTImageList::cleanup() {
+  for (auto it : imgFileMapping)
+    delete it.second;
+  imgFileMapping.clear();
+}
+
+/******************************************************************************/
+
 Image::Image(int sx, int sy) : sx(sx), sy(sy) {
   data = new double[sx * sy * 3];
 }

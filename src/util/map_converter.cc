@@ -34,7 +34,7 @@ Image convertHeightMapToNormalMap(Image &heightIm, double strength) {
       double cy = (TR - BR) + (TL - BL) + 2*(T - B) * strength;
 
       Vec n = norm(Vec(cx, cy, 1));
-      normalIm.set(i, j, map(n, -1, 1, 0, 1));
+      normalIm.set(i, j, inverseLerp(n, -1, 1));
     }
   }
   return normalIm;

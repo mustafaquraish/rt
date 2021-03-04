@@ -8,6 +8,7 @@
 
 struct Object : Primitive {
   Object() {};
+  ~Object() {};
   Object(BSDF *bsdf): bsdf(bsdf) {};
 
   // Public API for transforming objects
@@ -20,6 +21,7 @@ struct Object : Primitive {
   
   void addNormalMap(Texture *tx);
   void addTextureMap(Texture *tx);
+  void setMaterial(BSDF *_bsdf, bool override = false);
 
   virtual void finalize();
 
@@ -27,8 +29,8 @@ struct Object : Primitive {
   Vec normalMapped(const Vec& canon_n, HitRec& rec);
   Ray rayTransform(const Ray& r);
   Vec normalTransform(const Vec& n);
-  BSDF *getBSDF(HitRec& rec) { return bsdf; }
   
+  virtual BSDF *getBSDF(HitRec& rec) { return bsdf; }
   virtual bool hit(Ray& r, HitRec &rec) = 0;
   virtual Vec sample(double *pdf, RNG& rng);
 
