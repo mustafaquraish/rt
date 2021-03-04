@@ -2,6 +2,10 @@
 
 using namespace std;
 
+Object::~Object() {
+  delete bsdf;
+}
+
 void Object::Scale(double x, double y, double z) {
   T = ScaleMatrix(x,y,z) * T; 
   // Hacky approximation for surface area scaling
@@ -37,6 +41,15 @@ void Object::addNormalMap(Texture *tx) {
 
 void Object::addTextureMap(Texture *tx) {
   bsdf->m_tx = tx;
+};
+
+void Object::setMaterial(BSDF *_bsdf, bool override) {
+  if (bsdf && !override) {
+    printf("Object already has a material applied, override=false\n");
+    return;
+  }
+  delete bsdf;
+  bsdf = _bsdf;
 };
 
 Vec Object::normalMapped(const Vec& canon_n, HitRec& rec) {

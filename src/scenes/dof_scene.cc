@@ -13,7 +13,7 @@ SCENE(DOF) {
   params.set<double>("aperture", 1);
   params.set<double>("focus_dist", 15);
 
-  scene->cam = Camera(e, g, up, -3, params);
+  scene->cam = Camera(e, g, up, 70, params);
 
   scene->integrator = new Path(params);
   // scene->integrator = new DebugShader(params);

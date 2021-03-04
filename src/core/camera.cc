@@ -2,11 +2,11 @@
 #include "core/math.h"
 
 
-Camera::Camera(Vec e, Vec g, Vec up, double f, RenderParams& params) :
-               e(e), f(f) {
-  w = norm(-g);
-  u = norm(cross(w, up));
-  v = norm(cross(u, w));
+Camera::Camera(Vec e, Vec g, Vec up, double vfov, RenderParams& params) :
+               e(e) {
+  Vec w = norm(-g);
+  Vec u = norm(cross(w, up));
+  Vec v = norm(cross(u, w));
 
   C2W = Matrix(u.x, v.x, w.x, e.x,
                u.y, v.y, w.y, e.y,
@@ -24,11 +24,9 @@ Camera::Camera(Vec e, Vec g, Vec up, double f, RenderParams& params) :
     focus_dist = params.get<double>("focus_dist");
   }
 
-  double xsize = 4; 
-  double ysize = 4;
-
-  if (sx > sy) xsize = ((double)sx / (double)sy) * xsize; 
-  if (sy > sx) ysize = ((double)sy / (double)sx) * ysize;
+  double theta = radians(vfov);
+  double ysize = 2 * tan(theta / 2.0);
+  double xsize = ((double)sx / (double)sy) * ysize; 
 
   wl = -xsize / 2;
   wt =  ysize / 2;
@@ -39,13 +37,13 @@ Camera::Camera(Vec e, Vec g, Vec up, double f, RenderParams& params) :
 
 Ray Camera::getRay(int i, int j, RNG& rng) {
   if (!DOF) {
-    Vec pij = Vec(wl + (i+rng.rand01())*du, wt + (j+rng.rand01())*dv, f);
+    Vec pij = Vec(wl + (i+rng.rand01())*du, wt + (j+rng.rand01())*dv, -1);
     Vec p = C2W * pij;
-    return Ray(p, norm(p - e));
+    return Ray(e, norm(p - e));
   
   } else {
     // printf("Dof ray...\n");
-    Vec pij = Vec(wl + i*du, wt + j*dv, f);
+    Vec pij = Vec(wl + i*du, wt + j*dv, -1);
     Vec aperture_point = pij + rng.randomUnitDisk() * aperture;
     Vec p = C2W * (norm(pij) * focus_dist);
     Vec o = C2W * aperture_point;
@@ -54,7 +52,7 @@ Ray Camera::getRay(int i, int j, RNG& rng) {
 }
 
 Ray Camera::getRay(int i, int j) {
-  Vec pij = Vec(wl + (i)*du, wt + (j)*dv, f);
+  Vec pij = Vec(wl + (i)*du, wt + (j)*dv, -1);
   Vec p = C2W * pij;
-  return Ray(p, norm(p - e));
+  return Ray(e, norm(p - e));
 }

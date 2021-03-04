@@ -13,7 +13,13 @@ struct Texture {
 };
 
 struct ImageTexture : Texture {
-  ImageTexture(const char *fname) { im = new Image(fname); }
+  ImageTexture(const char *filename) { 
+    im = RTImageList::getImage(filename);
+    if (im == NULL) {
+      im = new Image(filename);
+      RTImageList::registerImage(filename, im);
+    } 
+  }
   virtual Colour get(HitRec& rec) { return im->get(rec.u, 1-rec.v); }
 private:
   Image *im = NULL; 
