@@ -9,7 +9,7 @@ SCENE(A4) {
   Vec e = Vec(0, 0, -15);
   Vec g = -e;
   Vec up = Vec(0, 1, 0);
-  scene->cam = Camera(e, g, up, -3, params);
+  scene->cam = Camera(e, g, up, 70, params);
 
   scene->integrator = new Path(params);
   // scene->integrator = new DebugShader(params);
