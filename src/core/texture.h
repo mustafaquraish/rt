@@ -82,5 +82,15 @@ struct Perlin4DTexture : PerlinTexture {
   }
 };
 
+// 4-Dimensional perlin noise texture, uses `seed` \in [0,1] to perfectly loop
+struct SDFTexture : Texture {
+  SDFTexture(Colour col) : col(col) {};
+  
+  virtual Colour get(HitRec& rec) {
+    return col * (1-rec.stepsRatio);
+  }
+  Colour col;
+};
+
 
 #endif // __TEXTURE_H__

@@ -26,6 +26,8 @@ struct HitRec {
   double u;
   double v;
   Object *obj;
+
+  double stepsRatio; // For SDFs
 };
 
 struct Primitive {
