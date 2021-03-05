@@ -32,7 +32,7 @@ int main(int argc, char **argv) {
       if (scene->integrator) scene->integrator->render(scene);
       delete scene;
       
-      sprintf(buffer, "convert temp.ppm frames/%02d.png", frame);
+      sprintf(buffer, "convert temp.ppm frames/%03d.png", frame);
       if (system(buffer)) printf("Error with `system(%s)`", buffer);
     }
     sprintf(buffer, "convert frames/*.png %s", origOut);
