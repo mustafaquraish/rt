@@ -5,12 +5,14 @@ Colour AmbientOcclusion::Li(Ray &ray, Scene *scene, RNG& rng) {
   if (!scene->world->hit(ray, rec))
     return Vec(0);
 
+  Colour col = rec.obj->bsdf->col(rec);
+
   if (dot(ray.d, rec.n) > 0) rec.n = -rec.n;
 
   Vec dir = rng.randomVectorCosineHemisphere(rec.n);
   Ray rr = Ray(rec.p, dir);
   if ( !scene->world->hit(rr, tmp) ) {
-    return Vec(1);
+    return col;
   }
   
   return Vec(0);

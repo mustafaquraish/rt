@@ -8,8 +8,8 @@
 
 struct Object : Primitive {
   Object() {};
-  ~Object() {};
   Object(BSDF *bsdf): bsdf(bsdf) {};
+  ~Object();
 
   // Public API for transforming objects
   void RotateX(double t);

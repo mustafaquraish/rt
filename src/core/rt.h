@@ -30,6 +30,7 @@ using std::endl;
 #include "objects/bevel_curve.h"
 #include "objects/surface_revolution.h"
 #include "objects/displaced.h"
+#include "objects/sdf.h"
 
 // Integrators
 #include "integrators/debug_shader.h"
