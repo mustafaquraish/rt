@@ -60,7 +60,6 @@ int SAH(std::vector<Primitive *>& prims, int start, int end,
 }
 
 BVHTree *BVH::buildBVH(std::vector<Primitive *>& prims, int start, int end) {
-  // printf("buildBVH() called with %d %d\n", start, end);
   BVHTree *node = new BVHTree();
   
   AABB bounds;
@@ -84,7 +83,6 @@ BVHTree *BVH::buildBVH(std::vector<Primitive *>& prims, int start, int end) {
   node->b = buildBVH(prims, mid, end);
   node->bounds = bounds;
   node->numPrims = 0;
-
   return node;
 }
 
@@ -95,14 +93,11 @@ int BVH::flatten(BVHTree *root) {
   cur.bounds = root->bounds;
   cur.numPrims = root->numPrims;
   cur.primOff = root->primOff;
-  
   nodes.push_back(cur);
 
   if (root->numPrims == 0) { // Internal node
-    /*   ignore  */ flatten(root->a);
-    int child2off = flatten(root->b);
-    /* Careful: need to index **after** above flatten call */
-    nodes[curIdx].child2Off = child2off;
+    /* ignore this return  */ flatten(root->a);
+    nodes[curIdx].child2Off = flatten(root->b);
   }
   return curIdx;
 }
