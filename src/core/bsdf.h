@@ -11,7 +11,7 @@ struct BSDF {
   BSDF(Colour col) : m_col(col) {}
   BSDF(Texture *tx) : m_tx(tx) {}
   
-  ~BSDF() { delete m_tx; };
+  virtual ~BSDF() { delete m_tx; };
 
   virtual Colour eval(HitRec& rec) = 0;
   virtual Colour sample(HitRec& rec, RNG& rng) = 0;

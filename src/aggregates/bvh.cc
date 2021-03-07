@@ -24,6 +24,7 @@ int equalCounts(std::vector<Primitive *>& prims, int start, int end,
 //          It is currenty too slow for big scenes
 int surfaceAreaHueristic(std::vector<Primitive *>& prims, int start, int end,
                          AABB& totalBounds, int dim) {
+  // printf("called with %d %d\n", start, end);
   constexpr int nBuckets = 12;
   struct BucketInfo {
     int count = 0;
@@ -62,7 +63,8 @@ int surfaceAreaHueristic(std::vector<Primitive *>& prims, int start, int end,
       }
   }
   
-  auto pmid = std::partition(prims.begin() + start, prims.begin() + end, 
+  auto pmid = std::partition(prims.begin() + start, 
+                             prims.begin() + end, 
                              [=](const Primitive* pi) {
                                Vec c = centroid(pi->bounds);
                                Vec off = totalBounds.offset(c);
@@ -79,73 +81,129 @@ int surfaceAreaHueristic(std::vector<Primitive *>& prims, int start, int end,
   return mid;
 }
 
-BVH::BVH(std::vector<Primitive *>& prims, int start, int end) {  
-// printf("called with %d %d\n", start, end);
-#ifdef LOG_BVH_TIME 
-  bool topLevel = (end == -1);
-  clock_t timeBegin;
-  if (topLevel) {
-    printf("[+] Creating BVH from %lu objects", prims.size());
-    timeBegin = clock();
-  }
-#endif
-
-  // First iteration, sort the array first and set parameters correctly.
-  if (end == -1) {
-    end = prims.size();
-  }
-
+BVHTree *BVH::buildBVH(std::vector<Primitive *>& prims, int start, int end) {
+//  printf("called with %d %d\n", start, end);
+  BVHTree *node = new BVHTree();
+  
   int num = end - start;
   // Now onto the regular recursive building...
 
-  if (num == 1) {
-    a = prims[start];
-    b = NULL;
-    bounds = a->bounds;
-    isLeaf = 1;
-    return;
-
-  } else if (num == 2) {
-    a = prims[start]; 
-    b = prims[start+1];
-    bounds = combine(a->bounds, b->bounds);
-    isLeaf = 1;
-    return;
+  AABB totalBounds = prims[start]->bounds;
+  for (int i = start; i < end; i++) {
+    totalBounds = combine(totalBounds, prims[i]->bounds);
   }
 
-  AABB totalBounds = prims[start]->bounds;
-  for (int i = start; i < end; i++)
-    totalBounds = combine(totalBounds, prims[i]->bounds);
+  if (num <= 2) {
+    node->offset = start; 
+    node->numPrims = num;
+    node->bounds = totalBounds;
+    node->isLeaf = 1;
+    node->axis = -1;
+    return node;
+  }
   
   int dim = maxIndex(totalBounds.max - totalBounds.min);
-  // int dim = rand() % 3;
-
-  // Split algorithm:
   int mid = surfaceAreaHueristic(prims, start, end, totalBounds, dim);
-  // int mid = equalCounts(prims, start, end, totalBounds, dim);  
+//  int mid = equalCounts(prims, start, end, totalBounds, dim);
   
-  bva = new BVH(prims, start, mid);
-  bvb = new BVH(prims, mid, end);
-  
-  bounds = totalBounds;
+  node->bva = buildBVH(prims, start, mid);
+  node->bvb = buildBVH(prims, mid, end);
+  node->axis = dim;
+  node->bounds = totalBounds;
 
-#ifdef LOG_BVH_TIME 
-  if (topLevel) {
-    clock_t timeEnd = clock();
-    double buildTime = (double)(timeEnd - timeBegin) / CLOCKS_PER_SEC;
-    printf(": %.3fs\n", buildTime);
+  return node;
+}
+
+int BVH::flatten(BVHTree *root) {
+  int curIdx = nodes.size();
+
+  BVHLinear cur;
+
+  cur.bounds = root->bounds;
+  if (root->axis < 0) {
+    cur.primOff = root->offset;
+    cur.nPrimitives = root->numPrims;
+    cur.axis = -1;
+    nodes.push_back(cur);
+    return curIdx;
   }
-#endif
+  
+  cur.nPrimitives = 0;
+  nodes.push_back(cur);
+
+  /*   ignore  */ flatten(root->bva);
+  int child2off = flatten(root->bvb);
+
+  nodes[curIdx].child2Off = child2off;
+
+  return curIdx;
+}
+
+BVH::BVH(std::vector<Primitive *>& prims, int start, int end) {  
+  printf("[+] Creating BVH from %lu objects", prims.size());
+  clock_t timeBegin = clock();
+
+  bvh = buildBVH(prims, 0, prims.size());
+  bounds = bvh->bounds;
+  primitives = prims;
+
+  flatten(bvh);
+
+  printf("\nHave %ld nodes in BVH\n", nodes.size());
+
+  clock_t timeEnd = clock();
+  double buildTime = (double)(timeEnd - timeBegin) / CLOCKS_PER_SEC;
+  printf(": %.3fs\n", buildTime);
+
   return;
 }
 
 bool BVH::hit(Ray& ray, HitRec& rec) {
+  // return bvh->hit(ray, rec, primitives);
+
+  int stack[1024];
+  int stackPt = 0;
+
+  stack[stackPt++] = 0;
+
+  int dirIsNeg[3] = {ray.d.x < 0, ray.d.y < 0, ray.d.z < 0};
+  bool hit = false;
+
+  while (stackPt) {
+    int curIdx = stack[ --stackPt ];
+    BVHLinear *cur = &nodes[ curIdx ];
+
+    if (cur->nPrimitives > 0) {
+
+      for (int i = 0; i < cur->nPrimitives; i++)
+        if (primitives[cur->primOff + i]->hit(ray, rec))
+          hit = true;
+
+    } else {
+      
+      if (cur->bounds.hit(ray)) {
+        if (dirIsNeg[cur->axis]) {
+          stack[stackPt++] = curIdx + 1;
+          stack[stackPt++] = cur->child2Off;
+
+        } else {
+          stack[stackPt++] = cur->child2Off;
+          stack[stackPt++] = curIdx + 1;
+        }
+      }
+      
+    }
+  }
+  return hit;
+}
+
+bool BVHTree::hit(Ray& ray, HitRec& rec, std::vector<Primitive *>& prims) {
   if (isLeaf) {
-    // Intersect both children
-    HitRec ra, rb;
-    bool hit_a = a->hit(ray, rec);
-    bool hit_b = (b == NULL) ? false : b->hit(ray, rec);
-    return hit_a || hit_b;
+    bool hit = false;
+    for (int i = offset; i < offset + numPrims; i++)
+      if (prims[i]->hit(ray, rec))
+        hit = true;
+    return hit;
   }
 
   // Check both children's bounding boxes
@@ -154,17 +212,17 @@ bool BVH::hit(Ray& ray, HitRec& rec) {
   int hit_b = bvb->bounds.hit(ray, b1, b2);
 
   if (!hit_a && !hit_b) return false;  // Hit none of them
-  if (!hit_b) return bva->hit(ray, rec); // Didn't hit b, recurse on a
-  if (!hit_a) return bvb->hit(ray, rec); // Didn't hit a, recurse on b
+  if (!hit_b) return bva->hit(ray, rec, prims); // Didn't hit b, recurse on a
+  if (!hit_a) return bvb->hit(ray, rec, prims); // Didn't hit a, recurse on b
 
   // OK, we hit both children. Want to see which bounding box is 
   // closer to the ray
   HitRec r1, r2;
-  BVH *first = a1 <  b1 ? bva : bvb;  // `first` is the child starting closer
-  BVH *secnd = a1 >= b1 ? bva : bvb;  // 'secnd` is the child starting after
+  BVHTree *first = a1 <  b1 ? bva : bvb;  // `first` is the child starting closer
+  BVHTree *secnd = a1 >= b1 ? bva : bvb;  // 'secnd` is the child starting after
 
-  int hit_first = first->hit(ray, rec);
-  int hit_secnd = secnd->hit(ray, rec);
+  int hit_first = first->hit(ray, rec, prims);
+  int hit_secnd = secnd->hit(ray, rec, prims);
   
   return hit_first || hit_secnd;
 }
