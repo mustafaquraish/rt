@@ -24,7 +24,7 @@ struct BVHLinear {
 };
 
 struct BVH : Aggregate {
-  BVH(std::vector<Primitive *>& list, int start=0, int end=-1);
+  BVH(std::vector<Primitive *>& list);
   ~BVH() {};
   bool hit(Ray& ray, HitRec& rec);
   

@@ -203,7 +203,8 @@ SCENE(Room) {
   s->Translate(0,9.5,5);
   scene->add(s);
 
-  scene->world = new AGGREGATE(scene->obj_list);
+  scene->world = new KDTree(scene->obj_list);
+  // scene->world = new AGGREGATE(scene->obj_list);
   // scene->world = new PrimitiveList(scene->obj_list);
   
   return scene;
