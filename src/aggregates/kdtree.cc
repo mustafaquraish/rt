@@ -1,13 +1,21 @@
 #include "kdtree.h" 
+#include "util/timer.h"
 
 KDTree::KDTree(std::vector<Primitive *>& prims){
-	//TODO
+	char message[512];
+  sprintf(message, "Creating KDTree from %6lu objects", prims.size());
+  Timer timer = Timer(message).start();
+  
+  //TODO
   AABB tbounds;
   for (auto i : prims) 
     tbounds = combine(tbounds, i->bounds);
+  bounds = tbounds;
 
   int maxdepth = 8 + 1.3 * log(prims.size());
   kdtree = buildKDTree(prims, tbounds, maxdepth);
+
+  timer.stopAndDisplay();
 }
 
 

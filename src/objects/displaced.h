@@ -14,7 +14,7 @@ struct DisplacedSphere : ParametricSurface {
     double scale=.2, 
     int resolution = 100, 
     bool interpNormals=true
-  ) : ParametricSurface(mat, resolution, resolution, 0, TAU, 0, PI),
+  ) : ParametricSurface(mat, resolution, resolution, 0, TAU, EPS, PI-EPS),
       displacementMap(displacementMap), 
       scale(scale) {
     interpolateNormals = interpNormals;
@@ -54,6 +54,5 @@ struct DisplacedPlane : ParametricSurface {
   double scale;
   Texture *displacementMap;
 };
-
 
 #endif // __Displaced_H__

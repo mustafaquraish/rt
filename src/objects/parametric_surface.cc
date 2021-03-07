@@ -4,12 +4,26 @@
 using namespace std;
 
 Vec ParametricSurface::N(double a, double b) {
-  double EPS = 10e-5;
-  Vec p_ab = P(a, b);
-  double a2 = clamp(a+EPS, aMin, aMax);
-  double b2 = clamp(b+EPS, bMin, bMax);
-  Vec ta = norm((P(a2, b ) - p_ab) / EPS);
-  Vec tb = norm((P(a , b2) - p_ab) / EPS);
+  double a2 = a + EPS;
+  double b2 = b + EPS;
+
+  Vec pab = P(a, b);
+  Vec pa2b = P(a2, b );
+  Vec pab2 = P(a, b2 );
+
+  Vec da = (pa2b - pab) / EPS;
+  Vec db = (pab2 - pab) / EPS;
+
+  Vec ta = norm(da);
+  Vec tb = norm(db);
+
+  if (isnan(ta.x) || isnan(tb.x)) {
+    printf("got nan in parametric surface normal\n");
+    Vec p1_ab = P(a, b);
+    Vec p1a2b = P(a2, b );
+    Vec p1ab2 = P(a, b2 );
+  }
+
   return cross(tb, ta);
 }
 

@@ -65,6 +65,7 @@ SCENE(Room) {
   // Left 
   s = new DisplacedSphere(
     new ImageTexture("assets/tex/sand-bump.ppm"),
+    // new ImageTexture("assets/tex/water2-bump.ppm"),
     new Transmissive(2.2, Colour(.95))
   );
   s->Scale(2);
@@ -203,8 +204,8 @@ SCENE(Room) {
   s->Translate(0,9.5,5);
   scene->add(s);
 
-  scene->world = new KDTree(scene->obj_list);
-  // scene->world = new AGGREGATE(scene->obj_list);
+  // scene->world = new KDTree(scene->obj_list);
+  scene->world = new AGGREGATE(scene->obj_list);
   // scene->world = new PrimitiveList(scene->obj_list);
   
   return scene;
