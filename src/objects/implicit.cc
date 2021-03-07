@@ -1,15 +1,13 @@
 #include "objects/implicit.h"
 
-double RAYMARCH_MAX_LAMBDA = 100;
-double RAYMARCH_INCREMENT = 0.005;
+#define RAYMARCH_MAX_LAMBDA 100
+#define RAYMARCH_INCREMENT 0.005
 
 bool Implicit::hit(Ray& r, HitRec& rec) {
   Ray transformed = rayTransform(r);
 
   double tmin, tmax;
   if (!localBouds.hit(transformed, tmin, tmax)) return false;
-
-  // printf("IMPLICIT BOUNDS ARE %f %f\n", tmin, tmax);
 
   double inc = RAYMARCH_INCREMENT;
 
@@ -34,7 +32,7 @@ bool Implicit::hit(Ray& r, HitRec& rec) {
       inc *= 0.5;
       lambda -= inc;
 
-    // Otherwise, still haven't reached an intersectio. Move on.
+    // Otherwise, still haven't reached an intersection. Move on.
     } else {
       v0 = v1;
       lambda += inc;
@@ -45,7 +43,6 @@ bool Implicit::hit(Ray& r, HitRec& rec) {
     return false;
   }
 
-  double EPS = 0.0001;
   Vec canon_n = (Vec(F(p.x + EPS, p.y , p.z),
                      F(p.x , p.y + EPS, p.z),
                      F(p.x , p.y , p.z + EPS)) - v0) / EPS;

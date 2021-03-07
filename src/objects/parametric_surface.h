@@ -45,10 +45,10 @@ struct SphereParametric : ParametricSurface {
   SphereParametric(BSDF *mat,
                    int aCount = 20,   // Cuts along parameter a
                    int bCount = 20,   // Cuts along parameter b
-                   double aMin = 0,   // a min value
-                   double aMax = TAU, // a max value
-                   double bMin = 0,   // b min value
-                   double bMax = PI   // b max value
+                   double aMin = TOL,   // a min value
+                   double aMax = TAU,   // a max value
+                   double bMin = EPS,   // b min value
+                   double bMax = PI-EPS // b max value
                    )
       : ParametricSurface(mat, aCount, bCount, aMin, aMax, bMin, bMax){};
 
