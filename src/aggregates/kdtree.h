@@ -19,7 +19,7 @@ struct KDTree : Aggregate {
   ~KDTree() {};
   bool hit(Ray& ray, HitRec& rec);
   
-  KDTreeNode *buildKDTree(Primitive *prims[], int start, int end, 
+  KDTreeNode *buildKDTree(std::vector<Primitive *>prims, 
                           const AABB& bounds, int depth);
 
   KDTreeNode *kdtree;
