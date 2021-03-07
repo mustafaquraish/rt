@@ -1,5 +1,29 @@
 #include "core/aabb.h"
 
+// Slightly faster AABB intersection when 1 / ray.d is given.
+bool AABB::hit(Ray& ray, double &t1, double &t2, const Vec& invD) {
+  double tmin = -INFINITY;
+  double tmax = INFINITY;
+
+  // Refine using slabs along each axis
+  for (int axis = 0; axis < 3; axis++) {
+    double _tmin = (min[axis] - ray.p[axis]) * invD[axis];
+    double _tmax = (max[axis] - ray.p[axis]) * invD[axis];
+    if (_tmin > _tmax) std::swap(_tmin, _tmax); 
+    if (tmin > _tmax || _tmin > tmax) return false;
+    if (_tmin > tmin) tmin = _tmin;
+    if (_tmax < tmax) tmax = _tmax;
+  }
+
+  if (tmin > ray.tMax) return false;
+  if (tmin < TOL && tmax < TOL) return false;
+  if (tmin < TOL) tmin = 0;
+
+  t1 = tmin;
+  t2 = tmax;
+  return true;
+}
+
 bool AABB::hit(Ray& ray, double &t1, double &t2) {
   double tmin = -INFINITY;
   double tmax = INFINITY;

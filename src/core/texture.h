@@ -7,6 +7,7 @@
 #include "ext/SimplexNoise.h"
 
 struct Texture {
+  virtual ~Texture() {};
   virtual Colour get(HitRec& rec) = 0;
   virtual Colour get(double u, double v);
   void saveImage(int size_x, int size_y, const char *filename);
