@@ -92,42 +92,43 @@ struct SphereSDF : SDFObject {
 
 struct InfiniteSphereSDF : SDFObject {
   using SDFObject::SDFObject;
-  double F(const Vec& p) {
-    Vec pp = p;
-    if (pp.z < minZ) pp.z = minZ;
-    pp = SDF::repeatX(pp, 2);
-    pp = SDF::repeatY(pp, 2);
-    pp = SDF::repeatZ(pp, 2);
-    return SDF::sphere(pp, 0.4);
+  double F(const Vec& point) {
+    Vec p = point;
+    if (p.z < minZ) p.z = minZ;
+    p = SDF::repeatX(p, 2);
+    p = SDF::repeatY(p, 2);
+    p = SDF::repeatZ(p, 2);
+    return SDF::sphere(p, 0.4);
   }
   double minZ = -12;
 };
 
 struct MandelBulbSDF : SDFObject {
-  using SDFObject::SDFObject;
+  MandelBulbSDF(BSDF* mat, double power=8) : SDFObject(mat), power(power) {};
   double F(const Vec& p) {
     // initialisation
     Vec z = p;
     double dr = 1; // running derivative
-    double r = 0; // escape time length
-    // iteration
-    int i;
-    for (i = 0; i < iterations; i++) {
+    double r = 0;  // escape time length
+
+    for (int i = 0; i < iterations; i++) {
       r = length(z);
-      if (r > depth_of_field) {
-        break;
-      }
+      if (r > depth_of_field) break;
       
       // conversion to polar coordinates
       double theta = acos(z.z / r);
       double phi = atan2(z.y, z.x);
       dr = pow(r, power - 1.0) * power * dr + 1.0;
+      
       // scaling and rotation
       double zr = pow(r, power);
-      theta = theta * power;
-      phi = phi * power;
+      theta *= power;
+      phi *= power;
+
       // conversion back to cartesian coordinates
-      z = Vec(sin(theta) * cos(phi), sin(theta) * sin(phi), cos(theta));
+      z = Vec(cos(phi) * sin(theta), 
+              sin(phi) * sin(theta), 
+              cos(theta));
       z = z * zr + p;
     }
     // distance estimator
@@ -146,10 +147,7 @@ struct SerpinksiSDF : SDFObject {
     double scale = 1.0;
     for (int i = 0; i < iterations; i++) {
     	// Scale point toward corner vertex, update scale accumulator
-      z -= vertices[0];
-      z *= 2.0;
-      z += vertices[0];
-      
+      z = (z - verts[0]) * 2 + verts[0];
       scale *= 2.0;
       
       // Fold point across each plane
@@ -157,8 +155,8 @@ struct SerpinksiSDF : SDFObject {
         // The plane is defined by:
         // Point on plane: The vertex that we are reflecting across
         // Plane normal: The direction from said vertex to the corner vertex
-        Vec normal = norm(vertices[0] - vertices[i]); 
-        z = SDF::fold(z, vertices[i], normal);
+        Vec normal = norm(verts[0] - verts[i]); 
+        z = SDF::fold(z, verts[i], normal);
       }
     }
     // Now that the space has been distorted by the IFS,
@@ -167,10 +165,10 @@ struct SerpinksiSDF : SDFObject {
     return SDF::tetrahedron(z) / scale;
   }
   int iterations = 11;
-  inline static Vec vertices[4] = { Vec(1.0, 1.0, 1.0),
-                                    Vec(-1.0, 1.0, -1.0),
-                                    Vec(-1.0, -1.0, 1.0),
-                                    Vec(1.0, -1.0, -1.0) };
+  inline static Vec verts[4] = { Vec(1.0, 1.0, 1.0),
+                                 Vec(-1.0, 1.0, -1.0),
+                                 Vec(-1.0, -1.0, 1.0),
+                                 Vec(1.0, -1.0, -1.0) };
 };
 
 typedef double (*SDFFunc)(const Vec&);
