@@ -14,6 +14,8 @@ KDTree::KDTree(std::vector<Primitive *>& prims){
 KDTreeNode *KDTree::buildKDTree(std::vector<Primitive *>prims,
                                 const AABB& bounds, int depth) {
 
+  if (prims.size() == 0) return NULL;
+
   KDTreeNode *node = new KDTreeNode();
 
   int num = prims.size();
@@ -71,11 +73,11 @@ bool KDTree::hit(Ray& ray, HitRec& rec){
     } else {
       
       if (ray.p[cur->axis] < cur->splitPos) {
-        stack[stackPt++] = cur->b;  // Further child
-        stack[stackPt++] = cur->a;  //  Closer child
+        if (cur->b) stack[stackPt++] = cur->b;  // Further child
+        if (cur->a) stack[stackPt++] = cur->a;  //  Closer child
       } else {
-        stack[stackPt++] = cur->a;  // Further child
-        stack[stackPt++] = cur->b;  //  Closer child
+        if (cur->a) stack[stackPt++] = cur->a;  // Further child
+        if (cur->b) stack[stackPt++] = cur->b;  //  Closer child
       }
       
     }
