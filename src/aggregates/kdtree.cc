@@ -2,61 +2,50 @@
 
 KDTree::KDTree(std::vector<Primitive *>& prims){
 	//TODO
-  AABB bounds;
+  AABB tbounds;
   for (auto i : prims) 
-    bounds = combine(bounds, i->bounds);
+    tbounds = combine(tbounds, i->bounds);
 
   int maxdepth = 8 + 1.3 * log(prims.size());
-  kdtree = buildKDTree(&prims[0], 0, prims.size(), bounds, maxdepth);
-  primitives = prims;
+  kdtree = buildKDTree(prims, tbounds, maxdepth);
 }
 
 
-KDTreeNode *KDTree::buildKDTree(Primitive *prims[], int start, int end, 
+KDTreeNode *KDTree::buildKDTree(std::vector<Primitive *>prims,
                                 const AABB& bounds, int depth) {
 
   KDTreeNode *node = new KDTreeNode();
 
-  int num = end - start;
+  int num = prims.size();
   if (num <= 4 || depth == 0) {
     node->numPrims = num;
-    node->primOff = start;
+    node->primOff = primitives.size();
+    for (auto p : prims) {
+      primitives.push_back(p);
+    }
     node->axis = -1;
     return node;
   }
 
   int splitDim = maxIndex(bounds.max - bounds.min);
   double splitPos = centroid(bounds)[splitDim];
-  
-  Primitive **partitioned = new Primitive*[num];
-  int curIdx = 0;
 
   AABB aa = bounds; aa.max[splitDim] = splitPos;
   AABB bb = bounds; bb.min[splitDim] = splitPos;
 
-  for (int i = start; i < end; i++)
-    if (overlap(prims[i]->bounds, aa) && !overlap(prims[i]->bounds, bb))
-      partitioned[curIdx++] = prims[i];
-  int p1 = curIdx;
-  for (int i = start; i < end; i++)
-    if (overlap(prims[i]->bounds, aa) && overlap(prims[i]->bounds, bb))
-      partitioned[curIdx++] = prims[i];
-  int p2 = curIdx;
-  for (int i = start; i < end; i++)
-    if (!overlap(prims[i]->bounds, aa) && overlap(prims[i]->bounds, bb))
-      partitioned[curIdx++] = prims[i];
+  std::vector<Primitive *>primA;
+  std::vector<Primitive *>primB;
 
-  for (int i = start; i < end; i++) {
-    prims[i] = partitioned[i];
+  for (auto i : prims) {
+    if (overlap(i->bounds, aa)) primA.push_back(i);
+    if (overlap(i->bounds, bb)) primB.push_back(i);
   }
-  
-  delete[] partitioned;
 
   node->axis = splitDim;
   node->splitPos = splitPos;
   node->numPrims = 0;
-  node->a = buildKDTree(prims, start, p2, aa, depth - 1);
-  node->b = buildKDTree(prims, p1, end, bb, depth - 1);
+  node->a = buildKDTree(primA, aa, depth - 1);
+  node->b = buildKDTree(primB, bb, depth - 1);
   return node;
 }
 
@@ -76,7 +65,7 @@ bool KDTree::hit(Ray& ray, HitRec& rec){
         if (primitives[cur->primOff + i]->hit(ray, rec))
           hit = true;
       
-      if (hit) return true;
+      // if (hit) return true;
 
     // Internal node
     } else {

@@ -105,9 +105,10 @@ Vec centroid(const AABB& a) {
 }
 
 bool overlap(const AABB& a, const AABB& b) {
-  return(a.min.x < b.max.x && b.min.x < a.max.x && 
-         a.min.y < b.max.y && b.min.y < a.max.y &&
-         a.min.z < b.max.z && b.min.z < a.max.z);
+  bool x = (a.max.x >= b.min.x) && (a.min.x <= b.max.x);
+  bool y = (a.max.y >= b.min.y) && (a.min.y <= b.max.y);
+  bool z = (a.max.z >= b.min.z) && (a.min.z <= b.max.z);
+  return (x && y && z);
 }
 
 std::ostream& operator<<(std::ostream& os, const AABB& bb) {
