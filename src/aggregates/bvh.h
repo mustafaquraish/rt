@@ -5,35 +5,33 @@
 #include "core/aabb.h"
 #include <vector>
 
+// Structure used when creating the BVH
 struct BVHTree {
   AABB bounds;
-  bool isLeaf = 0;
-  int axis;
-  int offset, numPrims;
-  BVHTree *bva, *bvb;
-  bool hit(Ray& ray, HitRec& rec, 
-          std::vector<Primitive *>& list);
+  int primOff;    // Primitives offset
+  int numPrims;   // 0 -> internal node
+  BVHTree *a, *b;
 };
 
+// Structure used when storing the BVH
 struct BVHLinear {
   AABB bounds;
   union {
-    int primOff;   // leaf
-    int child2Off;  // interior
+    int primOff;    // leaf
+    int child2Off;  // internal
   };
-  uint16_t nPrimitives;  // 0 -> interior node
-  uint8_t axis;          // interior node: xyz
-  uint8_t pad[1];        // ensure 32 byte total size
+  uint16_t numPrims;  // 0 -> internal node
 };
 
 struct BVH : Aggregate {
   BVH(std::vector<Primitive *>& list, int start=0, int end=-1);
   ~BVH() {};
-  BVHTree *buildBVH(std::vector<Primitive *>& list, int start, int end);
-  int flatten(BVHTree *root);
   bool hit(Ray& ray, HitRec& rec);
   
-  BVHTree *bvh;
+  /* Internal building utilities */
+  BVHTree *buildBVH(std::vector<Primitive *>& list, int start, int end);
+  int flatten(BVHTree *root);
+  
   std::vector<BVHLinear> nodes;
   std::vector<Primitive *> primitives;
 };

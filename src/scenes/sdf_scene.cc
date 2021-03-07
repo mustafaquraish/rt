@@ -1,5 +1,14 @@
 #include "core/rt.h"
 
+double mysdf1(const Vec& point) {
+  Vec p = point;
+  if (p.z < 10) p.z = 10;
+  p = SDF::repeatX(p, 5);
+  p = SDF::repeatY(p, 5);
+  p = SDF::repeatZ(p, 5);
+  return SDF::tetrahedron(p);
+}
+
 SCENE(SDF) {
 
   Scene *scene = new Scene();
@@ -37,13 +46,19 @@ SCENE(SDF) {
   // s->Translate(0, -1, 0);
   // scene->add(s);
 
-  double R = lerp(frameRatio, 0.0, TAU);
-  s = new MandelBulbSDF(new Lambertian(1));
+  double R = lerp(frameRatio, 0.0, PI);
+  double power = lerp(frameRatio, 5.0, 15.0);
+  s = new MandelBulbSDF(new Lambertian(1), power);
   s->addTextureMap(new SDFTexture(Colour(1), 3.5));
-  s->RotateX(PI/2 + R);
+  // s->RotateX(PI/2);
+  s->RotateX(-PI/2 + R);
   s->RotateZ(R);
   s->Scale(5);
   scene->add(s);
+
+  // s = new CustomSDF(mysdf1, new Lambertian(1));
+  // s->addTextureMap(new SDFTexture(Colour(1), 10));
+  // scene->add(s);
 
   scene->world = new PrimitiveList(scene->obj_list);
   
