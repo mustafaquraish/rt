@@ -102,7 +102,7 @@ int BVH::flatten(BVHTree *root) {
   return curIdx;
 }
 
-BVH::BVH(std::vector<Primitive *>& prims, int start, int end) {
+BVH::BVH(std::vector<Primitive *>& prims) {
   char message[512];
   sprintf(message, "Creating BVH from %6lu objects", prims.size());
   Timer timer = Timer(message).start();

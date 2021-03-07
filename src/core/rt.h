@@ -43,6 +43,7 @@ using std::endl;
 // Aggregates
 #include "aggregates/primitive_list.h"
 #include "aggregates/bvh.h"
+#include "aggregates/kdtree.h"
 
 // Scene (this needs to be at the end)
 #include "scene.h"
