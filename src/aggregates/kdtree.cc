@@ -2,11 +2,8 @@
 #include "util/timer.h"
 
 KDTree::KDTree(std::vector<Primitive *>& prims){
-	char message[512];
-  sprintf(message, "Creating KDTree from %6lu objects", prims.size());
-  Timer timer = Timer(message).start();
+	Timer timer = Timer("Creating KD-Tree: %6lu objects", prims.size()).start();
   
-  //TODO
   AABB tbounds;
   for (auto i : prims) 
     tbounds = combine(tbounds, i->bounds);
@@ -59,36 +56,68 @@ KDTreeNode *KDTree::buildKDTree(std::vector<Primitive *>prims,
   return node;
 }
 
-bool KDTree::hit(Ray& ray, HitRec& rec){
+#define PUSH(v, tmin, tmax)                                                    \
+  if (v) {                                                                     \
+    stack[stackPt].node = v;                                                   \
+    stack[stackPt].tMin = tmin;                                                \
+    stack[stackPt].tMax = tmax;                                                \
+    stackPt++;                                                                 \
+  } else {}
+
+bool KDTree::hit(Ray& ray, HitRec& rec) {
 	bool hit = false;
   Vec invD = 1 / ray.d; // Lets us have slightly faster AABB hits
 
-  KDTreeNode *stack[128] = {kdtree}; // Holds the node
+  struct KDTodo {
+    KDTreeNode *node;
+    double tMin;
+    double tMax;
+  };
+
+  double tMin, tMax;
+  if (!bounds.hit(ray, tMin, tMax, invD))
+    return false;
+
+  KDTodo stack[128] = { { kdtree, tMin, tMax }  }; // Holds the node
   int stackPt = 1;                   // Current stack offset
 
   while (stackPt) {
-    KDTreeNode *cur = stack[ --stackPt ];
+    --stackPt;
+    KDTreeNode *cur = stack[stackPt].node;
+    tMin = stack[stackPt].tMin;
+    tMax = stack[stackPt].tMax;
+
+    if (ray.tMax < tMin) break;
 
     // Leaf node, test against primitives
     if (cur->numPrims > 0) {
+
       for (int i = 0; i < cur->numPrims; i++)
         if (primitives[cur->primOff + i]->hit(ray, rec))
           hit = true;
-      
-      // if (hit) return true;
 
     // Internal node
     } else {
+
+      KDTreeNode *first, *secnd;
+      double tPlane = (cur->splitPos - ray.p[cur->axis]) * invD[cur->axis];
+      bool below = (ray.p[cur->axis] < cur->splitPos) ||
+                   (ray.p[cur->axis] < cur->splitPos && ray.d[cur->axis] <= 0);
       
-      if (ray.p[cur->axis] < cur->splitPos) {
-        if (cur->b) stack[stackPt++] = cur->b;  // Further child
-        if (cur->a) stack[stackPt++] = cur->a;  //  Closer child
+      first = below ? cur->a : cur->b;
+      secnd = below ? cur->b : cur->a;
+
+      if (tPlane > tMax || tPlane <= 0) {
+        PUSH(first, tMin, tMax);
+      } else if (tPlane < tMin) {
+        PUSH(secnd, tMin, tMax);
       } else {
-        if (cur->a) stack[stackPt++] = cur->a;  // Further child
-        if (cur->b) stack[stackPt++] = cur->b;  //  Closer child
+        PUSH(secnd, tPlane, tMax);
+        PUSH(first, tMin, tPlane);
       }
-      
     }
   }
   return hit;
 }
+
+#undef PUSH
