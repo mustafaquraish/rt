@@ -37,12 +37,14 @@ Camera::Camera(Vec e, Vec g, Vec up, double vfov, RenderParams& params) :
 
 Ray Camera::getRay(int i, int j, RNG& rng) {
   if (!DOF) {
-    Vec pij = Vec(wl + (i+rng.rand01())*du, wt + (j+rng.rand01())*dv, -1);
+    // TODO: Why does Ray(e, norm(p-e)) break KD-Tree?
+    Vec pij = Vec(wl + (i+rng.rand01())*du, 
+                  wt + (j+rng.rand01())*dv, 
+                  -1);
     Vec p = C2W * pij;
-    return Ray(e, norm(p - e));
+    return Ray(p, norm(p - e));
   
   } else {
-    // printf("Dof ray...\n");
     Vec pij = Vec(wl + i*du, wt + j*dv, -1);
     Vec aperture_point = pij + rng.randomUnitDisk() * aperture;
     Vec p = C2W * (norm(pij) * focus_dist);
@@ -51,8 +53,9 @@ Ray Camera::getRay(int i, int j, RNG& rng) {
   }
 }
 
+// TODO: Why does Ray(e, norm(p-e)) break KD-Tree?
 Ray Camera::getRay(int i, int j) {
   Vec pij = Vec(wl + (i)*du, wt + (j)*dv, -1);
   Vec p = C2W * pij;
-  return Ray(e, norm(p - e));
+  return Ray(p, norm(p - e));
 }
