@@ -6,12 +6,12 @@
 using std::cout;
 using std::endl;
 
-#define AGGREGATE BVH
 
 // Core stuff
 #include "core/ray.h"
 #include "core/object.h"
 #include "core/camera.h"
+#include "core/definitions.h"
 
 // Utilities
 #include "util/image.h"

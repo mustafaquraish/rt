@@ -53,7 +53,8 @@ void LSystem::finalize() {
   RNG rng = RNG(seed);
   createLSystem('a', 0, Matrix(), obj_list, rng);
   // objs = new BVH(obj_list);
-  objs = new KDTree(obj_list);
+  // objs = new KDTree(obj_list);
+  objs = new AGGREGATE(obj_list);
   bounds = objs->bounds;
   Object::finalize();
 }

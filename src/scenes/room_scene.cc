@@ -20,7 +20,7 @@ SCENE(Room) {
   scene->cam = Camera(e, g, up, 32, params);
 
   scene->integrator = new Path(params);
-  // scene->integrator = new DebugShader(params);
+  scene->integrator = new DebugShader(params);
   // scene->integrator = new BaseColour(params);
   // scene->integrator = new DirectLighting(params);
   
@@ -204,8 +204,8 @@ SCENE(Room) {
   s->Translate(0,9.5,5);
   scene->add(s);
 
-  scene->world = new KDTree(scene->obj_list);
-  // scene->world = new AGGREGATE(scene->obj_list);
+  // scene->world = new KDTree(scene->obj_list);
+  scene->world = new AGGREGATE(scene->obj_list);
   // scene->world = new PrimitiveList(scene->obj_list);
   
   return scene;

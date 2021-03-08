@@ -1,6 +1,40 @@
 #include "kdtree.h" 
 #include "util/timer.h"
 
+/** 
+ * WARNING:
+ *    KD-Tree is broken. The bug is subtle, but if you go to `camera.cc`
+ *    and change the line for Non-DOF rays from
+ *   
+ *        Ray(p, norm(p-e))
+ *    to
+ *        Ray(e, norm(p-e))
+ *   
+ *    the interesction tests break, and half the scene suddenly disappears.
+ *    For instance, in scene `Room` run with DebugShader, the left half of
+ *    meshes / scene disappears. With scene `Test` (as of Mar. 8, 2021)
+ *    The bottom half of the teapot disappears. This doesn't happen with BVH.
+ *   
+ *   
+ *    For debugging reference, in scene `Test`, run with 1000x1000 resolution,
+ *    The pixel (425, 605) should be on the teapot, but no intersection is
+ *    registered.
+ *   
+ *    Git commit hash with test scene as described: 
+ * 
+ * Notes:
+ *    
+ *   The issue is likely something to do with the following chunk:
+ * 
+ *      if (tPlane > tMax || tPlane <= 0)
+ *        ...
+ * 
+ *   The issue is not necessarily in this code exactly (which is from PBRT),
+ *   but might also be in how things are being set up. I do not think there
+ *   is anything wrong with construction, but it might be worth a look.
+ */
+
+
 KDTree::KDTree(std::vector<Primitive *>& prims){
 	Timer timer = Timer("Creating KD-Tree: %6lu objects", prims.size()).start();
   
@@ -24,7 +58,7 @@ KDTreeNode *KDTree::buildKDTree(std::vector<Primitive *>prims,
   KDTreeNode *node = new KDTreeNode();
 
   int num = prims.size();
-  if (num <= 4 || depth == 0) {
+  if (num <= 2 || depth == 0) {
     node->numPrims = num;
     node->primOff = primitives.size();
     for (auto p : prims) {

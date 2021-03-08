@@ -1,7 +1,9 @@
 #include "util/obj_loader.h"
 #include "objects/triangle_mesh.h"
+
 #include "aggregates/bvh.h"
 #include "aggregates/kdtree.h"
+#include "core/definitions.h"
 
 void RTMeshList::registerMesh(Aggregate *mesh) {
   allMeshes.insert(mesh);
@@ -43,8 +45,9 @@ TriangleMesh::TriangleMesh(const char *fname, BSDF *mat, bool bothSides)
 
 // Caller should set the `prims` vector to contain all the Triangles.
 void TriangleMesh::loadTriangles(std::vector<Primitive *>& prims) {
-  mesh = new KDTree(prims);
+  // mesh = new KDTree(prims);
   // mesh = new BVH(prims);
+  mesh = new AGGREGATE(prims);
   bounds = mesh->bounds;
   RTMeshList::registerMesh(mesh);
 }
