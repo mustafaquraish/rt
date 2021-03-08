@@ -21,6 +21,7 @@
  *    registered.
  *   
  *    Git commit hash with test scene as described: 
+ *            1e6c2e2af2d2c1881da758276354b2610984ea32
  * 
  * Notes:
  *    
