@@ -1,7 +1,3 @@
-/**
- * Stolen shamelessly from Silviu :)
- *  https://github.com/SilviuDraghici/Render3D/blob/master/src/utils/timer.h
- */
 #ifndef __TIMER_H__
 #define __TIMER_H__
 
@@ -16,7 +12,8 @@ class Timer {
 public:
   Timer();
   Timer(std::string message);
-  
+  Timer(const char *format, ...);
+
   Timer& start();
   Timer& stop();
   

@@ -1,9 +1,19 @@
 #include "util/timer.h"
-#include <iostream>
+#include <stdarg.h>
+#include <string.h>
 
 Timer::Timer(){}
 
 Timer::Timer(std::string message) : message(message) { }
+
+Timer::Timer(const char *format, ...) {
+  char buffer[512];
+  va_list args;
+  va_start(args, format);
+  vsprintf(buffer, format, args);
+  va_end(args);
+  message = std::string(buffer);
+}
 
 using namespace std::chrono;
 
