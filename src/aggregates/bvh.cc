@@ -103,9 +103,7 @@ int BVH::flatten(BVHTree *root) {
 }
 
 BVH::BVH(std::vector<Primitive *>& prims, int start, int end) {
-  char message[512];
-  sprintf(message, "Creating BVH from %6lu objects", prims.size());
-  Timer timer = Timer(message).start();
+  Timer timer = Timer("Creating BVH from %6lu objects", prims.size()).start();
 
   BVHTree *bvh = buildBVH(prims, 0, prims.size());
   bounds = bvh->bounds;
