@@ -20,7 +20,7 @@ SCENE(Room) {
   scene->cam = Camera(e, g, up, 32, params);
 
   scene->integrator = new Path(params);
-  scene->integrator = new DebugShader(params);
+  // scene->integrator = new DebugShader(params);
   // scene->integrator = new BaseColour(params);
   // scene->integrator = new DirectLighting(params);
   

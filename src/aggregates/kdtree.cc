@@ -83,6 +83,17 @@ KDTreeNode *KDTree::buildKDTree(std::vector<Primitive *>prims,
     if (overlap(i->bounds, bb)) primB.push_back(i);
   }
 
+  // // Create leaf node
+  // if (primA.size() == num || primB.size() == num) {
+  //   node->numPrims = num;
+  //   node->primOff = primitives.size();
+  //   for (auto p : prims) {
+  //     primitives.push_back(p);
+  //   }
+  //   node->axis = -1;
+  //   return node;
+  // }
+
   node->axis = splitDim;
   node->splitPos = splitPos;
   node->numPrims = 0;
