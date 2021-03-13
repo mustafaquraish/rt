@@ -11,7 +11,7 @@ struct Image {
   Image(char const *fname);
   ~Image();
   
-  void save(char const *fname, bool gammaCorrect=true);
+  void save(char const *fname, bool gammaCorrect=true, double exposure=1.0);
   
   void set(int i, int j, Colour col);
   void splat(int i, int j, Colour col);

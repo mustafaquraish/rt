@@ -11,7 +11,10 @@
 struct Scene;
 
 struct Integrator {
-  Integrator(RenderParams& params) : params(params) {};
+  Integrator(RenderParams& params) : params(params) {
+    if (params.exists("exposure"))
+      exposure = params.get<double>("exposure");
+  };
   virtual ~Integrator() {};
 
   virtual void render(Scene *scene);
@@ -20,6 +23,7 @@ struct Integrator {
   RenderParams params;
   bool enableRNG = true;
   bool gammaCorrect = true;
+  double exposure = 1.0;
   int maxSamples = INT32_MAX;
 };
 

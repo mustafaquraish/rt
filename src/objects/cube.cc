@@ -42,6 +42,6 @@ bool Cube::hit(Ray& r, HitRec& rec) {
 
 Vec Cube::sample(double *pdf, RNG& rng) {
   *pdf = 1 / surfaceArea;
-  Vec p = Vec(rand01(), rand01(), 0.5) * 2 - 1;
+  Vec p = Vec(rng.rand01(), rng.rand01(), 0.5) * 2 - 1;
   return T * p;
 }

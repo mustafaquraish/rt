@@ -14,7 +14,7 @@ SCENE(A4) {
   scene->integrator = new Path(params);
   // scene->integrator = new DebugShader(params);
   // scene->integrator = new DirectLighting(params);
-  scene->integrator = new BaseColour(params);
+  // scene->integrator = new BaseColour(params);
   
   Object *s;
 

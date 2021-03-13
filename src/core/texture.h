@@ -22,7 +22,6 @@ struct ImageTexture : Texture {
     } 
   }
   virtual Colour get(HitRec& rec) { return im->get(rec.u, 1-rec.v); }
-private:
   Image *im = NULL; 
 };
 

@@ -7,12 +7,16 @@
 #include <unordered_map>
 #include <vector>
 
+#include "core/envmap.h"
+
 struct Integrator;
 
 struct Scene {
   std::vector<Primitive *> obj_list;
   std::vector<Object *> lights;
+
   Aggregate *world;
+  EnvironmentMap *envMap = NULL;
 
   Camera cam;
   int sx;
@@ -21,11 +25,17 @@ struct Scene {
   Integrator *integrator;
 
   void add(Object *obj);
+  void addEnvMap(EnvironmentMap *tx);
+  void addEnvMap(const char *filename, double brightness=10);
   void finalize();
   ~Scene();
 
   // In header so compiler can inline it easier; performance critical.
-  bool hit(Ray &ray, HitRec &rec) { return world->hit(ray, rec); }
+  bool hit(Ray &ray, HitRec &rec) { 
+    if (world->hit(ray, rec)) return true;
+    if (envMap) return envMap->envObject->hit(ray, rec); 
+    return false;
+  }
 };
 
 

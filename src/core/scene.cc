@@ -1,8 +1,12 @@
 #include "core/scene.h"
+#include "core/integrator.h"
+
+#include "materials/emitter.h"
+
+#include "objects/triangle_mesh.h"
+
 #include "aggregates/bvh.h"
 #include "aggregates/primitive_list.h"
-#include "objects/triangle_mesh.h"
-#include "core/integrator.h"
 
 void Scene::add(Object *obj) { 
   // Finalize object first...
@@ -13,6 +17,16 @@ void Scene::add(Object *obj) {
   if (obj->bsdf && obj->bsdf->isEmitter())
     lights.push_back(obj);
 };
+
+void Scene::addEnvMap(EnvironmentMap *tx) {
+  envMap = tx;
+  // envMap->saveImage(512, 512, "envTest.ppm");
+  lights.push_back(envMap->envObject);
+}
+
+void Scene::addEnvMap(const char *filename, double brightness) {
+  addEnvMap(new EnvironmentMap(filename, brightness));
+}
 
 void Scene::finalize() { 
   if (obj_list.size() > 15) 

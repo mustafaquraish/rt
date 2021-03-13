@@ -39,6 +39,6 @@ void Integrator::render(Scene *scene) {
   timer.stopAndDisplay();
 
   char *output = params.get<char *>("output");
-  im.save(output, gammaCorrect);
+  im.save(output, gammaCorrect, exposure);
   return;
 }
