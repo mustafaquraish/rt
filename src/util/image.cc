@@ -52,7 +52,12 @@ Image::Image(char const *fname) {
     tmp = fgets(line, 511, f);
   } while (line[0] == '#');
   sscanf(&line[0], "%d %d\n", &sx, &sy); // Read file size
+
   tmp = fgets(&line[0], 9, f);           // Read the remaining header line
+  int maxRGB;
+  sscanf(&line[0], "%d\n", &maxRGB); // Read file size
+
+  printf("===maxRGB is %d\n", maxRGB);
 
   unsigned char *raw = new unsigned char[sx * sy * 3];
   // Read the data
@@ -60,7 +65,7 @@ Image::Image(char const *fname) {
 
   data = new double[sx * sy * 3];
   for (int i = 0; i < sx * sy * 3; i++)
-    data[i] = raw[i] / 255.0;
+    data[i] = raw[i] / (double) maxRGB;
 
   un = un || tmp; // Use both temp variables so compiler doesn't shout
   delete[] raw;
@@ -90,17 +95,17 @@ double linearToSRGB(double L) {
   if (L > 0.0031308) {
     S = 1.055 * pow(L, 1.0 / 2.4) - 0.055;
   }
-  return S;
+  return clamp01(S);
 }
 
-void Image::save(char const *fname, bool gammaCorrect) {
+void Image::save(char const *fname, bool gammaCorrect, double exposure) {
   FILE *f;
   unsigned char *bits24 = new unsigned char[sx * sy * 3];
   for (int i = 0; i < sx * sy * 3; i++) {
     if (!gammaCorrect) {
-      bits24[i] = data[i] * 255.0;
+      bits24[i] = clamp01(data[i] * exposure) * 255.0;
     } else {
-      bits24[i] = linearToSRGB(data[i]) * 255.0;
+      bits24[i] = linearToSRGB(data[i] * exposure) * 255.0;
     }
   }
 
@@ -121,16 +126,15 @@ void Image::save(char const *fname, bool gammaCorrect) {
 }
 
 void Image::set(int i, int j, Colour col) {
-  Colour clamped = clamp01(col);
-  data[(i + j * sx) * 3 + 0] = clamped.x;
-  data[(i + j * sx) * 3 + 1] = clamped.y;
-  data[(i + j * sx) * 3 + 2] = clamped.z;
+  data[(i + j * sx) * 3 + 0] = col.x;
+  data[(i + j * sx) * 3 + 1] = col.y;
+  data[(i + j * sx) * 3 + 2] = col.z;
 }
 
 void Image::splat(int i, int j, Colour col) {
-  data[(i + j * sx) * 3 + 0] = clamp01(data[(i + j * sx) * 3 + 0] + col.x);
-  data[(i + j * sx) * 3 + 1] = clamp01(data[(i + j * sx) * 3 + 0] + col.y);
-  data[(i + j * sx) * 3 + 2] = clamp01(data[(i + j * sx) * 3 + 0] + col.z);
+  data[(i + j * sx) * 3 + 0] += + col.x;
+  data[(i + j * sx) * 3 + 1] += + col.y;
+  data[(i + j * sx) * 3 + 2] += + col.z;
 }
 
 Image::~Image() { 

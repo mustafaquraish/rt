@@ -8,7 +8,7 @@ Colour BaseColour::Li(Ray &r, Scene *scene, RNG& rng) {
 
   Ray ray = Ray(r.p, r.d);
   for (int bounce = 0; bounce < PATH_MAX_BOUNCES; bounce++) {    
-    if (!scene->world->hit(ray, rec)) break;
+    if (!scene->hit(ray, rec)) break;
     
     BSDF *bsdf = rec.obj->bsdf;
     rec.wo = -ray.d;

@@ -2,7 +2,6 @@
  * One-Header math library for ray-tracing. Includes:
  *    - Common utility functions: min(), max(), clamp01()
  *    - Global Constants: PI, TAU, TOL
- *    - Random number generation: rand01()
  *    - Vector math definitions: Vec, dot(), cross(), ...
  *    - Matrix math definitions: Matrix, mat-vec / mat-mat mult, 4x4 invert
  *    - Transformation matrices: Scale, Translate, Rotate X/Y/Z
@@ -37,21 +36,6 @@ inline double max(const double a, const double b) { return (a > b) ? a : b; }
 inline double clamp01(const double a) { return min(1, max(a, 0)); }
 inline double clamp(const double a, const double _min, const double _max) { 
   return min(_max, max(a, _min)); 
-}
-
-/************************** RANDOM NUMBERS ***********************************/
-
-inline double rand01(void) {
-  static int x = 123456789;
-  static int y = 362436069;
-  static int z = 521288629;
-  static int w = 88675123;
-  int t;
-  t = x ^ (x << 11);
-  x = y;
-  y = z;
-  z = w;
-  return (w = w ^ (w >> 19) ^ (t ^ (t >> 8))) / 2147483647.0;
 }
 
 /**************************** VECTOR *****************************************/
@@ -426,6 +410,14 @@ inline T map(const T a, double sMin=0 , double sMax=1,
 
 inline double luminance(const Colour& c) {
   return 0.2126 * c.r + 0.7152 * c.g + 0.0722 * c.b;
+}
+
+/***************************** Conversions ************************************/
+
+inline Vec polar2Cart(double theta, double phi) {
+  return Vec(cos(theta) * sin(phi), 
+             sin(theta) * sin(phi), 
+             cos(phi));
 }
 
 /***************************** QUADRATIC SOLVING *****************************/

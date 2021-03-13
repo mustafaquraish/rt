@@ -24,8 +24,8 @@ Colour DirectLighting::SampleLight(HitRec& rec, Scene *scene, RNG& rng) {
 
   Ray shadowRay = Ray(rec.p, wi);
   if (scene->hit(shadowRay, tmp) && tmp.obj == light) {
-      // Light ray from bad direction
-      if (dot(wi, tmp.n) < 0 || dot(wi, rec.n) > 0) {
+    // Light ray from bad direction
+    if (dot(wi, tmp.n) < 0 || dot(wi, rec.n) > 0) {
       
       tmp.wo = -shadowRay.d;
 
@@ -50,7 +50,7 @@ Colour DirectLighting::Li(Ray &r, Scene *scene, RNG& rng) {
 
   Ray ray = Ray(r.p, r.d);
   for (int bounce = 0; bounce < PATH_MAX_BOUNCES; bounce++) {    
-    if (!scene->world->hit(ray, rec)) break;
+    if (!scene->hit(ray, rec)) break;
     
     BSDF *bsdf = rec.obj->bsdf;
     rec.wo = -ray.d;

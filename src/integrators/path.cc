@@ -32,7 +32,9 @@ Colour Path::SampleLight(HitRec& rec, Scene *scene, RNG& rng) {
     pdf /= fabs(dot(norm(wi), rec.n) * -dot(norm(wi), tmp.n));
     pdf /= scene->lights.size();
 
-    if (pdf < 1) pdf = 1;
+
+    constexpr double minPdf = 0.1;
+    if (pdf < minPdf) pdf = minPdf;
 
     return rec.obj->bsdf->eval(rec) * light->bsdf->emittance(tmp) / pdf; 
   }
@@ -50,10 +52,9 @@ Colour Path::Li(Ray &r, Scene *scene, RNG& rng) {
 
   Ray ray = Ray(r.p, r.d);
   for (int bounce = 0; bounce < PATH_MAX_BOUNCES; bounce++) {
-    if (!scene->world->hit(ray, rec)) break;
+    if (!scene->hit(ray, rec)) break;
 
-    if (isnan(rec.n.x))
-      printf("got nan in path.cc\n");
+    if (isnan(rec.n.x)) printf("got nan in path.cc\n");
 
     BSDF *bsdf = rec.obj->bsdf;
     rec.wo = -ray.d;
