@@ -4,19 +4,24 @@
 #include "core/object.h"
 #include "materials/emitter.h"
 
-/* Placeholder object so that we can use the existing NEE framework */
-struct SkyObject : Object {
-  SkyObject(BSDF *mat, double brightness) : Object(mat) { 
+struct EnvironmentMap : Object {
+  EnvironmentMap(Texture *tx, double brightness=10) 
+    : Object(new Emitter(tx)) { 
     bounds = AABB(0);   
     surfaceArea = brightness;
-  };
+  }
+
+  EnvironmentMap(const char *filename, double brightness=10) 
+    : EnvironmentMap(new ImageTexture(filename), brightness) {}
+
   bool hit(Ray& r, HitRec &rec) { 
+    Ray ray = rayTransform(r);
     rec.obj = this;
     rec.t = 1;
-    Vec it = norm(r.d);
+    Vec it = norm(ray.d);
     rec.n = -it;
     rec.u = atan2(it.z, it.x) / (2 * PI) + 0.5;
-    rec.v = 0.5 - asin(it.y) / PI;
+    rec.v = 0.5 + asin(it.y) / PI;
     return true; 
   };
 
@@ -28,21 +33,6 @@ struct SkyObject : Object {
     // Multiply by large constant to move it away from scene
     return 1000 * polar2Cart(theta, phi);
   }
-};
-
-struct EnvironmentMap : ImageTexture {
-  EnvironmentMap(const char *filename, double brightness=10) 
-    : ImageTexture(filename) {
-    envObject = new SkyObject(new Emitter(this), brightness);
-  }
-  virtual Colour get(HitRec& rec) { 
-    Vec d = norm(rec.wo);
-    double u = atan2(d.z, d.x) / (2 * PI) + 0.5;
-    double v = 0.5 - asin(d.y) / PI;
-    return im->get(u, v); 
-  }
-
-  Object *envObject;
 };
 
 #endif // __ENVMAP_H__

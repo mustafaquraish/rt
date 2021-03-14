@@ -20,12 +20,26 @@ void Scene::add(Object *obj) {
 
 void Scene::addEnvMap(EnvironmentMap *tx) {
   envMap = tx;
+  envMap->finalize();
   // envMap->saveImage(512, 512, "envTest.ppm");
-  lights.push_back(envMap->envObject);
+  lights.push_back(envMap);
 }
 
 void Scene::addEnvMap(const char *filename, double brightness) {
   addEnvMap(new EnvironmentMap(filename, brightness));
+}
+
+void Scene::addEnvMap(Colour col) {
+  addEnvMap(new EnvironmentMap(new ContantTexture(col)));
+}
+
+void Scene::addEnvMap(Object *obj) {
+  EnvironmentMap *env;
+  if ( (env = static_cast<EnvironmentMap *>(obj)) == NULL) {
+    fprintf(stderr, "Error, Object* cannot be converted to EnvironmentMap*\n");
+    exit(1);
+  }
+  addEnvMap(env);
 }
 
 void Scene::finalize() { 

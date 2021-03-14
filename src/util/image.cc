@@ -23,10 +23,37 @@ Image::Image(int sx, int sy) : sx(sx), sy(sy) {
   data = new double[sx * sy * 3];
 }
 
-// The following functions for loading / saving PPM images are taken
-// from an image processing library created by Francisco J Estrada.
-// His academic page can be found at: http://www.cs.utoronto.ca/~strider/
-// Modified to work with this Ray-Tracer
+template <typename T> 
+static T swapEndian(T u) {
+  static_assert(CHAR_BIT == 8, "CHAR_BIT != 8");
+
+  union {
+    T u;
+    unsigned char u8[sizeof(T)];
+  } source, dest;
+
+  source.u = u;
+
+  for (size_t k = 0; k < sizeof(T); k++)
+    dest.u8[k] = source.u8[sizeof(T) - k - 1];
+
+  return dest.u;
+}
+
+template <typename T>
+void readImageData(FILE *f, double *arr, size_t num_items, double scale) {
+  T *raw = new T[num_items];
+  if (!fread(raw, sizeof(T), num_items, f))
+    fprintf(stderr, "Error reading image\n");
+
+  for (int i = 0; i < num_items; ++i)
+    raw[i] = swapEndian<T>(raw[i]);
+
+
+  for (int i = 0; i < num_items; ++i)
+    arr[i] = raw[i] / scale;
+  delete[] raw;
+}
 
 Image::Image(char const *fname) {
   FILE *f;
@@ -57,18 +84,16 @@ Image::Image(char const *fname) {
   int maxRGB;
   sscanf(&line[0], "%d\n", &maxRGB); // Read file size
 
-  printf("===maxRGB is %d\n", maxRGB);
-
-  unsigned char *raw = new unsigned char[sx * sy * 3];
-  // Read the data
-  un = fread(raw, sx * sy * 3, sizeof(unsigned char), f);
-
   data = new double[sx * sy * 3];
-  for (int i = 0; i < sx * sy * 3; i++)
-    data[i] = raw[i] / (double) maxRGB;
+
+  // printf("===maxRGB is %d\n", maxRGB);
+  if (maxRGB == 255) {
+    readImageData<uint8_t>(f, data, 3 * sx * sy, maxRGB);
+  } else {
+    readImageData<uint16_t>(f, data, 3 * sx * sy, maxRGB);
+  }
 
   un = un || tmp; // Use both temp variables so compiler doesn't shout
-  delete[] raw;
   fclose(f);
 }
 

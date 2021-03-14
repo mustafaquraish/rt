@@ -13,6 +13,12 @@ struct Texture {
   void saveImage(int size_x, int size_y, const char *filename);
 };
 
+struct ContantTexture : Texture {
+  ContantTexture(Colour col) : col(col) {}
+  virtual Colour get(HitRec& rec) { return col; }
+  Colour col; 
+};
+
 struct ImageTexture : Texture {
   ImageTexture(const char *filename) { 
     im = RTImageList::getImage(filename);
