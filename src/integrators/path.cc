@@ -8,6 +8,8 @@ Colour Path::SampleLight(HitRec& rec, Scene *scene, RNG& rng) {
   double pdf;
   HitRec tmp;
   
+  if (scene->lights.size() == 0) return 0; 
+
   // Pick a light source
   // Object *light = scene->lights[ 0 ];
   Object *light = scene->lights[ rng.randint() % scene->lights.size() ];

@@ -25,15 +25,19 @@ struct Scene {
   Integrator *integrator;
 
   void add(Object *obj);
+  
   void addEnvMap(EnvironmentMap *tx);
   void addEnvMap(const char *filename, double brightness=10);
+  void addEnvMap(Colour col);
+  void addEnvMap(Object *obj);
+
   void finalize();
   ~Scene();
 
   // In header so compiler can inline it easier; performance critical.
   bool hit(Ray &ray, HitRec &rec) { 
     if (world->hit(ray, rec)) return true;
-    if (envMap) return envMap->envObject->hit(ray, rec); 
+    if (envMap) return envMap->hit(ray, rec); 
     return false;
   }
 };
