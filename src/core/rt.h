@@ -38,6 +38,7 @@ using std::endl;
 #include "integrators/direct_lighting.h"
 #include "integrators/path.h"
 #include "integrators/base_colour.h"
+#include "integrators/photon_mapping.h"
 
 
 // Aggregates

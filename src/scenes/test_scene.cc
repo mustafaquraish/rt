@@ -9,27 +9,75 @@ SCENE(Test) {
   Vec e = Vec(0, 0, -15);
   Vec g = -e;
   Vec up = Vec(0, 1, 0);
-  scene->cam = Camera(e, g, up, 55, params);
-
-  // params.setWindow(0.425, 0.426, 0.605, 0.606);
+  scene->cam = Camera(e, g, up, 70, params);
 
   // scene->integrator = new Path(params);
-  scene->integrator = new DebugShader(params);
-  // scene->integrator = new BaseColour(params);
+  scene->integrator = new PhotonMapping(params);
+  // scene->integrator = new DebugShader(params);
   // scene->integrator = new DirectLighting(params);
+  // scene->integrator = new BaseColour(params);
   
   Object *s;
 
-  s = new TriangleMesh("assets/obj/teapot_lo.obj", new Lambertian(Colour(.95)));
-  s->Translate(0, 0, 5);
-  s->Scale(5);
+  // Right
+  s = new Sphere(new Lambertian(Colour(.25, .25, .75)));
+  s->Scale(500, 500, 500);
+  s->RotateY(PI / 2);
+  s->Translate(510, 0, 5);
   scene->add(s);
 
+  // Left
+  s = new Sphere(new Lambertian(Colour(.75, .25, .25)));
+  s->Scale(500, 500, 500);
+  s->RotateY(-PI / 2);
+  s->Translate(-510, 0, 5);
+  scene->add(s);
 
-  s = new Sphere(new Emitter(Colour(.99, .7, .5)*15));
-  s->Scale(1, 1, 1);
-  // s->RotateX(PI/2);
-  s->Translate(5.03f, 2.91f, -2.20f);
+  // Back
+  s = new Sphere(new Lambertian(Colour(.95, .95, .95)));
+  s->Scale(500, 500, 500);
+  s->Translate(0, 0, 515);
+  scene->add(s);
+
+  // Bottom
+  s = new Sphere(new Lambertian(Colour(.75, .75, .75)));
+  s->Scale(500, 500, 500);
+  s->RotateX(-PI / 2);
+  s->Translate(0, -510, 5);
+  scene->add(s);
+
+  // Top
+  s = new Sphere(new Lambertian(Colour(.75, .75, .75)));
+  s->Scale(500, 500, 500);
+  s->RotateX(PI / 2);
+  s->Translate(0, 510, 5);
+  scene->add(s);
+
+  // // left sphere
+  // s = new Sphere(new Transmissive(1.47, Colour(1, 1, 1)));
+  // s->Scale(3.75, 3.75, 3.75);
+  // s->Translate(-5, -4, 4.5);
+  // scene->add(s);
+
+  // // right sphere
+  // s = new Sphere(new Mirror(Colour(.99, .99, .99)));
+  // s->Scale(3.75, 3.75, 3.75);
+  // s->Translate(4, -3.75, 6.5);
+  // scene->add(s);
+
+  s = new DisplacedPlane(
+                          new Perlin4DTexture(Layered, 4, 4, 0.5, 0),
+                          new Transmissive(1.2, Colour(0.5, 0.7, 1))
+                          );
+  s->Scale(12, 12, 12);
+  s->RotateX(PI/2);
+  s->Translate(0, -2, 8);
+  scene->add(s);
+  
+  s = new Plane(new Emitter(Colour(1, 1, 1)));
+  s->Scale(.5,2.5,10);
+  s->RotateX(PI/2);
+  s->Translate(0,9.9995,5);
   scene->add(s);
 
   // scene->world = new AGGREGATE(scene->obj_list);
