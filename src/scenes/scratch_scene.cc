@@ -18,15 +18,16 @@ SCENE(Scratch) {
   scene->cam = Camera(e, g, up, 45, params);
 
   // scene->integrator = new Path(params);
-  // scene->integrator = new DebugShader(params);
+  scene->integrator = new DebugShader(params);
   // scene->integrator = new BaseColour(params);
-  scene->integrator = new DirectLighting(params);
+  // scene->integrator = new DirectLighting(params);
   
   Object *s;
 
-  s = new TriangleMesh("assets/obj/room.obj", new Lambertian(Colour(.95)));
-  // s->Translate(-2.5, -1, 0);
-  // s->Scale(5);
+  // s = new TriangleMesh("assets/obj/room.obj", new Lambertian(Colour(.95)));
+  s = new TriangleMesh("assets/obj/living_room.obj", new Lambertian(Colour(.95)));
+  s->Translate(-10, -1, -5);
+  s->Scale(3);
   scene->add(s);
 
 

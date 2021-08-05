@@ -11,8 +11,13 @@ SCENE(Test) {
   Vec up = Vec(0, 1, 0);
   scene->cam = Camera(e, g, up, 70, params);
 
+  params.set<double>("photonRange", .2);
+  params.set<int>("numPhotons", 10000);
+  params.set<int>("numIterations", 10);
+
   // scene->integrator = new Path(params);
-  scene->integrator = new PhotonMapping(params);
+  // scene->integrator = new PhotonMapping(params);
+  scene->integrator = new SPPM(params);
   // scene->integrator = new DebugShader(params);
   // scene->integrator = new DirectLighting(params);
   // scene->integrator = new BaseColour(params);
@@ -53,32 +58,52 @@ SCENE(Test) {
   s->Translate(0, 510, 5);
   scene->add(s);
 
-  // // left sphere
-  // s = new Sphere(new Transmissive(1.47, Colour(1, 1, 1)));
-  // s->Scale(3.75, 3.75, 3.75);
-  // s->Translate(-5, -4, 4.5);
+  // // blocking
+  // s = new Plane(new Lambertian(Colour(.75)));
+  // s->Scale(5, 5, 5);
+  // s->RotateX(-PI / 2);
+  // s->Translate(0, 8, 5);
   // scene->add(s);
 
-  // // right sphere
-  // s = new Sphere(new Mirror(Colour(.99, .99, .99)));
-  // s->Scale(3.75, 3.75, 3.75);
-  // s->Translate(4, -3.75, 6.5);
-  // scene->add(s);
-
-  s = new DisplacedPlane(
-                          new Perlin4DTexture(Layered, 4, 4, 0.5, 0),
-                          new Transmissive(1.2, Colour(0.5, 0.7, 1))
-                          );
-  s->Scale(12, 12, 12);
-  s->RotateX(PI/2);
-  s->Translate(0, -2, 8);
+  // left sphere
+  s = new Sphere(new Transmissive(1.47, Colour(1, 1, 1)));
+  s->Scale(3.75, 3.75, 3.75);
+  s->Translate(-5, -4, 4.5);
   scene->add(s);
+
+  // right sphere
+  s = new Sphere(new Mirror(Colour(.99, .99, .99)));
+  s->Scale(3.75, 3.75, 3.75);
+  s->Translate(4, -3.75, 6.5);
+  scene->add(s);
+
+  // s = new TangleCube(new Transmissive(1.47, Colour(1, 1, 1)));
+  // s->RotateX(PI / 6);
+  // s->RotateY(-PI / 9);
+  // s->Scale(2);
+  // s->Translate(0, 0, 4.5);
+  // scene->add(s);
+
+  // s = new DisplacedPlane(
+  //                         new Perlin4DTexture(Layered, 4, 4, 0.5, 0),
+  //                         new Transmissive(1.2, Colour(0.5, 0.7, 1))
+  //                         );
+  // s->Scale(12, 12, 12);
+  // s->RotateX(PI/2);
+  // s->Translate(0, -2, 8);
+  // scene->add(s);
   
   s = new Plane(new Emitter(Colour(1, 1, 1)));
   s->Scale(.5,2.5,10);
   s->RotateX(PI/2);
   s->Translate(0,9.9995,5);
   scene->add(s);
+
+  // s = new Disc(new Emitter(Colour(1, 1, 1)));
+  // s->Scale(2.5,2.5,10);
+  // s->RotateX(PI/2);
+  // s->Translate(0,9.9995,5);
+  // scene->add(s);
 
   // scene->world = new AGGREGATE(scene->obj_list);
   scene->world = new PrimitiveList(scene->obj_list);

@@ -39,6 +39,7 @@ using std::endl;
 #include "integrators/path.h"
 #include "integrators/base_colour.h"
 #include "integrators/photon_mapping.h"
+#include "integrators/sppm.h"
 
 
 // Aggregates

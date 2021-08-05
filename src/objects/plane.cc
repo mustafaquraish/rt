@@ -15,7 +15,7 @@ bool Plane::hit(Ray& r, HitRec& rec) {
     Vec canon_n = Vec(0, 0, 1);
     canon_n = normalMapped(canon_n, rec);
     rec.n = normalTransform(canon_n);
-    if (dot(r.d, rec.n) > 0) rec.n = -rec.n;
+    // if (dot(r.d, rec.n) > 0) rec.n = -rec.n;
     rec.obj = this;
     r.tMax = min(r.tMax, t);
     return true;

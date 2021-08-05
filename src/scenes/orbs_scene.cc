@@ -12,7 +12,7 @@ SCENE(Orbs) {
   scene->cam = Camera(e, g, up, 70, params);
 
   scene->integrator = new Path(params);
-  scene->integrator = new DebugShader(params);
+  // scene->integrator = new DebugShader(params);
   // scene->integrator = new DirectLighting(params);
   
   Object *s;

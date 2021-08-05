@@ -11,10 +11,16 @@ SCENE(Cornell) {
   Vec up = Vec(0, 1, 0);
   scene->cam = Camera(e, g, up, 70, params);
 
-  scene->integrator = new Path(params);
+  // params.set<double>("photonRange", .1);
+  // params.set<int>("numPhotons", 10000000);
+  // params.set<int>("numIterations", 10);
+
+  // scene->integrator = new Path(params);
   // scene->integrator = new DirectLighting(params);
-  scene->integrator = new DebugShader(params);
-  // scene->integrator = new BaseColour(params);
+  // scene->integrator = new DebugShader(params);
+  // scene->integrator = new PhotonMapping(params);
+  // scene->integrator = new PhotonMapping(params);
+  scene->integrator = new BaseColour(params);
   
   Object *s;
 
@@ -164,7 +170,7 @@ SCENE(Cornell) {
   // s->Translate(-3, -15, 6);
   // scene->add(s);
 
-  s = new Disc(new Emitter(Colour(12, 12, 12)));
+  s = new Disc(new Emitter(Colour(2, 2, 2)));
   s->Scale(2.5);
   s->RotateX(PI/2);
   s->Translate(0,9.9995,5);
