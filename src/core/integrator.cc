@@ -22,8 +22,8 @@ void Integrator::render(Scene *scene) {
     Tile tile = tileManager.getTile(t);
     RNG rng = RNG(t);
     
-    for (int x = tile.xBegin; x < tile.xEnd; x++) {
-      for (int y = tile.yBegin; y < tile.yEnd; y++) {
+    for (int y = tile.yBegin; y < tile.yEnd; y++) {
+      for (int x = tile.xBegin; x < tile.xEnd; x++) {
         Colour col = 0;
         for (int sample = 0; sample < total_samples; sample++) {
           Ray ray = (enableRNG) ? scene->cam.getRay(x, y, rng) 

@@ -27,18 +27,20 @@ void PhotonMapping::sendPhoton(Scene *scene, RNG &rng, int depth) {
     BSDF *bsdf = rec.obj->bsdf;
     rec.wo = -ray.d;
 
+    if (!bsdf->isSpecular()) {
+      photonMap->addPoint(Photon(rec.p, -ray.d, throughput));
+    }
+
     throughput *= bsdf->sample(rec, rng);
 
-    if (!bsdf->isSpecular()) {
-      photonMap->addPhoton(rec.p, throughput);
-    }
+
 
     ray = Ray(rec.p, rec.wi);
   }
 }
 
 void PhotonMapping::render(Scene *scene) {
-  photonMap = new PointKDTree(20);
+  photonMap = new PointKDTree<Photon>(20);
 
   int updateInc = numPhotons / 100; 
   ProgressBar progress = ProgressBar(numPhotons, "Shooting Photons", updateInc);
@@ -72,7 +74,10 @@ Colour PhotonMapping::Li(Ray& r, Scene *scene, RNG& rng) {
       photonMap->getRange(rec.p, photonRange, photons);
 
       Colour c = 0;
-      for (auto p : photons) c += p.col;
+      for (auto p : photons) {
+        rec.wi = p.dir;
+        c += p.col * bsdf->eval(rec);
+      }
       // for (auto p : photons) c += p.col * (1-length(rec.p - p.pos)/photonRange);
       
       if (photons.size() > 0) c /= photons.size();

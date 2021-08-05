@@ -62,4 +62,7 @@ struct RTSceneFactory {
   } RT_Scene_instance_##name;                                                 \
   Scene *RT_Scene_##name(RenderParams &params)
 
+
+
+
 #endif // __SCENE_H__
