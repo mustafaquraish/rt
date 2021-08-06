@@ -1,7 +1,6 @@
-#ifndef __TILE_MANAGER_H__
-#define __TILE_MANAGER_H__
+#pragma once
 
-#include "util/params.h"
+#include <util/params.h>
 
 struct Tile {
   int xBegin, xEnd, yBegin, yEnd;
@@ -59,4 +58,3 @@ struct TileManager {
 
 #undef MIN_TILES
 
-#endif // __TILE_MANAGER_H__

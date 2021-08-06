@@ -1,4 +1,4 @@
-#include "objects/cube.h"
+#include <objects/cube.h>
 
 bool Cube::hit(Ray& r, HitRec& rec) {
   Ray transformed = rayTransform(r);
@@ -14,20 +14,20 @@ bool Cube::hit(Ray& r, HitRec& rec) {
   rec.t = t1;
   rec.p = r.at(rec.t);
 
-  Vec it = transformed.at(rec.t);
-  Vec canon_n;
+  Vec3 it = transformed.at(rec.t);
+  Vec3 canon_n;
   if (fabs(it.x - 1) < TOL)
-    canon_n = Vec(+1, 0, 0), rec.u = it.y, rec.v = it.z;
+    canon_n = Vec3(+1, 0, 0), rec.u = it.y, rec.v = it.z;
   else if (fabs(it.x + 1) < TOL)
-    canon_n = Vec(-1, 0, 0), rec.u = it.y, rec.v = it.z;
+    canon_n = Vec3(-1, 0, 0), rec.u = it.y, rec.v = it.z;
   else if (fabs(it.y - 1) < TOL)
-    canon_n = Vec(0, +1, 0), rec.u = it.x, rec.v = it.z;
+    canon_n = Vec3(0, +1, 0), rec.u = it.x, rec.v = it.z;
   else if (fabs(it.y + 1) < TOL)
-    canon_n = Vec(0, -1, 0), rec.u = it.x, rec.v = it.z;
+    canon_n = Vec3(0, -1, 0), rec.u = it.x, rec.v = it.z;
   else if (fabs(it.z - 1) < TOL)
-    canon_n = Vec(0, 0, +1), rec.u = it.x, rec.v = it.y;
+    canon_n = Vec3(0, 0, +1), rec.u = it.x, rec.v = it.y;
   else // (fabs(rec.p.z + 1) < TOL) 
-    canon_n = Vec(0, 0, -1), rec.u = it.x, rec.v = it.y;
+    canon_n = Vec3(0, 0, -1), rec.u = it.x, rec.v = it.y;
 
   rec.u = (rec.u + 1) / 2;
   rec.v = (rec.v + 1) / 2;
@@ -40,8 +40,8 @@ bool Cube::hit(Ray& r, HitRec& rec) {
 
 }
 
-Vec Cube::sample(double *pdf, RNG& rng) {
+Vec3 Cube::sample(double *pdf, RNG& rng) {
   *pdf = 1 / surfaceArea;
-  Vec p = Vec(rng.rand01(), rng.rand01(), 0.5) * 2 - 1;
+  Vec3 p = Vec3(rng.rand01(), rng.rand01(), 0.5) * 2 - 1;
   return T * p;
 }

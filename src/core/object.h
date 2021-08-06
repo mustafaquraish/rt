@@ -1,10 +1,9 @@
-#ifndef __OBJECT_H__
-#define __OBJECT_H__
+#pragma once
 
-#include "core/ray.h"
-#include "core/bsdf.h"
-#include "core/primitive.h"
-#include "core/aabb.h"
+#include <core/ray.h>
+#include <core/bsdf.h>
+#include <core/primitive.h>
+#include <core/aabb.h>
 
 struct Object : Primitive {
   Object() {};
@@ -26,20 +25,19 @@ struct Object : Primitive {
   virtual void finalize();
 
   // Internal utiliies
-  Vec normalMapped(const Vec& canon_n, HitRec& rec);
+  Vec3 normalMapped(const Vec3& canon_n, HitRec& rec);
   Ray rayTransform(const Ray& r);
-  Vec normalTransform(const Vec& n);
+  Vec3 normalTransform(const Vec3& n);
   
   virtual BSDF *getBSDF(HitRec& rec) { return bsdf; }
   virtual bool hit(Ray& r, HitRec &rec) = 0;
-  virtual Vec sample(double *pdf, RNG& rng);
+  virtual Vec3 sample(double *pdf, RNG& rng);
 
   BSDF *bsdf = NULL;
   Texture *normalMap = NULL;
   double surfaceArea = 1;
   Primitive *prim = NULL;
-  Matrix T, T_inv;
+  Matrix4 T, T_inv;
   int both = 0;
 };
 
-#endif // __OBJECT_H__

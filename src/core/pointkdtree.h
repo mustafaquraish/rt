@@ -1,11 +1,11 @@
 /**
  * Simple one-header implementation of a Point-KDTree.
  * 
- * To use this, the templated type must have a `pos` field of type `Vec`, for
+ * To use this, the templated type must have a `pos` field of type `Vec3`, for
  * instance as follows:
  * 
  *        struct KDElem_t {
- *           Vec pos;
+ *           Vec3 pos;
  *           <other fields you want>
  *        };
  *        
@@ -15,11 +15,10 @@
  * (c) Mustafa Quraish, 2021
  */
 
-#ifndef __PHOTONMAP_H__
-#define __PHOTONMAP_H__
+#pragma once
 
-#include "core/math.h"
-#include "core/aabb.h"
+#include <core/math.h>
+#include <core/aabb.h>
 
 #include <vector>
 
@@ -56,7 +55,7 @@ struct PointKDTree {
     return node;
   }
   
-  void getRange(Vec pt, double range, std::vector<ValType> &outputPts) {
+  void getRange(Vec3 pt, double range, std::vector<ValType> &outputPts) {
     if (dim < 0) {
       for (auto p : points) {
         float dist = length(p.pos-pt);
@@ -125,4 +124,3 @@ struct PointKDTree {
 
 
 
-#endif // __PHOTONMAP_H__

@@ -1,10 +1,9 @@
-#ifndef __TEXTURE_H__
-#define __TEXTURE_H__
+#pragma once
 
-#include "core/primitive.h"
+#include <core/primitive.h>
 #include <unordered_map>
-#include "util/image.h"
-#include "ext/SimplexNoise.h"
+#include <util/image.h>
+#include <ext/SimplexNoise.h>
 
 struct Texture {
   virtual ~Texture() {};
@@ -100,4 +99,3 @@ struct SDFTexture : Texture {
 };
 
 
-#endif // __TEXTURE_H__

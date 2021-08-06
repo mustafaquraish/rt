@@ -1,4 +1,4 @@
-#include "objects/sdf.h"
+#include <objects/sdf.h>
 
 #define SDF_MAX_ITERS 1000
 #define SDF_EPS 10e-4
@@ -7,7 +7,7 @@ bool SDFObject::hit(Ray& r, HitRec& rec) {
   Ray transformed = rayTransform(r);
 
   double lambda = SDF_EPS, dist;
-  Vec p;
+  Vec3 p;
   int iter = 0;
 
   while (iter++ < SDF_MAX_ITERS) {
@@ -21,9 +21,9 @@ bool SDFObject::hit(Ray& r, HitRec& rec) {
   if (iter > SDF_MAX_ITERS)
     return false;
 
-  Vec canon_n = (Vec(F(p + Vec(EPS,  0,  0)),
-                     F(p + Vec(  0,EPS,  0)),
-                     F(p + Vec(  0,  0,EPS))) - F(p)) / EPS;
+  Vec3 canon_n = (Vec3(F(p + Vec3(EPS,  0,  0)),
+                     F(p + Vec3(  0,EPS,  0)),
+                     F(p + Vec3(  0,  0,EPS))) - F(p)) / EPS;
   canon_n = norm(canon_n);
 
   rec.t = lambda;

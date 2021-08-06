@@ -10,11 +10,10 @@
  *  
  */
 
-#ifndef __PROGRESS_H__
-#define __PROGRESS_H__
+#pragma once
 
 #include <string>
-#include "stdio.h"
+#include <stdio.h>
 
 struct ProgressBar {
   ProgressBar(int totalWork) : ProgressBar(totalWork, "ProgressBar") {};
@@ -42,4 +41,3 @@ struct ProgressBar {
   std::string message;
 };
 
-#endif // __PROGRESS_H__

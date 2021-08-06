@@ -1,4 +1,4 @@
-#include "core/rt.h"
+#include <core/rt.h>
 
 using namespace std;
 
@@ -6,9 +6,9 @@ SCENE(Env) {
   double frameRatio = params.get<double>("frameRatio");
   Scene *scene = new Scene();
   
-  Vec e = Vec(0, 0, -40);
-  Vec g = -e;
-  Vec up = Vec(0, 1, 0);
+  Vec3 e = Vec3(0, 0, -40);
+  Vec3 g = -e;
+  Vec3 up = Vec3(0, 1, 0);
   scene->cam = Camera(e, g, up, 35, params);
 
   // params.set("exposure", 0.8);

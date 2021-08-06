@@ -1,4 +1,4 @@
-#include "materials/transmissive.h"
+#include <materials/transmissive.h>
 
 
 Colour Transmissive::eval(HitRec& rec) {
@@ -7,13 +7,13 @@ Colour Transmissive::eval(HitRec& rec) {
 
 
 Colour Transmissive::reflect(HitRec& rec) {
-  Vec d = -rec.wo, n = rec.n;
+  Vec3 d = -rec.wo, n = rec.n;
   rec.wi = d - 2 * dot(d, n) * n;
   return col(rec);
 }
 
 Colour Transmissive::sample(HitRec& rec, RNG& rng) {  
-  Vec d = -rec.wo, n = rec.n;
+  Vec3 d = -rec.wo, n = rec.n;
   double etaI = 1, etaT = ior;
 
   if (dot(d, n) > 0) {

@@ -1,7 +1,6 @@
-#ifndef __DEBUG_SHADER_H__
-#define __DEBUG_SHADER_H__
+#pragma once
 
-#include "core/integrator.h"
+#include <core/integrator.h>
 
 enum DebugType{DEBUG_NORMALS, DEBUG_DEPTH, DEBUG_COLOUR};
 
@@ -18,4 +17,3 @@ struct DebugShader : Integrator {
   DebugType type;
 };
 
-#endif // __DEBUG_SHADER_H__

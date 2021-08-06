@@ -1,4 +1,4 @@
-#include "core/rt.h"
+#include <core/rt.h>
 
 using namespace std;
 
@@ -7,13 +7,13 @@ SCENE(Scratch) {
   Scene *scene = new Scene();
   
 
-  Vec e = Vec(5.03f, 0.91f, -2.20f);
-  Vec g = Vec(-0.21f, 1.0f, -0.34f) - e;
+  Vec3 e = Vec3(5.03f, 0.91f, -2.20f);
+  Vec3 g = Vec3(-0.21f, 1.0f, -0.34f) - e;
 
-  // Vec e = Vec(0, 1, 2);
-  // Vec g = Vec(1, 1, 0) - e;
+  // Vec3 e = Vec3(0, 1, 2);
+  // Vec3 g = Vec3(1, 1, 0) - e;
   
-  Vec up = Vec(0, 1, 0);
+  Vec3 up = Vec3(0, 1, 0);
 
   scene->cam = Camera(e, g, up, 45, params);
 

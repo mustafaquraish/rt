@@ -1,9 +1,9 @@
-#include "objects/plane.h"
+#include <objects/plane.h>
 
 bool Plane::hit(Ray& r, HitRec& rec) {
   Ray transformed = rayTransform(r);
   double t = -transformed.p.z / transformed.d.z;
-  Vec it = transformed.at(t);
+  Vec3 it = transformed.at(t);
   if (t < TOL || t > r.tMax || 
       fabs(it.x) > 1 || fabs(it.y) > 1) {
     return false;
@@ -12,7 +12,7 @@ bool Plane::hit(Ray& r, HitRec& rec) {
     rec.p = r.at(t);
     rec.u = (it.x + 1) / 2.0;
     rec.v = (it.y + 1) / 2.0;
-    Vec canon_n = Vec(0, 0, 1);
+    Vec3 canon_n = Vec3(0, 0, 1);
     canon_n = normalMapped(canon_n, rec);
     rec.n = normalTransform(canon_n);
     // if (dot(r.d, rec.n) > 0) rec.n = -rec.n;
@@ -22,10 +22,10 @@ bool Plane::hit(Ray& r, HitRec& rec) {
   }
 }
 
-Vec Plane::sample(double *pdf, RNG& rng) {
+Vec3 Plane::sample(double *pdf, RNG& rng) {
   double x = rng.rand01() * 2 - 1;
   double y = rng.rand01() * 2 - 1;
   *pdf = 1 / surfaceArea;
-  return T * Vec(x, y, 0);
+  return T * Vec3(x, y, 0);
 }
 

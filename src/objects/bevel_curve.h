@@ -2,11 +2,10 @@
 /**
  * A surface of revolution rCount itself into a mesh.
  */
+#pragma once
 
-#ifndef __BEVEL_CURVE_H__
-#define __BEVEL_CURVE_H__
 
-#include "objects/parametric_surface.h"
+#include <objects/parametric_surface.h>
 
 /**
  * A Beveled Curve is just a parametric surface where parameter `a`
@@ -24,10 +23,10 @@ struct BeveledCurve : ParametricSurface {
       : ParametricSurface(mat, tCount, rCount, tMin, tMax, 0, TAU),
         radius(radius) {}
 
-  Vec P(double a, double b);
+  Vec3 P(double a, double b);
 
   // Curve to bevel
-  virtual Vec F(double t) = 0;
+  virtual Vec3 F(double t) = 0;
 
 private:
   double radius;
@@ -43,7 +42,7 @@ struct LineBevel : BeveledCurve {
             )
       : BeveledCurve(mat, radius, tCount, rCount, tMin, tMax) {}
 
-  Vec F(double t) { return Vec(t, 0, 0); }
+  Vec3 F(double t) { return Vec3(t, 0, 0); }
 };
 
 struct TorusBevel : BeveledCurve {
@@ -56,7 +55,7 @@ struct TorusBevel : BeveledCurve {
              )
       : BeveledCurve(mat, radius, tCount, rCount, tMin, tMax) {}
 
-  Vec F(double t) { return Vec(cos(t), sin(t), 0) * 3; }
+  Vec3 F(double t) { return Vec3(cos(t), sin(t), 0) * 3; }
 };
 
 struct SpiralBevel : BeveledCurve {
@@ -71,7 +70,7 @@ struct SpiralBevel : BeveledCurve {
       : BeveledCurve(mat, radius, tCount, rCount, tMin, tMax), 
         h(heightScale) {}
 
-  Vec F(double t) { return Vec(cos(t), sin(t), t * h) * 3; }
+  Vec3 F(double t) { return Vec3(cos(t), sin(t), t * h) * 3; }
   double h;
 };
 
@@ -93,8 +92,8 @@ struct TorusKnotBevel : BeveledCurve {
       : BeveledCurve(mat, radius, tCount, rCount, tMin, tMax), 
         P(P), Q(Q), K(K) {}
 
-  Vec F(double t) {
-    return Vec(
+  Vec3 F(double t) {
+    return Vec3(
       cos(Q * t) * (K + cos(P * t)), 
       sin(Q * t) * (K + cos(P * t)),
       sin(P * t)
@@ -115,10 +114,9 @@ struct ButterflyBevel : BeveledCurve {
                  )
       : BeveledCurve(mat, radius, tCount, rCount, tMin, tMax) {}
 
-  Vec F(double t) {
+  Vec3 F(double t) {
     double coef = exp(cos(t)) - 2 * cos(4 * t) - pow(sin(t / 12), 5);
-    return Vec(coef * sin(t), coef * cos(t), t / 6.0);
+    return Vec3(coef * sin(t), coef * cos(t), t / 6.0);
   }
 };
 
-#endif // __BEVEL_CURVE_H__

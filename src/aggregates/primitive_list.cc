@@ -1,4 +1,4 @@
-#include "aggregates/primitive_list.h"
+#include <aggregates/primitive_list.h>
 
 bool PrimitiveList::hit(Ray& ray, HitRec& rec) {
   bool hit = false;

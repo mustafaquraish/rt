@@ -1,7 +1,7 @@
-#include "core/rt.h"
+#include <core/rt.h>
 
-double mysdf1(const Vec& point) {
-  Vec p = point;
+double mysdf1(const Vec3& point) {
+  Vec3 p = point;
   if (p.z < 10) p.z = 10;
   p = SDF::repeatX(p, 5);
   p = SDF::repeatY(p, 5);
@@ -13,9 +13,9 @@ SCENE(SDF) {
 
   Scene *scene = new Scene();
   
-  Vec e = Vec(0, 0, -15);
-  Vec g = -e;
-  Vec up = Vec(0, 1, 0);
+  Vec3 e = Vec3(0, 0, -15);
+  Vec3 g = -e;
+  Vec3 up = Vec3(0, 1, 0);
   scene->cam = Camera(e, g, up, 50, params);
 
   // params.setWindow(0.2, 0.4, 0.4, 0.6);

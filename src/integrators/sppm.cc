@@ -1,6 +1,6 @@
-#include "integrators/sppm.h"
-#include "util/progress.h"
-#include "util/timer.h"
+#include <integrators/sppm.h>
+#include <util/progress.h>
+#include <util/timer.h>
 
 void SPPM::addVisiblePoint(const Ray& r, Scene *scene, RNG& rng, int pixIdx) {
   
@@ -43,12 +43,12 @@ void SPPM::sendPhoton(Scene *scene, RNG &rng) {
 
   // Pick a light source, and pick a point on it
   Object *light = scene->lights[ rng.randint() % scene->lights.size() ];
-  Vec lp = light->sample(&pdf, rng);
+  Vec3 lp = light->sample(&pdf, rng);
 
   // Pick a direction from the light source
   // TODO: Find the correct normal and don't assume it's (0, -1, 0)
-  Vec lsnorm = Vec(0,-1, 0);
-  Vec dir = rng.randomVectorCosineHemisphere(lsnorm);
+  Vec3 lsnorm = Vec3(0,-1, 0);
+  Vec3 dir = rng.randomVectorCosineHemisphere(lsnorm);
 
   // TODO: passing dummy rec for now, fix this if needed.
   HitRec rec;

@@ -1,12 +1,12 @@
-#include "core/scene.h"
-#include "core/integrator.h"
+#include <core/scene.h>
+#include <core/integrator.h>
 
-#include "materials/emitter.h"
+#include <materials/emitter.h>
 
-#include "objects/triangle_mesh.h"
+#include <objects/triangle_mesh.h>
 
-#include "aggregates/bvh.h"
-#include "aggregates/primitive_list.h"
+#include <aggregates/bvh.h>
+#include <aggregates/primitive_list.h>
 
 void Scene::add(Object *obj) { 
   // Finalize object first...

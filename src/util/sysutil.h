@@ -1,5 +1,4 @@
-#ifndef __SYSUTIL_H__
-#define __SYSUTIL_H__
+#pragma once
 
 #include <stdlib.h>
 #include <stdarg.h>
@@ -19,4 +18,3 @@ int runCommand(const char *format, ...) {
   return ret;
 }
 
-#endif // __SYSUTIL_H__

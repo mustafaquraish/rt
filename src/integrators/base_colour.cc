@@ -1,4 +1,4 @@
-#include "integrators/base_colour.h"
+#include <integrators/base_colour.h>
 
 #define PATH_MAX_BOUNCES 30
 

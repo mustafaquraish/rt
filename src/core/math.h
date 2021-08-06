@@ -2,8 +2,8 @@
  * One-Header math library for ray-tracing. Includes:
  *    - Common utility functions: min(), max(), clamp01()
  *    - Global Constants: PI, TAU, TOL
- *    - Vector math definitions: Vec, dot(), cross(), ...
- *    - Matrix math definitions: Matrix, mat-vec / mat-mat mult, 4x4 invert
+ *    - Vector math definitions: Vec3, dot(), cross(), ...
+ *    - Matrix4 math definitions: Matrix4, mat-vec / mat-mat mult, 4x4 invert
  *    - Transformation matrices: Scale, Translate, Rotate X/Y/Z
  *    - Linear / Bilinear interpolation, transforming ranges
  *    - Quadratic Solving: solveQuadratic()
@@ -40,7 +40,7 @@ inline double clamp(const double a, const double _min, const double _max) {
 
 /**************************** VECTOR *****************************************/
 
-union Vec {
+union Vec3 {
   // Access vector elements in array format
   double V[3];
   // Access X, Y, Z components
@@ -52,90 +52,90 @@ union Vec {
     double r, g, b;
   };
 
-  Vec() : x(0), y(0), z(0){};
-  Vec(double v) : x(v), y(v), z(v){};
-  Vec(double x, double y, double z) : x(x), y(y), z(z){};
+  Vec3() : x(0), y(0), z(0){};
+  Vec3(double v) : x(v), y(v), z(v){};
+  Vec3(double x, double y, double z) : x(x), y(y), z(z){};
 
   double &operator[] (int idx) { return V[idx]; }
   double operator[] (int idx) const { return V[idx]; };
 };
 
-typedef Vec Colour;
+typedef Vec3 Colour;
 
-inline std::ostream &operator<<(std::ostream &os, const Vec& t) { 
+inline std::ostream &operator<<(std::ostream &os, const Vec3& t) {
   os << t.x << " " << t.y << " " << t.z; 
   return os; 
 }
 
-inline Vec operator+(const Vec& v1, const Vec& v2) { return Vec(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z); }
-inline Vec operator+(const Vec& v, const double t) { return Vec(v.x + t, v.y + t, v.z + t); }
-inline Vec operator+(const double t, const Vec& v) { return Vec(v.x + t, v.y + t, v.z + t); }
+inline Vec3 operator+(const Vec3& v1, const Vec3& v2) { return Vec3(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z); }
+inline Vec3 operator+(const Vec3& v, const double t) { return Vec3(v.x + t, v.y + t, v.z + t); }
+inline Vec3 operator+(const double t, const Vec3& v) { return Vec3(v.x + t, v.y + t, v.z + t); }
 
-inline Vec operator-(const Vec& v1) { return Vec(-v1.x, -v1.y, -v1.z); }
-inline Vec operator-(const Vec& v1, const Vec& v2) { return Vec(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z); }
-inline Vec operator-(const Vec& v, const double t) { return Vec(v.x - t, v.y - t, v.z - t); }
-inline Vec operator-(const double t, const Vec& v) { return Vec(t - v.x, t - v.y, t - v.z); }
+inline Vec3 operator-(const Vec3& v1) { return Vec3(-v1.x, -v1.y, -v1.z); }
+inline Vec3 operator-(const Vec3& v1, const Vec3& v2) { return Vec3(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z); }
+inline Vec3 operator-(const Vec3& v, const double t) { return Vec3(v.x - t, v.y - t, v.z - t); }
+inline Vec3 operator-(const double t, const Vec3& v) { return Vec3(t - v.x, t - v.y, t - v.z); }
 
-inline Vec operator*(const Vec& v1, const Vec& v2) { return Vec(v1.x * v2.x, v1.y * v2.y, v1.z * v2.z); }
-inline Vec operator*(const double t, const Vec& v) { return Vec(t * v.x, t * v.y, t * v.z); }
-inline Vec operator*(const Vec& v, const double t) { return Vec(t * v.x, t * v.y, t * v.z); }
+inline Vec3 operator*(const Vec3& v1, const Vec3& v2) { return Vec3(v1.x * v2.x, v1.y * v2.y, v1.z * v2.z); }
+inline Vec3 operator*(const double t, const Vec3& v) { return Vec3(t * v.x, t * v.y, t * v.z); }
+inline Vec3 operator*(const Vec3& v, const double t) { return Vec3(t * v.x, t * v.y, t * v.z); }
 
-inline Vec operator/(const double t, const Vec& v) { return Vec(t / v.x, t / v.y, t / v.z); }
-inline Vec operator/(const Vec& v, const double t) { return Vec(v.x / t, v.y / t, v.z / t); }
+inline Vec3 operator/(const double t, const Vec3& v) { return Vec3(t / v.x, t / v.y, t / v.z); }
+inline Vec3 operator/(const Vec3& v, const double t) { return Vec3(v.x / t, v.y / t, v.z / t); }
 
-inline double length(const Vec& a) { return sqrt(a.x * a.x + a.y * a.y + a.z * a.z); }
-inline double lengthSq(const Vec& a) { return a.x * a.x + a.y * a.y + a.z * a.z; }
-inline Vec norm(const Vec& a) { return a * (1 / sqrt(a.x * a.x + a.y * a.y + a.z * a.z)); }
-inline Vec mult(const Vec& a, const Vec& b) { return Vec(a.x * b.x, a.y * b.y, a.z * b.z); }
+inline double length(const Vec3& a) { return sqrt(a.x * a.x + a.y * a.y + a.z * a.z); }
+inline double lengthSq(const Vec3& a) { return a.x * a.x + a.y * a.y + a.z * a.z; }
+inline Vec3 norm(const Vec3& a) { return a * (1 / sqrt(a.x * a.x + a.y * a.y + a.z * a.z)); }
+inline Vec3 mult(const Vec3& a, const Vec3& b) { return Vec3(a.x * b.x, a.y * b.y, a.z * b.z); }
 
-inline Vec floor(const Vec& a) { return Vec(floor(a.x), floor(a.y), floor(a.z)); }
-inline Vec sqrt(const Vec& v) { return Vec(sqrt(v.x), sqrt(v.y), sqrt(v.z)); }
-inline double dot(const Vec& a, const Vec& b) { return a.x * b.x + a.y * b.y + a.z * b.z; }
-inline Vec cross(const Vec& a, const Vec& b) { 
-  return Vec( a.y * b.z - a.z * b.y, 
+inline Vec3 floor(const Vec3& a) { return Vec3(floor(a.x), floor(a.y), floor(a.z)); }
+inline Vec3 sqrt(const Vec3& v) { return Vec3(sqrt(v.x), sqrt(v.y), sqrt(v.z)); }
+inline double dot(const Vec3& a, const Vec3& b) { return a.x * b.x + a.y * b.y + a.z * b.z; }
+inline Vec3 cross(const Vec3& a, const Vec3& b) {
+  return Vec3(a.y * b.z - a.z * b.y,
              -a.x * b.z + a.z * b.x, 
               a.x * b.y - a.y * b.x); 
 }
 
-inline Vec& operator+=(Vec &a, const Vec& b) { return a = a + b; }
-inline Vec& operator+=(Vec &a, const double& b) { return a = a + b; }
+inline Vec3& operator+=(Vec3 &a, const Vec3& b) { return a = a + b; }
+inline Vec3& operator+=(Vec3 &a, const double& b) { return a = a + b; }
 
-inline Vec& operator-=(Vec &a, const Vec& b) { return a = a - b; }
-inline Vec& operator-=(Vec &a, const double b) { return a = a - b; }
+inline Vec3& operator-=(Vec3 &a, const Vec3& b) { return a = a - b; }
+inline Vec3& operator-=(Vec3 &a, const double b) { return a = a - b; }
 
-inline Vec& operator*=(Vec &a, const Vec& b) { return a = a * b; }
-inline Vec& operator*=(Vec &a, const double b) { return a = a * b; }
+inline Vec3& operator*=(Vec3 &a, const Vec3& b) { return a = a * b; }
+inline Vec3& operator*=(Vec3 &a, const double b) { return a = a * b; }
 
-inline Vec& operator/=(Vec &a, const double b) { return a = a / b; }
+inline Vec3& operator/=(Vec3 &a, const double b) { return a = a / b; }
 
 
-inline Vec clamp01(const Vec& a) {
-  return Vec(min(1, max(a.x, 0)),
-             min(1, max(a.y, 0)),
-             min(1, max(a.z, 0)));
+inline Vec3 clamp01(const Vec3& a) {
+  return Vec3(min(1, max(a.x, 0)),
+              min(1, max(a.y, 0)),
+              min(1, max(a.z, 0)));
 }
 
-inline Vec clamp01(const Vec& a, double _min, double _max) {
-  return Vec(min(_max, max(a.x, _min)),
-             min(_max, max(a.y, _min)),
-             min(_max, max(a.z, _min)));
+inline Vec3 clamp01(const Vec3& a, double _min, double _max) {
+  return Vec3(min(_max, max(a.x, _min)),
+              min(_max, max(a.y, _min)),
+              min(_max, max(a.z, _min)));
 }
 
 // Return the index of the maximum element
-inline int maxIndex(const Vec& a) {
+inline int maxIndex(const Vec3& a) {
   if (a.x >= a.y && a.x >= a.z) return 0;
   if (a.y >= a.x && a.y >= a.z) return 1;
   return 2;
 }
 
 // Return the maximum component of the vector 
-inline double max(const Vec& a) {
+inline double max(const Vec3& a) {
   return max(a.x, max(a.y, a.z));
 }
 
 // Component-wise maximum of 2 vectors
-inline Vec cmpWiseMax(const Vec& a, const Vec& b) {
-  return Vec(
+inline Vec3 cmpWiseMax(const Vec3& a, const Vec3& b) {
+  return Vec3(
     max(a.x, b.x),
     max(a.y, b.y),
     max(a.z, b.z)
@@ -144,28 +144,28 @@ inline Vec cmpWiseMax(const Vec& a, const Vec& b) {
 
 /**************************** MATRIX *****************************************/
 
-struct Matrix {
+struct Matrix4 {
   double M[4][4];
 
   // Identity matrix if initialized without params.
-  Matrix() {
+  Matrix4() {
     for (int i = 0; i < 4; i++) 
       for (int j = 0; j < 4; j++)
         M[i][j] = (i == j);
   }
 
   // Initialize with constant value for all elements
-  Matrix(double v) {
+  Matrix4(double v) {
     for (int i = 0; i < 4; i++) 
       for (int j = 0; j < 4; j++)
         M[i][j] = v;
   }
 
   // Initialize with individual values for each element
-  Matrix(double m00, double m01, double m02, double m03,
-         double m10, double m11, double m12, double m13,
-         double m20, double m21, double m22, double m23,
-         double m30, double m31, double m32, double m33) {
+  Matrix4(double m00, double m01, double m02, double m03,
+          double m10, double m11, double m12, double m13,
+          double m20, double m21, double m22, double m23,
+          double m30, double m31, double m32, double m33) {
     M[0][0] = m00, M[0][1] = m01, M[0][2] = m02, M[0][3] = m03;
     M[1][0] = m10, M[1][1] = m11, M[1][2] = m12, M[1][3] = m13;
     M[2][0] = m20, M[2][1] = m21, M[2][2] = m22, M[2][3] = m23;
@@ -177,50 +177,50 @@ struct Matrix {
 
 };
 
-inline Matrix operator+(const Matrix& a, const Matrix& m2) {
-  Matrix m = Matrix();
+inline Matrix4 operator+(const Matrix4& a, const Matrix4& m2) {
+  Matrix4 m = Matrix4();
   for (int i = 0; i < 4; i++)
     for (int j = 0; j < 4; j++) 
       m[i][j] = a[i][j] + m2[i][j];
   return m;
 }
-inline Matrix operator+(const Matrix& a, double d) { return a + Matrix(d); };
-inline Matrix operator+(double d, const Matrix& a) { return a + Matrix(d); };
+inline Matrix4 operator+(const Matrix4& a, double d) { return a + Matrix4(d); };
+inline Matrix4 operator+(double d, const Matrix4& a) { return a + Matrix4(d); };
 
 
-inline Matrix operator-(const Matrix& a, const Matrix& b) {
-  Matrix m = Matrix();
+inline Matrix4 operator-(const Matrix4& a, const Matrix4& b) {
+  Matrix4 m = Matrix4();
   for (int i = 0; i < 4; i++)
     for (int j = 0; j < 4; j++) 
       m[i][j] = a[i][j] - b[i][j];
   return m;
 }
-inline Matrix operator-(const Matrix& a, double d) { return a - Matrix(d); };
-inline Matrix operator-(double d, const Matrix& a) { return a - Matrix(d); };
+inline Matrix4 operator-(const Matrix4& a, double d) { return a - Matrix4(d); };
+inline Matrix4 operator-(double d, const Matrix4& a) { return a - Matrix4(d); };
 
-inline Matrix operator*(const Matrix& a, double t) {
-  Matrix m = Matrix();
+inline Matrix4 operator*(const Matrix4& a, double t) {
+  Matrix4 m = Matrix4();
   for (int i = 0; i < 4; i++)
     for (int j = 0; j < 4; j++) {
       m[i][j] = a[i][j] * t;
     }
   return m;
 }
-inline Matrix operator*(double t, const Matrix& a) { return a * t; }
+inline Matrix4 operator*(double t, const Matrix4& a) { return a * t; }
 
-inline Matrix operator/(const Matrix& a, double t) { return a * (1 / t); }
+inline Matrix4 operator/(const Matrix4& a, double t) { return a * (1 / t); }
 
-inline Matrix& operator+=(Matrix &a, const Matrix b) { return a = a + b; }
-inline Matrix& operator+=(Matrix &a, double b) { return a = a + b; }
+inline Matrix4& operator+=(Matrix4 &a, const Matrix4 b) { return a = a + b; }
+inline Matrix4& operator+=(Matrix4 &a, double b) { return a = a + b; }
 
-inline Matrix& operator-=(Matrix &a, const Matrix b) { return a = a - b; }
-inline Matrix& operator-=(Matrix &a, double b) { return a = a - b; }
+inline Matrix4& operator-=(Matrix4 &a, const Matrix4 b) { return a = a - b; }
+inline Matrix4& operator-=(Matrix4 &a, double b) { return a = a - b; }
 
-inline Matrix& operator*=(Matrix &a, double b) { return a = a * b; }
-inline Matrix& operator/=(Matrix &a, double b) { return a = a / b; }
+inline Matrix4& operator*=(Matrix4 &a, double b) { return a = a * b; }
+inline Matrix4& operator/=(Matrix4 &a, double b) { return a = a / b; }
 
-inline Matrix transpose(const Matrix &a) {
-  Matrix m = Matrix();
+inline Matrix4 transpose(const Matrix4 &a) {
+  Matrix4 m = Matrix4();
   for (int i = 0; i < 4; i++)
     for (int j = 0; j < 4; j++) {
       m[i][j] = a[j][i];
@@ -230,8 +230,8 @@ inline Matrix transpose(const Matrix &a) {
 
 /************* MATRIX-VEC / MATRIX-MATRIX MULTIPLICATION *********************/
 
-inline Matrix operator*(const Matrix& a, const Matrix& b) {
-  Matrix m = Matrix();
+inline Matrix4 operator*(const Matrix4& a, const Matrix4& b) {
+  Matrix4 m = Matrix4();
   for (int i = 0; i < 4; i++)
     for (int j = 0; j < 4; j++) {
       m[i][j] = a[i][0] * b[0][j];
@@ -243,8 +243,8 @@ inline Matrix operator*(const Matrix& a, const Matrix& b) {
 }
 
 // NOTE: Assuming w component is always 0, no homogenous-normalizing here.
-inline Vec operator*(const Matrix& m, const Vec& v) {
-  return Vec(
+inline Vec3 operator*(const Matrix4& m, const Vec3& v) {
+  return Vec3(
     m[0][0] * v.x + m[0][1] * v.y + m[0][2] * v.z + m[0][3],
     m[1][0] * v.x + m[1][1] * v.y + m[1][2] * v.z + m[1][3],
     m[2][0] * v.x + m[2][1] * v.y + m[2][2] * v.z + m[2][3]
@@ -252,15 +252,15 @@ inline Vec operator*(const Matrix& m, const Vec& v) {
 }
 
 // This transforms the Vector **WITHOUT** the translation component  
-inline Vec operator%(const Matrix& m, const Vec& v) {
-  return Vec(
+inline Vec3 operator%(const Matrix4& m, const Vec3& v) {
+  return Vec3(
     m[0][0] * v.x + m[0][1] * v.y + m[0][2] * v.z,
     m[1][0] * v.x + m[1][1] * v.y + m[1][2] * v.z,
     m[2][0] * v.x + m[2][1] * v.y + m[2][2] * v.z
   );
 }
 
-inline std::ostream& operator<<(std::ostream& os, const Matrix& m) {
+inline std::ostream& operator<<(std::ostream& os, const Matrix4& m) {
   os << "[";
   for (int i = 0; i < 4; i++) {
     for (int j = 0; j < 4; j++) 
@@ -272,7 +272,7 @@ inline std::ostream& operator<<(std::ostream& os, const Matrix& m) {
   return os;
 }
 
-inline void printMatrix(const Matrix& m) {
+inline void printMatrix(const Matrix4& m) {
   for (int i = 0; i < 4; i++) {
     for (int j = 0; j < 4; j++) 
       printf("%2.3e, ", m[i][j]);
@@ -283,8 +283,8 @@ inline void printMatrix(const Matrix& m) {
 /*************************** MATRIX INVERSION ********************************/
 
 // Source: https://stackoverflow.com/questions/1148309
-inline Matrix invert(const Matrix &m) {
-  Matrix inv = Matrix();
+inline Matrix4 invert(const Matrix4 &m) {
+  Matrix4 inv = Matrix4();
 
   inv[0][0] =  m[1][1] * m[2][2] * m[3][3] - m[1][1] * m[2][3] * m[3][2] - m[2][1] * m[1][2] * m[3][3] + m[2][1] * m[1][3] * m[3][2] + m[3][1] * m[1][2] * m[2][3] - m[3][1] * m[1][3] * m[2][2];
   inv[1][0] = -m[1][0] * m[2][2] * m[3][3] + m[1][0] * m[2][3] * m[3][2] + m[2][0] * m[1][2] * m[3][3] - m[2][0] * m[1][3] * m[3][2] - m[3][0] * m[1][2] * m[2][3] + m[3][0] * m[1][3] * m[2][2];
@@ -305,15 +305,15 @@ inline Matrix invert(const Matrix &m) {
 
   double det =  m[0][0] * inv[0][0] + m[0][1] * inv[1][0] + m[0][2] * inv[2][0] + m[0][3] * inv[3][0];
 
-  if (fabs(det) < TOL) return Matrix();
+  if (fabs(det) < TOL) return Matrix4();
 
   return inv / det;
 } 
 
 /*************************** TRANSFORM MATRICES ******************************/
 
-inline Matrix ScaleMatrix(double sx, double sy, double sz) {
-  return Matrix(
+inline Matrix4 ScaleMatrix(double sx, double sy, double sz) {
+  return Matrix4(
     sx,  0,  0, 0,
      0, sy,  0, 0,
      0,  0, sz, 0,
@@ -321,8 +321,8 @@ inline Matrix ScaleMatrix(double sx, double sy, double sz) {
   );
 }
 
-inline Matrix TranslateMatrix(double tx, double ty, double tz) {
-  return Matrix(
+inline Matrix4 TranslateMatrix(double tx, double ty, double tz) {
+  return Matrix4(
     1, 0, 0, tx,
     0, 1, 0, ty,
     0, 0, 1, tz,
@@ -330,8 +330,8 @@ inline Matrix TranslateMatrix(double tx, double ty, double tz) {
   );
 }
 
-inline Matrix RotateXMatrix(double a) {
-  return Matrix(
+inline Matrix4 RotateXMatrix(double a) {
+  return Matrix4(
     1,      0,       0, 0,
     0, cos(a), -sin(a), 0,
     0, sin(a),  cos(a), 0,
@@ -339,8 +339,8 @@ inline Matrix RotateXMatrix(double a) {
   );
 }
 
-inline Matrix RotateYMatrix(double a) {
-  return Matrix(
+inline Matrix4 RotateYMatrix(double a) {
+  return Matrix4(
      cos(a), 0, sin(a), 0,
           0, 1,      0, 0,
     -sin(a), 0, cos(a), 0,
@@ -348,8 +348,8 @@ inline Matrix RotateYMatrix(double a) {
   );
 }
 
-inline Matrix RotateZMatrix(double a) {
-  return Matrix(
+inline Matrix4 RotateZMatrix(double a) {
+  return Matrix4(
     cos(a), -sin(a), 0, 0,
     sin(a),  cos(a), 0, 0,
          0,       0, 1, 0,
@@ -357,14 +357,14 @@ inline Matrix RotateZMatrix(double a) {
   );
 }
 
-inline Matrix getRotationMatrix(const Vec& n) {
+inline Matrix4 getRotationMatrix(const Vec3& n) {
   double theta = atan2(n.y, n.x);
   double phi = acos(n.z);
   return RotateZMatrix(theta) * RotateYMatrix(phi);
 }
 
 // Align vector `a` from +Z hemisphere to hemisphere with normal `n`
-inline Vec alignTo(const Vec& a, const Vec& n) {
+inline Vec3 alignTo(const Vec3& a, const Vec3& n) {
   return getRotationMatrix(n) * a;
 }
 
@@ -414,10 +414,10 @@ inline double luminance(const Colour& c) {
 
 /***************************** Conversions ************************************/
 
-inline Vec polar2Cart(double theta, double phi) {
-  return Vec(cos(theta) * sin(phi), 
-             sin(theta) * sin(phi), 
-             cos(phi));
+inline Vec3 polar2Cart(double theta, double phi) {
+  return Vec3(cos(theta) * sin(phi),
+             sin(theta) * sin(phi),
+              cos(phi));
 }
 
 /***************************** QUADRATIC SOLVING *****************************/

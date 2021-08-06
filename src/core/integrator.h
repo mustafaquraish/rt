@@ -1,12 +1,11 @@
-#ifndef __INTEGRATOR_H__
-#define __INTEGRATOR_H__
+#pragma once
 
-#include "core/rng.h"
-#include "core/ray.h"
-#include "core/object.h"
-#include "core/scene.h"
-#include "util/params.h"
-#include "time.h"
+#include <core/rng.h>
+#include <core/ray.h>
+#include <core/object.h>
+#include <core/scene.h>
+#include <util/params.h>
+#include <time.h>
 
 struct Scene;
 
@@ -18,7 +17,7 @@ struct Integrator {
   virtual ~Integrator() {};
 
   virtual void render(Scene *scene);
-  virtual Colour Li(Ray& r, Scene *scene, RNG& rng) { return Vec(0); };
+  virtual Colour Li(Ray& r, Scene *scene, RNG& rng) { return Vec3(0); };
 
   RenderParams params;
   bool enableRNG = true;
@@ -27,4 +26,3 @@ struct Integrator {
   int maxSamples = INT32_MAX;
 };
 
-#endif // __INTEGRATOR_H__

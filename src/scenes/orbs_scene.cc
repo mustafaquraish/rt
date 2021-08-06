@@ -1,4 +1,4 @@
-#include "core/rt.h"
+#include <core/rt.h>
 
 using namespace std;
 
@@ -6,9 +6,9 @@ SCENE(Orbs) {
 
   Scene *scene = new Scene();
   
-  Vec e = Vec(0, -4, -20);
-  Vec g = Vec(0, -2, 0) - e;
-  Vec up = Vec(0, 1, 0);
+  Vec3 e = Vec3(0, -4, -20);
+  Vec3 g = Vec3(0, -2, 0) - e;
+  Vec3 up = Vec3(0, 1, 0);
   scene->cam = Camera(e, g, up, 70, params);
 
   scene->integrator = new Path(params);

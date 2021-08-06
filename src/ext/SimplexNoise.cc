@@ -19,7 +19,7 @@
 
 #include <math.h>
 
-#include "ext/SimplexNoise.h"
+#include <ext/SimplexNoise.h>
 
 namespace Simplex {
 

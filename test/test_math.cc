@@ -1,12 +1,12 @@
 #include <iostream>
-#include "../src/core/math.h"
+#include <../src/core/math.h>
 
 using namespace std;
 
 int main() {
-    Vec a = Vec(1);
-    Vec b = Vec(2);
-    Vec c = Vec(3);
+    Vec3 a = Vec3(1);
+    Vec3 b = Vec3(2);
+    Vec3 c = Vec3(3);
     Colour C = Colour(4);
 
     cout << a << endl;
@@ -16,7 +16,7 @@ int main() {
     Colour xj = c + C;
     cout << xj << endl;
 
-    Vec d = a + b + c;
+    Vec3 d = a + b + c;
     cout << d << endl;
 
     double x = length(mult(a,b));
@@ -38,7 +38,7 @@ int main() {
     cout << m2 << endl;
 
 
-    Vec l = m3 * c;
+    Vec3 l = m3 * c;
     cout << l << endl;
 
     Matrix custom = Matrix(

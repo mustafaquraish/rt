@@ -1,7 +1,6 @@
-#ifndef __SPHERE_H__
-#define __SPHERE_H__
+#pragma once
 
-#include "core/object.h"
+#include <core/object.h>
 
 struct Sphere : Object {
   Sphere(BSDF *mat) : Object(mat) { 
@@ -9,7 +8,6 @@ struct Sphere : Object {
     surfaceArea = 4;
   };
   bool hit(Ray& r, HitRec &rec);
-  Vec sample(double *pdf, RNG& rng);
+  Vec3 sample(double *pdf, RNG& rng);
 };
 
-#endif // __SPHERE_H__

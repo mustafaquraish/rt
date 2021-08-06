@@ -1,7 +1,6 @@
-#ifndef __DIRECT_LIGHTING_H__
-#define __DIRECT_LIGHTING_H__
+#pragma once
 
-#include "core/integrator.h"
+#include <core/integrator.h>
 
 struct DirectLighting : Integrator {
   DirectLighting(RenderParams params) : Integrator(params) {};
@@ -9,4 +8,3 @@ struct DirectLighting : Integrator {
   Colour Li(Ray& r, Scene *scene, RNG& rng);
 };
 
-#endif // __DIRECT_LIGHTING_H__

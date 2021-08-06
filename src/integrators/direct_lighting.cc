@@ -1,4 +1,4 @@
-#include "integrators/direct_lighting.h"
+#include <integrators/direct_lighting.h>
 
 #define PATH_MAX_BOUNCES 30
 #define AMBIENT_LIGHT 0.01
@@ -15,12 +15,12 @@ Colour DirectLighting::SampleLight(HitRec& rec, Scene *scene, RNG& rng) {
 
 
   // Light source point
-  Vec lp = light->sample(&pdf, rng);
+  Vec3 lp = light->sample(&pdf, rng);
   // Vector from intersection pt to lightsource
-  Vec wi = norm(lp - rec.p);
+  Vec3 wi = norm(lp - rec.p);
   rec.wi = wi;
 
-  Vec contrib = AMBIENT_LIGHT;
+  Vec3 contrib = AMBIENT_LIGHT;
 
   Ray shadowRay = Ray(rec.p, wi);
   if (scene->hit(shadowRay, tmp) && tmp.obj == light) {

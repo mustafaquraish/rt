@@ -1,4 +1,4 @@
-#include "core/rt.h"
+#include <core/rt.h>
 
 using namespace std;
 
@@ -6,12 +6,12 @@ SCENE(Room) {
 
   Scene *scene = new Scene();
   
-  Vec e = Vec(0, -4, -40);
-  Vec g = Vec(0, -1.2, 0) - e;
-  Vec up = Vec(0, 1, 0);
+  Vec3 e = Vec3(0, -4, -40);
+  Vec3 g = Vec3(0, -1.2, 0) - e;
+  Vec3 up = Vec3(0, 1, 0);
 
-  double dist = length(Vec(-2, -2, -7.5) - e);
-  // double dist = length(Vec(-6.5, -9, 1) - e);
+  double dist = length(Vec3(-2, -2, -7.5) - e);
+  // double dist = length(Vec3(-6.5, -9, 1) - e);
 
   params.set<double>("aperture", .5);
   params.set<double>("focus_dist", 35);

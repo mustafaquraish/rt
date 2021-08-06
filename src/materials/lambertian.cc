@@ -1,4 +1,4 @@
-#include "materials/lambertian.h"
+#include <materials/lambertian.h>
 
 Colour Lambertian::eval(HitRec &rec) {
   return col(rec) * INV_PI;

@@ -1,4 +1,4 @@
-#include "objects/disc.h"
+#include <objects/disc.h>
 
 
 bool Disc::hit(Ray& r, HitRec& rec) {
@@ -7,7 +7,7 @@ bool Disc::hit(Ray& r, HitRec& rec) {
   double t = -transformed.p.z / transformed.d.z;
   if (t < TOL || t > r.tMax) return false;
 
-  Vec it = transformed.at(t);
+  Vec3 it = transformed.at(t);
   double xy_dist = it.x * it.x + it.y * it.y;
   if (fabs(xy_dist) > 1+TOL) return false;
 
@@ -17,14 +17,14 @@ bool Disc::hit(Ray& r, HitRec& rec) {
   rec.v = (it.y + 1) / 2;
   rec.obj = this;
 
-  Vec canon_n = normalMapped(Vec(0, 0, 1), rec);
+  Vec3 canon_n = normalMapped(Vec3(0, 0, 1), rec);
   rec.n = normalTransform(canon_n);
   r.tMax = min(r.tMax, rec.t);
 
   return true;
 }
 
-Vec Disc::sample(double *pdf, RNG& rng) {
+Vec3 Disc::sample(double *pdf, RNG& rng) {
   double x, y;
   do {
     x = 2 * rng.rand01() - 1;
@@ -32,5 +32,5 @@ Vec Disc::sample(double *pdf, RNG& rng) {
   } while (x*x + y*y > 1);
 
   *pdf = 1 / surfaceArea;
-  return T * Vec(x, y, 0);
+  return T * Vec3(x, y, 0);
 }

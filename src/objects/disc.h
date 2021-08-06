@@ -1,12 +1,10 @@
-#ifndef __DISC_H__
-#define __DISC_H__
+#pragma once
 
-#include "core/object.h"
+#include <core/object.h>
 
 struct Disc : Object {
   Disc(BSDF *mat) : Object(mat) { bounds = AABB(1); };
   bool hit(Ray& r, HitRec &rec);
-  Vec sample(double *pdf, RNG& rng);
+  Vec3 sample(double *pdf, RNG& rng);
 };
 
-#endif // __DISC_H__

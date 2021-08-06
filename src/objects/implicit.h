@@ -1,13 +1,12 @@
-#ifndef __IMPLICIT_H__
-#define __IMPLICIT_H__
+#pragma once
 
-#include "core/object.h"
+#include <core/object.h>
 
 struct Implicit : Object {
   Implicit(BSDF *mat) : Object(mat){};
   bool hit(Ray &r, HitRec &rec);
   void finalize();
-  Vec sample(double *pdf, RNG& rng);
+  Vec3 sample(double *pdf, RNG& rng);
 
   virtual double F(double x, double y, double z) = 0;
 
@@ -158,4 +157,3 @@ struct Orthocircle : Implicit {
   double offset;
 };
 
-#endif // __IMPLICIT_H__

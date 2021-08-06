@@ -1,7 +1,6 @@
-#ifndef __EMITTER_H__
-#define __EMITTER_H__
+#pragma once
 
-#include "core/bsdf.h"
+#include <core/bsdf.h>
 
 struct Emitter : BSDF {
   Emitter(Colour col) : BSDF(col) { emitter = true; }
@@ -13,4 +12,3 @@ struct Emitter : BSDF {
   Colour emittance(HitRec& rec);
 };
 
-#endif // __EMITTER_H__

@@ -1,5 +1,5 @@
-#include "core/texture.h"
-#include "util/image.h"
+#include <core/texture.h>
+#include <util/image.h>
 
 /** inlined for now **/ 
 

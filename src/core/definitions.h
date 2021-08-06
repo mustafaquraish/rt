@@ -1,7 +1,4 @@
-#ifndef __RT_DEFINITIONS_H__
-#define __RT_DEFINITIONS_H__
+#pragma once
 
 // #define AGGREGATE KDTree
 #define AGGREGATE BVH
-
-#endif // __RT_DEFINITIONS_H__

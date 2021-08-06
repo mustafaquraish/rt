@@ -18,8 +18,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __SIMPLEX_H__
-#define __SIMPLEX_H__
+#pragma once
 
 // Put this in the global namespace for convenience
 enum PerlinType {Layered, Turbulence, Marble};
@@ -40,4 +39,3 @@ double convertTo(double perlinValue, PerlinType type);
 
 };  // namespace Simplex
 
-#endif // __SIMPLEX_H__
