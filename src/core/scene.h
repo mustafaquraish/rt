@@ -26,7 +26,7 @@ struct Scene {
   void add(Object *obj);
   
   void addEnvMap(EnvironmentMap *tx);
-  void addEnvMap(const char *filename, double brightness=10);
+  void addEnvMap(const char *filename, float brightness=10);
   void addEnvMap(Colour col);
   void addEnvMap(Object *obj);
 

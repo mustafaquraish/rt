@@ -14,7 +14,7 @@ struct BSDF {
 
   virtual Colour eval(HitRec& rec) = 0;
   virtual Colour sample(HitRec& rec, RNG& rng) = 0;
-  virtual double pdf(HitRec& rec) = 0;
+  virtual float pdf(HitRec& rec) = 0;
   virtual Colour emittance(HitRec& rec) { return Vec3(0); }
 
   bool isDiffuse()  const { return diffuse; }
@@ -36,10 +36,10 @@ struct BSDF {
 inline Vec3 toLocalFrame(const Vec3& v, const Vec3& n) {
   Vec3 s, t;
   if (abs(n.x) > abs(n.y)) {
-    double invLen = 1.0f / sqrt(n.x * n.x + n.z * n.z);
+    float invLen = 1.0f / sqrt(n.x * n.x + n.z * n.z);
     t = Vec3(n.z * invLen, 0.0f, -n.x * invLen);
   } else {
-    double invLen = 1.0f / sqrt(n.y * n.y + n.z * n.z);
+    float invLen = 1.0f / sqrt(n.y * n.y + n.z * n.z);
     t = Vec3(0.0f, n.z * invLen, -n.y * invLen);
   }
   s = cross(t, n);
@@ -50,10 +50,10 @@ inline Vec3 toLocalFrame(const Vec3& v, const Vec3& n) {
 inline Vec3 toWorld(const Vec3& v, const Vec3& n) {
   Vec3 s, t;
   if (abs(n.x) > abs(n.y)) {
-    double invLen = 1.0f / sqrt(n.x * n.x + n.z * n.z);
+    float invLen = 1.0f / sqrt(n.x * n.x + n.z * n.z);
     t = Vec3(n.z * invLen, 0.0f, -n.x * invLen);
   } else {
-    double invLen = 1.0f / sqrt(n.y * n.y + n.z * n.z);
+    float invLen = 1.0f / sqrt(n.y * n.y + n.z * n.z);
     t = Vec3(0.0f, n.z * invLen, -n.y * invLen);
   }
   s = cross(t, n);
@@ -61,26 +61,26 @@ inline Vec3 toWorld(const Vec3& v, const Vec3& n) {
   return s * v.x + t * v.y + n * v.z;
 }
 
-inline double cosTheta(const Vec3 &v)    { return v.z;                         }
-inline double cos2Theta(const Vec3 &v)   { return v.z * v.z;                   }
-inline double absCosTheta(const Vec3 &v) { return v.z < 0.f ? -v.z : v.z;      }
-inline double sin2Theta(const Vec3 &v)   { return 1.f - cos2Theta(v);          }
-inline double sinTheta(const Vec3 &v)    { return sqrtf(sin2Theta(v));         }
-inline double tanTheta(const Vec3 &v)    { return sinTheta(v) / cosTheta(v);  }
-inline double tan2Theta(const Vec3 &v)   { return sin2Theta(v) / cos2Theta(v); }
+inline float cosTheta(const Vec3 &v)    { return v.z;                         }
+inline float cos2Theta(const Vec3 &v)   { return v.z * v.z;                   }
+inline float absCosTheta(const Vec3 &v) { return v.z < 0.f ? -v.z : v.z;      }
+inline float sin2Theta(const Vec3 &v)   { return 1.f - cos2Theta(v);          }
+inline float sinTheta(const Vec3 &v)    { return sqrtf(sin2Theta(v));         }
+inline float tanTheta(const Vec3 &v)    { return sinTheta(v) / cosTheta(v);  }
+inline float tan2Theta(const Vec3 &v)   { return sin2Theta(v) / cos2Theta(v); }
 
-inline double cosPhi(const Vec3 &v) {
-  double sintheta = sinTheta(v);
-  double x = (sintheta == 0.f) ? 0.f : v.x / sintheta;
+inline float cosPhi(const Vec3 &v) {
+  float sintheta = sinTheta(v);
+  float x = (sintheta == 0.f) ? 0.f : v.x / sintheta;
   return (x < -1.f ? -1.f : (x > 1.f ? 1.f : x));
 }
 
-inline double sinPhi(const Vec3 &v) {
-  double sintheta = sinTheta(v);
-  double x = (sintheta == 0.f) ? 0.f : v.y / sintheta;
+inline float sinPhi(const Vec3 &v) {
+  float sintheta = sinTheta(v);
+  float x = (sintheta == 0.f) ? 0.f : v.y / sintheta;
   return (x < -1.f ? -1.f : (x > 1.f ? 1.f : x));
 }
 
-inline double cos2Phi(const Vec3 &v) { double x = cosPhi(v); return x * x; }
-inline double sin2Phi(const Vec3 &v) { double x = sinPhi(v); return x * x; }
+inline float cos2Phi(const Vec3 &v) { float x = cosPhi(v); return x * x; }
+inline float sin2Phi(const Vec3 &v) { float x = sinPhi(v); return x * x; }
 

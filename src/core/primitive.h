@@ -15,18 +15,18 @@
 struct Object;
 
 struct HitRec {
-  double t;
+  float t;
   Vec3 p;
   Vec3 n;
   
   Vec3 wo;
   Vec3 wi;
 
-  double u;
-  double v;
+  float u;
+  float v;
   Object *obj;
 
-  double stepsRatio; // For SDFs
+  float stepsRatio; // For SDFs
 };
 
 struct Primitive {

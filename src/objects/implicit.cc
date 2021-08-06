@@ -6,21 +6,21 @@
 bool Implicit::hit(Ray& r, HitRec& rec) {
   Ray transformed = rayTransform(r);
 
-  double tmin, tmax;
+  float tmin, tmax;
   if (!localBouds.hit(transformed, tmin, tmax)) return false;
 
-  double inc = RAYMARCH_INCREMENT;
+  float inc = RAYMARCH_INCREMENT;
 
-  double lambda = max(10e-3, tmin);
-  double maxLambda = min(r.tMax, tmax + inc);
+  float lambda = max(10e-3, tmin);
+  float maxLambda = min(r.tMax, tmax + inc);
 
   Vec3 p = transformed.at(lambda);
 
-  double v0 = F(p.x, p.y, p.z);
+  float v0 = F(p.x, p.y, p.z);
 
   while (lambda < maxLambda) {
     p = transformed.at(lambda);
-    double v1 = F(p.x, p.y, p.z);
+    float v1 = F(p.x, p.y, p.z);
 
     // Intersection!
     if (v1 < TOL && v1 > -TOL) {
@@ -46,7 +46,7 @@ bool Implicit::hit(Ray& r, HitRec& rec) {
   Vec3 canon_n = (Vec3(F(p.x + EPS, p.y , p.z),
                        F(p.x , p.y + EPS, p.z),
                        F(p.x , p.y , p.z + EPS)) - v0) / EPS;
-  canon_n = norm(canon_n);
+  canon_n = normalized(canon_n);
 
   rec.t = lambda;
   rec.p = r.at(lambda);
@@ -69,7 +69,7 @@ void Implicit::finalize() {
 }
 
 
-Vec3 Implicit::sample(double *pdf, RNG& rng) {
+Vec3 Implicit::sample(float *pdf, RNG& rng) {
   return T * Vec3();
 }
 

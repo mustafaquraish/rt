@@ -3,7 +3,7 @@
 using namespace std;
 
 SCENE(Env) {
-  double frameRatio = params.get<double>("frameRatio");
+  float frameRatio = params.get<float>("frameRatio");
   Scene *scene = new Scene();
   
   Vec3 e = Vec3(0, 0, -40);
@@ -20,7 +20,7 @@ SCENE(Env) {
   
   Object *s;
 
-  double R = lerp(frameRatio, 0.0, TAU);
+  float R = lerp(frameRatio, 0.0, TAU);
   s = new EnvironmentMap("assets/hdri/snow.ppm");
   s->RotateY(R);
   scene->addEnvMap(s);

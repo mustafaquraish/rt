@@ -6,7 +6,7 @@
 bool SDFObject::hit(Ray& r, HitRec& rec) {
   Ray transformed = rayTransform(r);
 
-  double lambda = SDF_EPS, dist;
+  float lambda = SDF_EPS, dist;
   Vec3 p;
   int iter = 0;
 
@@ -24,7 +24,7 @@ bool SDFObject::hit(Ray& r, HitRec& rec) {
   Vec3 canon_n = (Vec3(F(p + Vec3(EPS,  0,  0)),
                      F(p + Vec3(  0,EPS,  0)),
                      F(p + Vec3(  0,  0,EPS))) - F(p)) / EPS;
-  canon_n = norm(canon_n);
+  canon_n = normalized(canon_n);
 
   rec.t = lambda;
   rec.p = r.at(lambda);
@@ -36,7 +36,7 @@ bool SDFObject::hit(Ray& r, HitRec& rec) {
   rec.n = normalTransform(canon_n);
 
   rec.obj = this;
-  rec.stepsRatio = (double) iter / (double) SDF_MAX_ITERS;
+  rec.stepsRatio = (float) iter / (float) SDF_MAX_ITERS;
   r.tMax = min(r.tMax, lambda);
 
   return true;

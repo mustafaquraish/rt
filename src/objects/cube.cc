@@ -2,7 +2,7 @@
 
 bool Cube::hit(Ray& r, HitRec& rec) {
   Ray transformed = rayTransform(r);
-  double t1, t2;
+  float t1, t2;
 
   AABB cube = AABB(1);
 
@@ -40,7 +40,7 @@ bool Cube::hit(Ray& r, HitRec& rec) {
 
 }
 
-Vec3 Cube::sample(double *pdf, RNG& rng) {
+Vec3 Cube::sample(float *pdf, RNG& rng) {
   *pdf = 1 / surfaceArea;
   Vec3 p = Vec3(rng.rand01(), rng.rand01(), 0.5) * 2 - 1;
   return T * p;

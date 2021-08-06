@@ -4,11 +4,11 @@
 bool Disc::hit(Ray& r, HitRec& rec) {
   Ray transformed = rayTransform(r);
 
-  double t = -transformed.p.z / transformed.d.z;
+  float t = -transformed.p.z / transformed.d.z;
   if (t < TOL || t > r.tMax) return false;
 
   Vec3 it = transformed.at(t);
-  double xy_dist = it.x * it.x + it.y * it.y;
+  float xy_dist = it.x * it.x + it.y * it.y;
   if (fabs(xy_dist) > 1+TOL) return false;
 
   rec.p = r.at(t);
@@ -24,8 +24,8 @@ bool Disc::hit(Ray& r, HitRec& rec) {
   return true;
 }
 
-Vec3 Disc::sample(double *pdf, RNG& rng) {
-  double x, y;
+Vec3 Disc::sample(float *pdf, RNG& rng) {
+  float x, y;
   do {
     x = 2 * rng.rand01() - 1;
     y = 2 * rng.rand01() - 1;

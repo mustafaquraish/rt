@@ -4,7 +4,7 @@
 void PhotonMapping::sendPhoton(Scene *scene, RNG &rng, int depth) {
   if (scene->lights.size() == 0) return; 
 
-  double pdf;
+  float pdf;
 
   // Pick a light source, and pick a point on it
   Object *light = scene->lights[ rng.randint() % scene->lights.size() ];

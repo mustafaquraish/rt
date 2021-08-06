@@ -8,6 +8,6 @@ struct Sphere : Object {
     surfaceArea = 4;
   };
   bool hit(Ray& r, HitRec &rec);
-  Vec3 sample(double *pdf, RNG& rng);
+  Vec3 sample(float *pdf, RNG& rng);
 };
 

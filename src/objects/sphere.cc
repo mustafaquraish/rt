@@ -2,13 +2,13 @@
 
 bool Sphere::hit(Ray& r, HitRec& rec) {
   Ray transformed = rayTransform(r);
-  double A = dot(transformed.d, transformed.d);
-  double B = dot(transformed.p, transformed.d) * 2;
-  double C = dot(transformed.p, transformed.p) - 1;
+  float A = dot(transformed.d, transformed.d);
+  float B = dot(transformed.p, transformed.d) * 2;
+  float C = dot(transformed.p, transformed.p) - 1;
 
-  double t1, t2;
+  float t1, t2;
 
-  if (!solveQuadratic(A, B, C, &t1, &t2)) {
+  if (!solve_quadratic(A, B, C, &t1, &t2)) {
     return false;
   }
 
@@ -30,9 +30,9 @@ bool Sphere::hit(Ray& r, HitRec& rec) {
   return true;
 }
 
-Vec3 Sphere::sample(double *pdf, RNG& rng) {
-  double theta = 2 * PI * rng.rand01();
-  double phi = acos(2 * rng.rand01() - 1);
+Vec3 Sphere::sample(float *pdf, RNG& rng) {
+  float theta = 2 * PI * rng.rand01();
+  float phi = acos(2 * rng.rand01() - 1);
   
   *pdf = 1.0 / surfaceArea;
 

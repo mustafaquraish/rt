@@ -9,7 +9,7 @@ struct KDTreeNode {
   int primOff;    // Primitives offset
   int numPrims;   // 0 -> internal node
   int axis;
-  double splitPos;
+  float splitPos;
   KDTreeNode *a, *b;
 };
 

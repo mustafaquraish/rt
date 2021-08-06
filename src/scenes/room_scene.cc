@@ -10,11 +10,11 @@ SCENE(Room) {
   Vec3 g = Vec3(0, -1.2, 0) - e;
   Vec3 up = Vec3(0, 1, 0);
 
-  double dist = length(Vec3(-2, -2, -7.5) - e);
-  // double dist = length(Vec3(-6.5, -9, 1) - e);
+  float dist = length(Vec3(-2, -2, -7.5) - e);
+  // float dist = length(Vec3(-6.5, -9, 1) - e);
 
-  params.set<double>("aperture", .5);
-  params.set<double>("focus_dist", 35);
+  params.set<float>("aperture", .5);
+  params.set<float>("focus_dist", 35);
 
 
   scene->cam = Camera(e, g, up, 32, params);
@@ -94,8 +94,8 @@ SCENE(Room) {
 
       // if (i == 1 && j == 0) continue;
 
-      double xOff = -6.5 + i * 6.5;
-      double zOff =    1 + j * 4;
+      float xOff = -6.5 + i * 6.5;
+      float zOff =    1 + j * 4;
 
       s = new Cylinder(new Lambertian(1));
       s->Scale(2, 1, 1);

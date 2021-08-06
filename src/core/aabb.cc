@@ -1,14 +1,14 @@
 #include <core/aabb.h>
 
 // Slightly faster AABB intersection when 1 / ray.d is given.
-bool AABB::hit(Ray& ray, double &t1, double &t2, const Vec3& invD) {
-  double tmin = -INFINITY;
-  double tmax = INFINITY;
+bool AABB::hit(Ray& ray, float &t1, float &t2, const Vec3& invD) {
+  float tmin = -INFINITY;
+  float tmax = INFINITY;
 
   // Refine using slabs along each axis
   for (int axis = 0; axis < 3; axis++) {
-    double _tmin = (min[axis] - ray.p[axis]) * invD[axis];
-    double _tmax = (max[axis] - ray.p[axis]) * invD[axis];
+    float _tmin = (min[axis] - ray.p[axis]) * invD[axis];
+    float _tmax = (max[axis] - ray.p[axis]) * invD[axis];
     if (_tmin > _tmax) std::swap(_tmin, _tmax); 
     if (tmin > _tmax || _tmin > tmax) return false;
     if (_tmin > tmin) tmin = _tmin;
@@ -24,14 +24,14 @@ bool AABB::hit(Ray& ray, double &t1, double &t2, const Vec3& invD) {
   return true;
 }
 
-bool AABB::hit(Ray& ray, double &t1, double &t2) {
-  double tmin = -INFINITY;
-  double tmax = INFINITY;
+bool AABB::hit(Ray& ray, float &t1, float &t2) {
+  float tmin = -INFINITY;
+  float tmax = INFINITY;
 
   // Refine using slabs along each axis
   for (int axis = 0; axis < 3; axis++) {
-    double _tmin = (min[axis] - ray.p[axis]) / ray.d[axis];
-    double _tmax = (max[axis] - ray.p[axis]) / ray.d[axis];
+    float _tmin = (min[axis] - ray.p[axis]) / ray.d[axis];
+    float _tmax = (max[axis] - ray.p[axis]) / ray.d[axis];
     if (_tmin > _tmax) std::swap(_tmin, _tmax); 
     if (tmin > _tmax || _tmin > tmax) return false;
     if (_tmin > tmin) tmin = _tmin;
@@ -48,7 +48,7 @@ bool AABB::hit(Ray& ray, double &t1, double &t2) {
 }
 
 bool AABB::hit(Ray& ray) {
-  double t1, t2; // These will be discarded
+  float t1, t2; // These will be discarded
   return hit(ray, t1, t2);
 }
 
@@ -95,7 +95,7 @@ Vec3 AABB::offset(const Vec3& p) const {
   return t;
 }
 
-double area(const AABB& a) {
+float area(const AABB& a) {
   Vec3 d = a.max - a.min;
   return 2 * (d.x * d.y + d.x * d.z + d.y * d.z);
 }

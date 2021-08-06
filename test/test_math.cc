@@ -19,7 +19,7 @@ int main() {
     Vec3 d = a + b + c;
     cout << d << endl;
 
-    double x = length(mult(a,b));
+    float x = length(mult(a,b));
     cout << x << endl;
 
     cout << ((1/0.0) < 0) << endl;

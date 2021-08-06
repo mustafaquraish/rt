@@ -19,7 +19,7 @@ struct RNG {
     w = rand();
   }
 
-  inline double rand01() {
+  inline float rand01() {
     int t = x ^ (x << 11);
     x = y, y = z, z = w;
     return (w = w ^ (w >> 19) ^ (t ^ (t >> 8))) * (1/2147483647.0);
@@ -45,19 +45,19 @@ struct RNG {
   inline Vec3 randomVectorUnitSphere() {
     while (true) {
       Vec3 p = randomVector();
-      if (lengthSq(p) >= 1) continue;
+      if (length_sq(p) >= 1) continue;
       return p;
     }
   }
 
   inline Vec3 randomUnitDisk() {
-    double ang = rand01() * 2 * PI;
-    double r = sqrt(rand01());
+    float ang = rand01() * 2 * PI;
+    float r = sqrt(rand01());
     return Vec3(cos(ang) * r, sin(ang) * r, 0);
   }
 
   inline Vec3 randomVectorCosineHemisphere(const Vec3 &n) {
-    return norm(n + norm(randomVectorUnitSphere()));
+    return normalized(n + normalized(randomVectorUnitSphere()));
   }
   
   int x;

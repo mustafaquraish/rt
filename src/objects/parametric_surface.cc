@@ -3,9 +3,9 @@
 
 using namespace std;
 
-Vec3 ParametricSurface::N(double a, double b) {
-  double a2 = a + EPS;
-  double b2 = b + EPS;
+Vec3 ParametricSurface::N(float a, float b) {
+  float a2 = a + EPS;
+  float b2 = b + EPS;
 
   Vec3 pab = P(a, b);
   Vec3 pa2b = P(a2, b );
@@ -14,8 +14,8 @@ Vec3 ParametricSurface::N(double a, double b) {
   Vec3 da = (pa2b - pab) / EPS;
   Vec3 db = (pab2 - pab) / EPS;
 
-  Vec3 ta = norm(da);
-  Vec3 tb = norm(db);
+  Vec3 ta = normalized(da);
+  Vec3 tb = normalized(db);
 
   if (isnan(ta.x) || isnan(tb.x)) {
     printf("got nan in parametric surface normal\n");
@@ -27,7 +27,7 @@ Vec3 ParametricSurface::N(double a, double b) {
   return cross(tb, ta);
 }
 
-Vec3 ParametricSurface::T(double a, double b) {
+Vec3 ParametricSurface::T(float a, float b) {
   return Vec3(
     map(a, aMin, aMax, 0, 1),
     map(b, bMin, bMax, 0, 1),
@@ -42,18 +42,18 @@ void ParametricSurface::finalize() {
 }
 
 std::vector<Primitive *> ParametricSurface::createSurface() {
-  double d_a = (aMax - aMin) / (double)aCount;
-  double d_b = (bMax - bMin) / (double)bCount;
+  float d_a = (aMax - aMin) / (float)aCount;
+  float d_b = (bMax - bMin) / (float)bCount;
 
   std::vector<Primitive *> tris_list;
 
   for (int i = 0; i < aCount; i++) {
-    double a1 = aMin + d_a * i;
-    double a2 = aMin + d_a * (i + 1);
+    float a1 = aMin + d_a * i;
+    float a2 = aMin + d_a * (i + 1);
 
     for (int j = 0; j < bCount; j++) {
-      double b1 = bMin + d_b * j;
-      double b2 = bMin + d_b * (j + 1);
+      float b1 = bMin + d_b * j;
+      float b2 = bMin + d_b * (j + 1);
 
       // Get current circle points / normals./ tex coords..
       //   names represent p_ab, n_ab and t_ab

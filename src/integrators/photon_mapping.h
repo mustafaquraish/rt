@@ -13,7 +13,7 @@ struct PhotonMapping : Integrator {
     if (params.exists("numPhotons"))
       numPhotons = params.get<int>("numPhotons");
     if (params.exists("photonRange"))
-      photonRange = params.get<double>("photonRange");
+      photonRange = params.get<float>("photonRange");
     
     // gammaCorrect = false;
   };
@@ -30,7 +30,7 @@ struct PhotonMapping : Integrator {
   };
 
   int numPhotons = 1000000;
-  double photonRange = .2; // ??
+  float photonRange = .2; // ??
   PointKDTree<Photon> *photonMap;
 };
 

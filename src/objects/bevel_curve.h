@@ -14,64 +14,64 @@
  */
 struct BeveledCurve : ParametricSurface {
   BeveledCurve(BSDF *mat,
-               double radius, // Radius of circle
+               float radius, // Radius of circle
                int tCount,    // Number of divisions along curve
                int rCount,    // Number of divisions of circle
-               double tMin,   // min t value for curve
-               double tMax    // max t value for curve
+               float tMin,   // min t value for curve
+               float tMax    // max t value for curve
                )
       : ParametricSurface(mat, tCount, rCount, tMin, tMax, 0, TAU),
         radius(radius) {}
 
-  Vec3 P(double a, double b);
+  Vec3 P(float a, float b);
 
   // Curve to bevel
-  virtual Vec3 F(double t) = 0;
+  virtual Vec3 F(float t) = 0;
 
 private:
-  double radius;
+  float radius;
 };
 
 struct LineBevel : BeveledCurve {
   LineBevel(BSDF *mat,
-            double radius = 1, // Radius of circle
+            float radius = 1, // Radius of circle
             int tCount = 10,   // Number of divisions along curve
             int rCount = 20,   // Number of divisions of circle
-            double tMin = -1,  // min and max parameters for curve
-            double tMax = 1
+            float tMin = -1,  // min and max parameters for curve
+            float tMax = 1
             )
       : BeveledCurve(mat, radius, tCount, rCount, tMin, tMax) {}
 
-  Vec3 F(double t) { return Vec3(t, 0, 0); }
+  Vec3 F(float t) { return Vec3(t, 0, 0); }
 };
 
 struct TorusBevel : BeveledCurve {
   TorusBevel(BSDF *mat,
-             double radius = 1, // Radius of circle
+             float radius = 1, // Radius of circle
              int tCount = 10,   // Number of divisions along curve
              int rCount = 20,   // Number of divisions of circle
-             double tMin = 0,   // min and max parameters for curve
-             double tMax = 2 * PI
+             float tMin = 0,   // min and max parameters for curve
+             float tMax = 2 * PI
              )
       : BeveledCurve(mat, radius, tCount, rCount, tMin, tMax) {}
 
-  Vec3 F(double t) { return Vec3(cos(t), sin(t), 0) * 3; }
+  Vec3 F(float t) { return Vec3(cos(t), sin(t), 0) * 3; }
 };
 
 struct SpiralBevel : BeveledCurve {
   SpiralBevel(BSDF *mat,
-              double radius = .4, // Radius of circle
+              float radius = .4, // Radius of circle
               int tCount = 100,   // Number of divisions along curve
               int rCount = 20,    // Number of divisions of circle
-              double tMin = 0,    // min and max parameters for curve
-              double tMax = 8 * PI, 
-              double heightScale = 1.0 / 6.0
+              float tMin = 0,    // min and max parameters for curve
+              float tMax = 8 * PI, 
+              float heightScale = 1.0 / 6.0
               )
       : BeveledCurve(mat, radius, tCount, rCount, tMin, tMax), 
         h(heightScale) {}
 
-  Vec3 F(double t) { return Vec3(cos(t), sin(t), t * h) * 3; }
-  double h;
+  Vec3 F(float t) { return Vec3(cos(t), sin(t), t * h) * 3; }
+  float h;
 };
 
 /**
@@ -80,19 +80,19 @@ struct SpiralBevel : BeveledCurve {
  */
 struct TorusKnotBevel : BeveledCurve {
   TorusKnotBevel(BSDF *mat,
-                 double radius = .05, // Radius of circle
+                 float radius = .05, // Radius of circle
                  int P = 6,           // P for Torus Knot (prime)
                  int Q = 11,          // Q for torus knot (prime)
-                 double K = 2,        // Magic parametrization constant
+                 float K = 2,        // Magic parametrization constant
                  int tCount = 10000,  // Number of divisions along curve
                  int rCount = 20,     // Number of divisions of circle
-                 double tMin = 0,     // min and max parameters for curve
-                 double tMax = 3 * PI
+                 float tMin = 0,     // min and max parameters for curve
+                 float tMax = 3 * PI
                  )
       : BeveledCurve(mat, radius, tCount, rCount, tMin, tMax), 
         P(P), Q(Q), K(K) {}
 
-  Vec3 F(double t) {
+  Vec3 F(float t) {
     return Vec3(
       cos(Q * t) * (K + cos(P * t)), 
       sin(Q * t) * (K + cos(P * t)),
@@ -101,21 +101,21 @@ struct TorusKnotBevel : BeveledCurve {
   }
   int P;
   int Q;
-  double K;
+  float K;
 };
 
 struct ButterflyBevel : BeveledCurve {
   ButterflyBevel(BSDF *mat,
                  int tCount = 1000,   // Number of divisions along curve
                  int rCount = 20,     // Number of divisions of circle
-                 double radius = .15, // Radius of circle
-                 double tMin = 0,     // min and max parameters for curve
-                 double tMax = 12
+                 float radius = .15, // Radius of circle
+                 float tMin = 0,     // min and max parameters for curve
+                 float tMax = 12
                  )
       : BeveledCurve(mat, radius, tCount, rCount, tMin, tMax) {}
 
-  Vec3 F(double t) {
-    double coef = exp(cos(t)) - 2 * cos(4 * t) - pow(sin(t / 12), 5);
+  Vec3 F(float t) {
+    float coef = exp(cos(t)) - 2 * cos(4 * t) - pow(sin(t / 12), 5);
     return Vec3(coef * sin(t), coef * cos(t), t / 6.0);
   }
 };

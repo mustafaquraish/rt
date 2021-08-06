@@ -81,8 +81,8 @@ SCENE(Orbs) {
 
       if (i == 1 && j == 0) continue;
 
-      double xOff = -6.5 + i * 6.5;
-      double zOff =    1 + j * 4;
+      float xOff = -6.5 + i * 6.5;
+      float zOff =    1 + j * 4;
 
       s = new Cylinder(new Lambertian(1));
       s->Scale(2, 1, 1);

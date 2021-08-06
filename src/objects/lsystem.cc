@@ -25,7 +25,7 @@ void LSystem::createLSystem(char type, int depth, Matrix4 pTransform,
   }
   curNode->Translate(0, 0, 1);
 
-  double frac = (type == 'a') ? PI/9 : PI/6;
+  float frac = (type == 'a') ? PI/9 : PI/6;
   curTransform = ScaleMatrix(0.8, 0.8, 0.8) * curTransform;
   curTransform = RotateXMatrix(lerp(rng.rand01(), -frac, frac)) * curTransform;
   curTransform = RotateYMatrix(lerp(rng.rand01(), -frac, frac)) * curTransform;

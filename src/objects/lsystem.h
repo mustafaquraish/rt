@@ -13,11 +13,11 @@ struct LSystem : Object {
   void finalize();
 
   bool hit(Ray& r, HitRec &rec);
-  Vec3 sample(double *pdf, RNG& rng) { return T * Vec3(); };
+  Vec3 sample(float *pdf, RNG& rng) { return T * Vec3(); };
 
   int maxDepth = 12;
-  double p0 = 0.8;
-  double p1 = 0.8;
+  float p0 = 0.8;
+  float p1 = 0.8;
 
   int seed;
   

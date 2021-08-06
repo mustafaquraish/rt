@@ -11,6 +11,6 @@ Colour Mirror::sample(HitRec& rec, RNG& rng) {
   return col(rec);
 }
 
-double Mirror::pdf(HitRec& rec) {
+float Mirror::pdf(HitRec& rec) {
   return 0; // Delta BSDF
 }
