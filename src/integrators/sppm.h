@@ -1,10 +1,9 @@
-#ifndef __SPPM_H__
-#define __SPPM_H__
+#pragma once
 
-#include "core/integrator.h"
-#include "util/params.h"
-#include "core/primitive.h"
-#include "core/pointkdtree.h"
+#include <core/integrator.h>
+#include <util/params.h>
+#include <core/primitive.h>
+#include <core/pointkdtree.h>
 
 #include <atomic>
 
@@ -23,18 +22,18 @@ struct SPPM : Integrator {
   virtual void render(Scene *scene);
 
   struct Photon {
-    Vec pos, dir;
+    Vec3 pos, dir;
     Colour col;
     Colour acc = Colour(0);
     int M = 0;
-    Photon(Vec pos, Vec dir, Vec col) : pos(pos), dir(dir), col(col), M(0) {};
+    Photon(Vec3 pos, Vec3 dir, Vec3 col) : pos(pos), dir(dir), col(col), M(0) {};
   };
 
   struct PhotonNode {
-    Vec pos;
+    Vec3 pos;
     Photon *photon;
     PhotonNode() {};
-    PhotonNode(Vec pos, Photon *photon): pos(pos), photon(photon) {};
+    PhotonNode(Vec3 pos, Photon *photon): pos(pos), photon(photon) {};
   };
 
   const int depth = 10;
@@ -45,4 +44,3 @@ struct SPPM : Integrator {
   PointKDTree<PhotonNode> *photonMap;
 };
 
-#endif // __SPPM_H__

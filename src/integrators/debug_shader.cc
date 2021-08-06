@@ -1,4 +1,4 @@
-#include "integrators/debug_shader.h"
+#include <integrators/debug_shader.h>
 
 Colour DebugShader::Li(Ray &ray, Scene *scene, RNG& rng) {
   HitRec rec;

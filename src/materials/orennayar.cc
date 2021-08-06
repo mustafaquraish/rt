@@ -1,4 +1,4 @@
-#include "materials/orennayar.h"
+#include <materials/orennayar.h>
 
 OrenNayar::OrenNayar(double roughness, Colour col) 
   : BSDF(col) {
@@ -10,8 +10,8 @@ OrenNayar::OrenNayar(double roughness, Colour col)
 
 
 Colour OrenNayar::eval(HitRec &rec) {
-  Vec wi = toLocalFrame(rec.wi, rec.n);
-  Vec wo = toLocalFrame(rec.wo, rec.n);
+  Vec3 wi = toLocalFrame(rec.wi, rec.n);
+  Vec3 wo = toLocalFrame(rec.wo, rec.n);
   // std::cout << "---------------- START-----------------" << std::endl;
   // std::cout << rec.wi << "---> " <<wi << std::endl;
   // std::cout << rec.wo << "---> " <<wo << std::endl;

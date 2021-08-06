@@ -1,4 +1,4 @@
-#include "materials/emitter.h"
+#include <materials/emitter.h>
 
 
 Colour Emitter::eval(HitRec& rec) {

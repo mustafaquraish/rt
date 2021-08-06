@@ -2,10 +2,9 @@
  * Displacement-mapped objects
  */
 
-#ifndef __DISPLACED_H__
-#define __DISPLACED_H__
+#pragma once
 
-#include "objects/parametric_surface.h"
+#include <objects/parametric_surface.h>
 
 struct DisplacedSphere : ParametricSurface {
   DisplacedSphere(
@@ -20,12 +19,12 @@ struct DisplacedSphere : ParametricSurface {
     interpolateNormals = interpNormals;
   };
 
-  Vec P(double a, double b) {
+  Vec3 P(double a, double b) {
     double u = map(a, aMin, aMax, 0, 1);
     double v = map(b, bMin, bMax, 0, 1);
     double offset = luminance(displacementMap->get(u, v)) * scale;
     
-    Vec pt = Vec(cos(a) * sin(b), sin(a) * sin(b), cos(b));
+    Vec3 pt = Vec3(cos(a) * sin(b), sin(a) * sin(b), cos(b));
     return pt * (1+offset);
   }
   double scale;
@@ -45,14 +44,12 @@ struct DisplacedPlane : ParametricSurface {
     interpolateNormals = interpNormals;
   };
 
-  Vec P(double a, double b) {
+  Vec3 P(double a, double b) {
     double u = map(a, aMin, aMax, 0, 1);
     double v = map(b, bMin, bMax, 0, 1);
     double offset = luminance(displacementMap->get(u, v)) * scale;
-    return Vec(a,b,offset);
+    return Vec3(a, b, offset);
   }
   double scale;
   Texture *displacementMap;
 };
-
-#endif // __Displaced_H__

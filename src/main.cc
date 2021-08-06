@@ -1,6 +1,6 @@
-#include "core/scene.h"
-#include "core/integrator.h"
-#include "util/sysutil.h"
+#include <core/scene.h>
+#include <core/integrator.h>
+#include <util/sysutil.h>
 
 int main(int argc, char **argv) {
   RenderParams params(argc, argv);

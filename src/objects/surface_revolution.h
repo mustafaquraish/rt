@@ -1,11 +1,10 @@
-#ifndef __SURFACE_REVOLUTION_H__
-#define __SURFACE_REVOLUTION_H__
+#pragma once
 
 /**
  * A surface of revolution tCount itself into a mesh.
  */
 
-#include "objects/parametric_surface.h"
+#include <objects/parametric_surface.h>
 
 /**
  * A surface of revolution is just a parametric surface where parameter `a`
@@ -21,10 +20,10 @@ struct SurfaceOfRevolution : ParametricSurface {
                       )
       : ParametricSurface(mat, tCount, rCount, tMin, tMax, 0, TAU) {}
 
-  Vec P(double a, double b);
+  Vec3 P(double a, double b);
 
   // Function to be rotated around Y axis
-  virtual Vec F(double t) = 0;
+  virtual Vec3 F(double t) = 0;
 };
 
 struct CylinderSOR : SurfaceOfRevolution {
@@ -36,8 +35,8 @@ struct CylinderSOR : SurfaceOfRevolution {
               )
       : SurfaceOfRevolution(mat, tCount, rCount, tMin, tMax){};
 
-  Vec F(double t) { 
-    return Vec(1, t, 0); 
+  Vec3 F(double t) {
+    return Vec3(1, t, 0);
   }
 };
 
@@ -49,8 +48,8 @@ struct SphereSOR : SurfaceOfRevolution {
             double tMax = PI / 2)
       : SurfaceOfRevolution(mat, tCount, rCount, tMin, tMax){};
 
-  Vec F(double t) { 
-    return Vec(cos(t), sin(t), 0); 
+  Vec3 F(double t) {
+    return Vec3(cos(t), sin(t), 0);
   }
 };
 
@@ -62,8 +61,8 @@ struct TorusSOR : SurfaceOfRevolution {
            double tMax = 2 * PI)
       : SurfaceOfRevolution(mat, tCount, rCount, tMin, tMax){};
 
-  Vec F(double t) { 
-    return Vec(cos(t) + 3, sin(t), 0); 
+  Vec3 F(double t) {
+    return Vec3(cos(t) + 3, sin(t), 0);
   }
 };
 
@@ -77,8 +76,8 @@ struct SinSOR : SurfaceOfRevolution {
         printf("SINSOR: %d %d\n", tCount, rCount);
       };
 
-  Vec F(double t) { 
-    return Vec(sin(t) + 2, t, 0); 
+  Vec3 F(double t) {
+    return Vec3(sin(t) + 2, t, 0);
   }
 };
 
@@ -90,7 +89,6 @@ struct ParabolicBowlSOR : SurfaceOfRevolution {
                    double tMax = 2)
       : SurfaceOfRevolution(mat, tCount, rCount, tMin, tMax){};
 
-  Vec F(double t) { return Vec(t, t * t, 0); }
+  Vec3 F(double t) { return Vec3(t, t * t, 0); }
 };
 
-#endif // __SURFACE_REVOLUTION_H__

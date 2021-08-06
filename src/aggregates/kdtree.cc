@@ -1,5 +1,5 @@
-#include "kdtree.h" 
-#include "util/timer.h"
+#include <aggregates/kdtree.h> 
+#include <util/timer.h>
 
 /** 
  * WARNING:
@@ -34,8 +34,6 @@
  *   but might also be in how things are being set up. I do not think there
  *   is anything wrong with construction, but it might be worth a look.
  */
-
-
 KDTree::KDTree(std::vector<Primitive *>& prims){
 	Timer timer = Timer("Creating KD-Tree: %6lu objects", prims.size()).start();
   
@@ -101,7 +99,7 @@ KDTreeNode *KDTree::buildKDTree(std::vector<Primitive *>prims,
 
 bool KDTree::hit(Ray& ray, HitRec& rec) {
 	bool hit = false;
-  Vec invD = 1 / ray.d; // Lets us have slightly faster AABB hits
+  Vec3 invD = 1 / ray.d; // Lets us have slightly faster AABB hits
 
   struct KDTodo {
     KDTreeNode *node;
@@ -124,7 +122,7 @@ bool KDTree::hit(Ray& ray, HitRec& rec) {
 
     if (ray.tMax < tMin) break;
 
-    // Leaf node, test against primitives
+    // Leaf node, test against m_prims
     if (cur->numPrims > 0) {
 
       for (int i = 0; i < cur->numPrims; i++)

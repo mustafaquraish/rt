@@ -1,5 +1,5 @@
-#include "../src/ext/SimplexNoise.h"
-#include "../src/util/image.h"
+#include <../src/ext/SimplexNoise.h>
+#include <../src/util/image.h>
 
 
 int main() {
@@ -15,8 +15,8 @@ int main() {
     for (int i = 0; i < 300; i++) {
       for (int j = 0; j < 300; j++) {
 
-        Vec v1 = Vec(i*scale, j*scale,  Z);
-        Vec v2 = Vec(i*scale, j*scale, UZ);
+        Vec3 v1 = Vec3(i*scale, j*scale,  Z);
+        Vec3 v2 = Vec3(i*scale, j*scale, UZ);
 
         double p1 = Simplex::layered(7.0,0.5, v1.x,v1.y,0,0);
         double p2 = Simplex::layered(7.0,0.5, v2.x,v2.y,0,0);

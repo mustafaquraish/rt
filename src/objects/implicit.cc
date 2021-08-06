@@ -1,4 +1,4 @@
-#include "objects/implicit.h"
+#include <objects/implicit.h>
 
 #define RAYMARCH_MAX_LAMBDA 100
 #define RAYMARCH_INCREMENT 0.005
@@ -14,7 +14,7 @@ bool Implicit::hit(Ray& r, HitRec& rec) {
   double lambda = max(10e-3, tmin);
   double maxLambda = min(r.tMax, tmax + inc);
 
-  Vec p = transformed.at(lambda);
+  Vec3 p = transformed.at(lambda);
 
   double v0 = F(p.x, p.y, p.z);
 
@@ -43,9 +43,9 @@ bool Implicit::hit(Ray& r, HitRec& rec) {
     return false;
   }
 
-  Vec canon_n = (Vec(F(p.x + EPS, p.y , p.z),
-                     F(p.x , p.y + EPS, p.z),
-                     F(p.x , p.y , p.z + EPS)) - v0) / EPS;
+  Vec3 canon_n = (Vec3(F(p.x + EPS, p.y , p.z),
+                       F(p.x , p.y + EPS, p.z),
+                       F(p.x , p.y , p.z + EPS)) - v0) / EPS;
   canon_n = norm(canon_n);
 
   rec.t = lambda;
@@ -69,7 +69,7 @@ void Implicit::finalize() {
 }
 
 
-Vec Implicit::sample(double *pdf, RNG& rng) {
-  return T * Vec();
+Vec3 Implicit::sample(double *pdf, RNG& rng) {
+  return T * Vec3();
 }
 

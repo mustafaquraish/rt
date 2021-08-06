@@ -1,7 +1,7 @@
-#include "core/integrator.h"
-#include "util/timer.h"
-#include "util/progress.h"
-#include "core/tile_manager.h"
+#include <core/integrator.h>
+#include <util/timer.h>
+#include <util/progress.h>
+#include <core/tile_manager.h>
 
 void Integrator::render(Scene *scene) {
   int total_samples = min(maxSamples, params.get<int>("samples"));

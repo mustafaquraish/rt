@@ -1,8 +1,7 @@
-#ifndef __TRIANGLE_MESH_H__
-#define __TRIANGLE_MESH_H__
+#pragma once
 
-#include "core/object.h"
-#include "objects/triangle.h"
+#include <core/object.h>
+#include <objects/triangle.h>
 #include <vector>
 #include <unordered_map>
 #include <unordered_set>
@@ -31,4 +30,3 @@ struct TriangleMesh : Object {
   bool bothSides = false;
 };
 
-#endif // __TRIANGLE_MESH_H__

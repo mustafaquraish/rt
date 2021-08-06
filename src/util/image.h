@@ -1,9 +1,8 @@
-#ifndef __IMAGE_H__
-#define __IMAGE_H__
+#pragma once
 
 #include <stdio.h>
 #include <string.h>
-#include "core/math.h"
+#include <core/math.h>
 #include <unordered_map>
 
 struct Image {
@@ -32,4 +31,3 @@ struct RTImageList {
   static void cleanup();
 };
 
-#endif // __IMAGE_H__

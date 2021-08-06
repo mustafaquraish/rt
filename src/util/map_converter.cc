@@ -1,4 +1,4 @@
-#include "util/map_converter.h"
+#include <util/map_converter.h>
 
 int addWrap(int a, int off, int max) {
   int x = a + off;
@@ -33,7 +33,7 @@ Image convertHeightMapToNormalMap(Image &heightIm, double strength) {
       double cx = (TR - TL) + (BR - BL) + 2*(R - L) * strength;
       double cy = (TR - BR) + (TL - BL) + 2*(T - B) * strength;
 
-      Vec n = norm(Vec(cx, cy, 1));
+      Vec3 n = norm(Vec3(cx, cy, 1));
       normalIm.set(i, j, inverseLerp(n, -1, 1));
     }
   }

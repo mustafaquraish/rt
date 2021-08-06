@@ -1,7 +1,7 @@
-#include "core/aabb.h"
+#include <core/aabb.h>
 
 // Slightly faster AABB intersection when 1 / ray.d is given.
-bool AABB::hit(Ray& ray, double &t1, double &t2, const Vec& invD) {
+bool AABB::hit(Ray& ray, double &t1, double &t2, const Vec3& invD) {
   double tmin = -INFINITY;
   double tmax = INFINITY;
 
@@ -54,21 +54,21 @@ bool AABB::hit(Ray& ray) {
 
 AABB combine(const AABB& a, const AABB& b) {
   return AABB(
-    Vec(min(a.min.x, b.min.x), min(a.min.y, b.min.y), min(a.min.z, b.min.z)),
-    Vec(max(a.max.x, b.max.x), max(a.max.y, b.max.y), max(a.max.z, b.max.z))
+      Vec3(min(a.min.x, b.min.x), min(a.min.y, b.min.y), min(a.min.z, b.min.z)),
+      Vec3(max(a.max.x, b.max.x), max(a.max.y, b.max.y), max(a.max.z, b.max.z))
   );
 }
 
-AABB transformed(const Matrix& T, const AABB& b) {
-  Vec pts[8] = {
-    T * Vec(b.min.x, b.min.y, b.min.z),
-    T * Vec(b.min.x, b.min.y, b.max.z),
-    T * Vec(b.min.x, b.max.y, b.min.z),
-    T * Vec(b.min.x, b.max.y, b.max.z),
-    T * Vec(b.max.x, b.min.y, b.min.z),
-    T * Vec(b.max.x, b.min.y, b.max.z),
-    T * Vec(b.max.x, b.max.y, b.min.z),
-    T * Vec(b.max.x, b.max.y, b.max.z),
+AABB transformed(const Matrix4& T, const AABB& b) {
+  Vec3 pts[8] = {
+      T * Vec3(b.min.x, b.min.y, b.min.z),
+      T * Vec3(b.min.x, b.min.y, b.max.z),
+      T * Vec3(b.min.x, b.max.y, b.min.z),
+      T * Vec3(b.min.x, b.max.y, b.max.z),
+      T * Vec3(b.max.x, b.min.y, b.min.z),
+      T * Vec3(b.max.x, b.min.y, b.max.z),
+      T * Vec3(b.max.x, b.max.y, b.min.z),
+      T * Vec3(b.max.x, b.max.y, b.max.z),
   };
   AABB tBounds = AABB(pts[0]);
   for (int i = 0; i < 8; i++) {
@@ -77,7 +77,7 @@ AABB transformed(const Matrix& T, const AABB& b) {
   return tBounds;
 }
 
-void AABB::addPoint(const Vec& p) {
+void AABB::addPoint(const Vec3& p) {
   min.x = fmin(min.x, p.x);
   min.y = fmin(min.y, p.y);
   min.z = fmin(min.z, p.z);
@@ -87,8 +87,8 @@ void AABB::addPoint(const Vec& p) {
   max.z = fmax(max.z, p.z);
 }
 
-Vec AABB::offset(const Vec& p) const {
-  Vec t = p - min;
+Vec3 AABB::offset(const Vec3& p) const {
+  Vec3 t = p - min;
   if (max.x > min.x) t.x /= max.x - min.x;
   if (max.y > min.y) t.y /= max.y - min.y;
   if (max.z > min.z) t.z /= max.z - min.z;
@@ -96,11 +96,11 @@ Vec AABB::offset(const Vec& p) const {
 }
 
 double area(const AABB& a) {
-  Vec d = a.max - a.min;
+  Vec3 d = a.max - a.min;
   return 2 * (d.x * d.y + d.x * d.z + d.y * d.z);
 }
 
-Vec centroid(const AABB& a) {
+Vec3 centroid(const AABB& a) {
   return (a.min + a.max) / 2;
 }
 

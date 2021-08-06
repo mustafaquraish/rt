@@ -2,10 +2,9 @@
 // Created by Mustafa Quraish on 2021-02-01.
 //
 
-#ifndef __OREN_NAYAR_H__
-#define __OREN_NAYAR_H__
+#pragma once
 
-#include "core/bsdf.h"
+#include <core/bsdf.h>
 
 struct OrenNayar : BSDF {
   OrenNayar(double roughness, Colour col);
@@ -16,5 +15,3 @@ struct OrenNayar : BSDF {
   double A;
   double B;
 };
-
-#endif //__OREN_NAYAR_H__

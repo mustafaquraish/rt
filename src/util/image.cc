@@ -1,4 +1,4 @@
-#include "util/image.h"
+#include <util/image.h>
 
 
 void RTImageList::registerImage(std::string filename, Image *img) {
@@ -97,15 +97,15 @@ Image::Image(char const *fname) {
   fclose(f);
 }
 
-Vec Image::get(int i, int j) {
-  return Vec(
+Vec3 Image::get(int i, int j) {
+  return Vec3(
     data[(i + j * sx)*3 + 0],
     data[(i + j * sx)*3 + 1],
     data[(i + j * sx)*3 + 2]
   );
 }
 
-Vec Image::get(double u, double v) {
+Vec3 Image::get(double u, double v) {
   double dx = clamp(u * (sx-1), 0, sx-1) ;
   double dy = clamp(v * (sy-1), 0, sy-1) ;
   int f_x = dx, c_x = ceil(dx);

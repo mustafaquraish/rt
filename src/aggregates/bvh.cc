@@ -1,8 +1,10 @@
-#include "util/timer.h"
-#include "aggregates/bvh.h"
-#include <algorithm>
+#include <aggregates/bvh.h>
+#include <util/timer.h>
 
-int equalCounts(std::vector<Primitive *>& prims, int start, int end,
+#include <algorithm>
+#include <cassert>
+
+int splitEqualCounts(std::vector<Primitive *>& prims, int start, int end,
                 AABB& bounds, int dim) {
   int mid = (start + end + 1) / 2;
   std::nth_element(&prims[start], &prims[mid], &prims[end], 
@@ -15,7 +17,7 @@ int equalCounts(std::vector<Primitive *>& prims, int start, int end,
   return mid;
 }
 
-int SAH(std::vector<Primitive *>& prims, int start, int end,
+int splitSAH(std::vector<Primitive *>& prims, int start, int end,
         AABB& bounds, int dim) {
   constexpr int nBuckets = 12;
   struct { int count = 0; AABB bounds; } buckets[nBuckets];
@@ -45,7 +47,7 @@ int SAH(std::vector<Primitive *>& prims, int start, int end,
   
   auto pmid = std::partition(&prims[start], &prims[end],
                              [=](const Primitive* p) {
-                                Vec off = bounds.offset(centroid(p->bounds));
+                                Vec3 off = bounds.offset(centroid(p->bounds));
                                 int bucket = nBuckets * off[dim];
                                 if (bucket == nBuckets) bucket = nBuckets - 1;
                                 return bucket <= minBucket;
@@ -54,17 +56,17 @@ int SAH(std::vector<Primitive *>& prims, int start, int end,
 
   // TODO: this is bad, but currently no support for multiple objects in node
   if (mid == start || mid == end) 
-    mid = equalCounts(prims, start, end, bounds, dim);
+    mid = splitEqualCounts(prims, start, end, bounds, dim);
   
   return mid;
 }
 
-BVHTree *BVH::buildBVH(std::vector<Primitive *>& prims, int start, int end) {
+BVHTree *BVH::build(std::vector<Primitive *>& list, int start, int end) {
   BVHTree *node = new BVHTree();
   
   AABB bounds;
   for (int i = start; i < end; i++) 
-    bounds = combine(bounds, prims[i]->bounds);
+    bounds = combine(bounds, list[i]->bounds);
 
   int num = end - start;
   if (num <= 1) {
@@ -75,39 +77,43 @@ BVHTree *BVH::buildBVH(std::vector<Primitive *>& prims, int start, int end) {
   }
   
   int dim = maxIndex(bounds.max - bounds.min);
-  
-  int mid = SAH(prims, start, end, bounds, dim);
-  // int mid = equalCounts(prims, start, end, bounds, dim);
-  
-  node->a = buildBVH(prims, start, mid);
-  node->b = buildBVH(prims, mid, end);
+
+  int mid;  
+  switch (m_method) {
+    case SAH: mid = splitSAH(list, start, end, bounds, dim); break;
+    case Median: mid = splitEqualCounts(list, start, end, bounds, dim); break;
+  }
+
+  node->a = build(list, start, mid);
+  node->b = build(list, mid, end);
   node->bounds = bounds;
   node->numPrims = 0;
   return node;
 }
 
 int BVH::flatten(BVHTree *root) {
-  int curIdx = nodes.size();
+  int curIdx = m_nodes.size();
   BVHLinear cur;
 
   cur.bounds = root->bounds;
   cur.numPrims = root->numPrims;
   cur.primOff = root->primOff;
-  nodes.push_back(cur);
+  m_nodes.push_back(cur);
 
   if (root->numPrims == 0) { // Internal node
-    /* ignore this return  */ flatten(root->a);
-    nodes[curIdx].child2Off = flatten(root->b);
+    /* ignore this return  */   flatten(root->a);
+    m_nodes[curIdx].child2Off = flatten(root->b);
   }
   return curIdx;
 }
 
-BVH::BVH(std::vector<Primitive *>& prims) {
+BVH::BVH(std::vector<Primitive *>& prims, BVH::BuildMethod method)
+    : m_method(method) {
   Timer timer = Timer("Creating BVH from %6lu objects", prims.size()).start();
 
-  BVHTree *bvh = buildBVH(prims, 0, prims.size());
+  BVHTree *bvh = build(prims, 0, prims.size());
   bounds = bvh->bounds;
-  primitives = prims;
+  m_prims = prims;
   flatten(bvh);
 
   timer.stopAndDisplay();
@@ -115,20 +121,20 @@ BVH::BVH(std::vector<Primitive *>& prims) {
 
 bool BVH::hit(Ray& ray, HitRec& rec) {
   bool hit = false;
-  Vec invD = 1 / ray.d; // Lets us have slightly faster AABB hits
+  Vec3 invD = 1 / ray.d; // Lets us have slightly faster AABB hits
 
   // Stack initially begins with root node, index `0`
-  int stack[128] = {0}; // Holds the indices of the nodes to visit
+  int stack[128] = {0}; // Holds the indices of the m_nodes to visit
   int stackPt = 1;      // Current stack offset
 
   while (stackPt) {
     int curIdx = stack[ --stackPt ];
-    BVHLinear *cur = &nodes[ curIdx ];
+    BVHLinear *cur = &m_nodes[ curIdx ];
 
-    // Leaf node, test against primitives
+    // Leaf node, test against m_prims
     if (cur->numPrims > 0) {
       for (int i = 0; i < cur->numPrims; i++)
-        if (primitives[cur->primOff + i]->hit(ray, rec))
+        if (m_prims[cur->primOff + i]->hit(ray, rec))
           hit = true;
 
     // Internal node
@@ -137,8 +143,8 @@ bool BVH::hit(Ray& ray, HitRec& rec) {
       double a1, a2, b1, b2;
 
       // Check both children's bounding boxes
-      int hit_a = nodes[a].bounds.hit(ray, a1, a2, invD);
-      int hit_b = nodes[b].bounds.hit(ray, b1, b2, invD);
+      int hit_a = m_nodes[a].bounds.hit(ray, a1, a2, invD);
+      int hit_b = m_nodes[b].bounds.hit(ray, b1, b2, invD);
 
       if (!hit_a && !hit_b) continue;  // Hit none of them
       if (!hit_b) { stack[stackPt++] = a; continue; } // Didn't hit b, try a

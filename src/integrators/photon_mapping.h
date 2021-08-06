@@ -1,10 +1,9 @@
-#ifndef __PHOTON_MAPPING_H__
-#define __PHOTON_MAPPING_H__
+#pragma once
 
-#include "core/integrator.h"
-#include "util/params.h"
-#include "core/primitive.h"
-#include "core/pointkdtree.h"
+#include <core/integrator.h>
+#include <util/params.h>
+#include <core/primitive.h>
+#include <core/pointkdtree.h>
 
 
 
@@ -24,10 +23,10 @@ struct PhotonMapping : Integrator {
   Colour Li(Ray& r, Scene *scene, RNG& rng);
 
   struct Photon {
-    Vec pos;
-    Vec dir;
-    Vec col;
-    Photon(Vec pos, Vec dir, Vec col) : pos(pos), dir(dir), col(col) {};
+    Vec3 pos;
+    Vec3 dir;
+    Vec3 col;
+    Photon(Vec3 pos, Vec3 dir, Vec3 col) : pos(pos), dir(dir), col(col) {};
   };
 
   int numPhotons = 1000000;
@@ -35,4 +34,3 @@ struct PhotonMapping : Integrator {
   PointKDTree<Photon> *photonMap;
 };
 
-#endif // __PHOTON_MAPPING_H__

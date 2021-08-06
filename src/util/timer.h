@@ -1,5 +1,4 @@
-#ifndef __TIMER_H__
-#define __TIMER_H__
+#pragma once
 
 #include <chrono>
 #include <string>
@@ -21,4 +20,3 @@ public:
   void stopAndDisplay();
 };
 
-#endif

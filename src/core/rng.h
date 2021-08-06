@@ -1,7 +1,6 @@
-#ifndef __RNG_H__
-#define __RNG_H__
+#pragma once
 
-#include "core/math.h"
+#include <core/math.h>
 #include <time.h>
 
 struct RNG {
@@ -39,25 +38,25 @@ struct RNG {
     return r % (max - min + 1) + min;
   }
 
-  inline Vec randomVector() {
-    return 2 * Vec(rand01(), rand01(), rand01()) - 1;
+  inline Vec3 randomVector() {
+    return 2 * Vec3(rand01(), rand01(), rand01()) - 1;
   }
 
-  inline Vec randomVectorUnitSphere() {
+  inline Vec3 randomVectorUnitSphere() {
     while (true) {
-      Vec p = randomVector();
+      Vec3 p = randomVector();
       if (lengthSq(p) >= 1) continue;
       return p;
     }
   }
 
-  inline Vec randomUnitDisk() {
+  inline Vec3 randomUnitDisk() {
     double ang = rand01() * 2 * PI;
     double r = sqrt(rand01());
-    return Vec(cos(ang) * r, sin(ang) * r, 0);
+    return Vec3(cos(ang) * r, sin(ang) * r, 0);
   }
 
-  inline Vec randomVectorCosineHemisphere(const Vec &n) {
+  inline Vec3 randomVectorCosineHemisphere(const Vec3 &n) {
     return norm(n + norm(randomVectorUnitSphere()));
   }
   
@@ -67,4 +66,3 @@ struct RNG {
   int w;
 };
 
-#endif // __RNG_H__

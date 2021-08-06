@@ -1,7 +1,6 @@
-#ifndef __AA_SHADER_H__
-#define __AA_SHADER_H__
+#pragma once
 
-#include "core/integrator.h"
+#include <core/integrator.h>
 
 struct AmbientOcclusion : Integrator {
   AmbientOcclusion(RenderParams params) : Integrator(params) {
@@ -10,4 +9,3 @@ struct AmbientOcclusion : Integrator {
   Colour Li(Ray& r, Scene *scene, RNG& rng);
 };
 
-#endif // __AA_SHADER_H__

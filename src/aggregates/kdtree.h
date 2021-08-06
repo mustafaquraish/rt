@@ -1,8 +1,7 @@
-#ifndef __KDTREE_H__
-#define __KDTREE_H__
+#pragma once
 
-#include "core/primitive.h"
-#include "core/aabb.h"
+#include <core/primitive.h>
+#include <core/aabb.h>
 #include <vector>
 
 // Structure used when creating the BVH
@@ -27,6 +26,3 @@ struct KDTree : Aggregate {
   std::vector<Primitive *> primitives;
   std::vector<Primitive *> primitiveIndices;
 };
-
-
-#endif // __KDTREE_H__

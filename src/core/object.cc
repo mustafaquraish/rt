@@ -1,4 +1,4 @@
-#include "core/object.h"
+#include <core/object.h>
 
 using namespace std;
 
@@ -52,11 +52,11 @@ void Object::setMaterial(BSDF *_bsdf, bool override) {
   bsdf = _bsdf;
 };
 
-Vec Object::normalMapped(const Vec& canon_n, HitRec& rec) {
+Vec3 Object::normalMapped(const Vec3& canon_n, HitRec& rec) {
   if (normalMap == NULL) return canon_n;
 
-  Vec tex_normal = 2 * normalMap->get(rec) - 1;
-  Vec n = norm(alignTo(tex_normal, canon_n));
+  Vec3 tex_normal = 2 * normalMap->get(rec) - 1;
+  Vec3 n = norm(alignTo(tex_normal, canon_n));
   return n;
 }
 
@@ -64,12 +64,12 @@ Ray Object::rayTransform(const Ray& r) {
   return Ray(T_inv * r.p, T_inv % r.d, r.tMax);
 }
 
-Vec Object::sample(double *pdf, RNG& rng) {
+Vec3 Object::sample(double *pdf, RNG& rng) {
   *pdf = 1 / surfaceArea;
-  return T * Vec();
+  return T * Vec3();
 }
 
-Vec Object::normalTransform(const Vec& n) {
+Vec3 Object::normalTransform(const Vec3& n) {
   return norm(transpose(T_inv) * n);
 }
 

@@ -1,9 +1,9 @@
-#include "util/obj_loader.h"
-#include "objects/triangle_mesh.h"
+#include <util/obj_loader.h>
+#include <objects/triangle_mesh.h>
 
-#include "aggregates/bvh.h"
-#include "aggregates/kdtree.h"
-#include "core/definitions.h"
+#include <aggregates/bvh.h>
+#include <aggregates/kdtree.h>
+#include <core/definitions.h>
 
 void RTMeshList::registerMesh(Aggregate *mesh) {
   allMeshes.insert(mesh);

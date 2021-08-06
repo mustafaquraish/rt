@@ -1,8 +1,7 @@
-#ifndef __RT_PARAMS_H__
-#define __RT_PARAMS_H__
+#pragma once
 
 #include <string>
-#include "core/math.h"
+#include <core/math.h>
 #include <unordered_map>
 
 using std::string;
@@ -35,4 +34,3 @@ private:
 };
 
 
-#endif // __RT_PARAMS_H__

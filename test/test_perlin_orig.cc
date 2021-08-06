@@ -1,5 +1,5 @@
-#include "../src/core/perlin.h"
-#include "../src/util/image.h"
+#include <../src/core/perlin.h>
+#include <../src/util/image.h>
 
 int main() {
   Image im = Image(512, 512);
@@ -8,9 +8,9 @@ int main() {
   for (int i = 0; i < 512; i++) {
     for (int j = 0; j < 512; j++) {
       double u = i/(512.0/pscale), v = j/(512.0/pscale), w = 1; 
-      Vec p = Vec(u, v, w);
+      Vec3 p = Vec3(u, v, w);
       double scale = 10;
-      Vec col = 0.5*(1 + sin(scale * p.z + 10*perlin.turb(p)));
+      Vec3 col = 0.5*(1 + sin(scale * p.z + 10*perlin.turb(p)));
       im.set(i, j, col);
     }
   }

@@ -1,4 +1,4 @@
-#include "integrators/path.h"
+#include <integrators/path.h>
 
 #define PATH_MAX_BOUNCES 30
 
@@ -16,10 +16,10 @@ Colour Path::SampleLight(HitRec& rec, Scene *scene, RNG& rng) {
 
 
   // Light source point
-  Vec lp = light->sample(&pdf, rng);
+  Vec3 lp = light->sample(&pdf, rng);
   
   // Vector from intersection pt to lightsource
-  Vec wi = norm(lp - rec.p);
+  Vec3 wi = norm(lp - rec.p);
   rec.wi = wi;
 
   Ray shadowRay = Ray(rec.p, wi);
@@ -42,7 +42,7 @@ Colour Path::SampleLight(HitRec& rec, Scene *scene, RNG& rng) {
   }
 
   // Not visible to the lightsource.
-  return Vec(0);
+  return Colour(0);
 }
 
 Colour Path::Li(Ray &r, Scene *scene, RNG& rng) {

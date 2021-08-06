@@ -1,9 +1,8 @@
-#ifndef __PATH_H__
-#define __PATH_H__
+#pragma once
 
-#include "core/integrator.h"
-#include "util/params.h"
-#include "core/primitive.h"
+#include <core/integrator.h>
+#include <util/params.h>
+#include <core/primitive.h>
 
 struct Path : Integrator {
   Path(RenderParams params) : Integrator(params) {};
@@ -11,4 +10,3 @@ struct Path : Integrator {
   Colour Li(Ray& r, Scene *scene, RNG& rng);
 };
  
-#endif // __PATH_H__

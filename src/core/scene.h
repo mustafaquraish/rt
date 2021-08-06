@@ -1,13 +1,12 @@
-#ifndef __SCENE_H__
-#define __SCENE_H__
+#pragma once
 
-#include "core/camera.h"
-#include "core/object.h"
+#include <core/camera.h>
+#include <core/object.h>
 
 #include <unordered_map>
 #include <vector>
 
-#include "core/envmap.h"
+#include <core/envmap.h>
 
 struct Integrator;
 
@@ -65,4 +64,3 @@ struct RTSceneFactory {
 
 
 
-#endif // __SCENE_H__
