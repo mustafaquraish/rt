@@ -3,12 +3,12 @@
 #include <core/object.h>
 
 namespace SDF {
-  inline double Fmod(double a, double p) {
+  inline float Fmod(float a, float p) {
     if (a > 0) return  fmod(a, p);
     else       return -fmod(a,p);
   }
 
-  inline Vec3 Fmod(const Vec3& a, double p) {
+  inline Vec3 Fmod(const Vec3& a, float p) {
     return Vec3(
       Fmod(a.x, p),
       Fmod(a.y, p),
@@ -28,21 +28,21 @@ namespace SDF {
   // The normal should face the side to be reflected
   inline Vec3 fold(const Vec3& p, const Vec3& plane_p, const Vec3& plane_n) {
     // Center plane on origin for distance calculation
-    double distToPlane = dot(p - plane_p, plane_n);
+    float distToPlane = dot(p - plane_p, plane_n);
     
     // We only want to reflect if the dist is negative
     distToPlane = min(distToPlane, 0.0);
     return p - 2.0 * distToPlane * plane_n;
   }
 
-  inline double tetrahedron(const Vec3& p) {
+  inline float tetrahedron(const Vec3& p) {
     return (max(
       abs(p.x + p.y) - p.z,
       abs(p.x - p.y) + p.z
     ) - 1.0) / sqrt(3.);
   }
 
-  inline double sphere(const Vec3& p, double radius=1.0) {
+  inline float sphere(const Vec3& p, float radius=1.0) {
     return length(p) - radius;
   }
 
@@ -50,7 +50,7 @@ namespace SDF {
     return Fmod(p, dims) - dims * 0.5;
   }
 
-  inline Vec3 repeatX(const Vec3& p, double off) {
+  inline Vec3 repeatX(const Vec3& p, float off) {
     return Vec3(
       Fmod(p.x, off) - off * 0.5,
       p.y,
@@ -58,7 +58,7 @@ namespace SDF {
     );
   }
 
-  inline Vec3 repeatY(const Vec3& p, double off) {
+  inline Vec3 repeatY(const Vec3& p, float off) {
     return Vec3(
       p.x,
       Fmod(p.y, off) - off * 0.5,
@@ -66,7 +66,7 @@ namespace SDF {
     );
   }
 
-  inline Vec3 repeatZ(const Vec3& p, double off) {
+  inline Vec3 repeatZ(const Vec3& p, float off) {
     return Vec3(
       p.x,
       p.y,
@@ -79,19 +79,19 @@ struct SDFObject : Object {
   SDFObject(BSDF *mat) : Object(mat){};
   bool hit(Ray &r, HitRec &rec);
 
-  virtual double F(const Vec3& p) = 0;
+  virtual float F(const Vec3& p) = 0;
 };
 
 struct SphereSDF : SDFObject {
   using SDFObject::SDFObject;
-  double F(const Vec3& p) {
+  float F(const Vec3& p) {
     return length(p) - 1;
   }
 };
 
 struct InfiniteSphereSDF : SDFObject {
   using SDFObject::SDFObject;
-  double F(const Vec3& point) {
+  float F(const Vec3& point) {
     Vec3 p = point;
     if (p.z < minZ) p.z = minZ;
     p = SDF::repeatX(p, 2);
@@ -99,28 +99,28 @@ struct InfiniteSphereSDF : SDFObject {
     p = SDF::repeatZ(p, 2);
     return SDF::sphere(p, 0.4);
   }
-  double minZ = -12;
+  float minZ = -12;
 };
 
 struct MandelBulbSDF : SDFObject {
-  MandelBulbSDF(BSDF* mat, double power=8) : SDFObject(mat), power(power) {};
-  double F(const Vec3& p) {
+  MandelBulbSDF(BSDF* mat, float power=8) : SDFObject(mat), power(power) {};
+  float F(const Vec3& p) {
     // initialisation
     Vec3 z = p;
-    double dr = 1; // running derivative
-    double r = 0;  // escape time length
+    float dr = 1; // running derivative
+    float r = 0;  // escape time length
 
     for (int i = 0; i < iterations; i++) {
       r = length(z);
       if (r > depth_of_field) break;
       
       // conversion to polar coordinates
-      double theta = acos(z.z / r);
-      double phi = atan2(z.y, z.x);
+      float theta = acos(z.z / r);
+      float phi = atan2(z.y, z.x);
       dr = pow(r, power - 1.0) * power * dr + 1.0;
       
       // scaling and rotation
-      double zr = pow(r, power);
+      float zr = pow(r, power);
       theta *= power;
       phi *= power;
 
@@ -133,17 +133,17 @@ struct MandelBulbSDF : SDFObject {
     // distance estimator
     return 0.5 * log(r) * r / dr;
   }
-  double power = 7;
+  float power = 7;
   int iterations = 50;
-  double depth_of_field = 20.0;
+  float depth_of_field = 20.0;
 };
 
 struct SerpinksiSDF : SDFObject {
   using SDFObject::SDFObject;
-  double F(const Vec3& p) {
+  float F(const Vec3& p) {
     Vec3 z = p;
 
-    double scale = 1.0;
+    float scale = 1.0;
     for (int i = 0; i < iterations; i++) {
     	// Scale point toward corner vertex, update scale accumulator
       z = (z - verts[0]) * 2 + verts[0];
@@ -154,7 +154,7 @@ struct SerpinksiSDF : SDFObject {
         // The plane is defined by:
         // Point on plane: The vertex that we are reflecting across
         // Plane normal: The direction from said vertex to the corner vertex
-        Vec3 normal = norm(verts[0] - verts[i]);
+        Vec3 normal = normalized(verts[0] - verts[i]);
         z = SDF::fold(z, verts[i], normal);
       }
     }
@@ -170,10 +170,10 @@ struct SerpinksiSDF : SDFObject {
                                  Vec3(1.0, -1.0, -1.0) };
 };
 
-typedef double (*SDFFunc)(const Vec3&);
+typedef float (*SDFFunc)(const Vec3&);
 struct CustomSDF : SDFObject {
   CustomSDF(SDFFunc func, BSDF* mat): SDFObject(mat), func(func) {};
-  double F(const Vec3& p) { return func(p); }
+  float F(const Vec3& p) { return func(p); }
   SDFFunc func;
 };
 

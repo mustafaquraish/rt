@@ -11,7 +11,7 @@ SCENE(Test) {
   Vec3 up = Vec3(0, 1, 0);
   scene->cam = Camera(e, g, up, 70, params);
 
-  params.set<double>("photonRange", .2);
+  params.set<float>("photonRange", .2);
   params.set<int>("numPhotons", 10000);
   params.set<int>("numIterations", 10);
 

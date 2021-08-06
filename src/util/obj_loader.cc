@@ -24,21 +24,21 @@ std::vector<Primitive *> wavefrontObjLoader(const char *fname) {
   std::vector<Vec3> vts;
   std::vector<Primitive *> faces;
 
-  double x, y, z;
+  float x, y, z;
   // Store vertices
   while (fgets(buf, 128, f)) {
     if (prefix("v ", buf)) {
-      sscanf(buf, "v %lf %lf %lf", &x, &y, &z);
+      sscanf(buf, "v %f %f %f", &x, &y, &z);
       // std::cout << "Vertex: " << Vec3(x,y,z) << std::endl;
       vs.push_back(Vec3(x, y, z));
     }
     if (prefix("vt ", buf)) {
-      sscanf(buf, "vt %lf %lf", &x, &y);
+      sscanf(buf, "vt %f %f", &x, &y);
       // std::cout << "TexCod: " << x << " " << y << std::endl;
       vts.push_back(Vec3(x, y, 0));
     }
     if (prefix("vn ", buf)) {
-      sscanf(buf, "vn %lf %lf %lf", &x, &y, &z);
+      sscanf(buf, "vn %f %f %f", &x, &y, &z);
       // std::cout << "Normal: " << Vec3(x,y,z) << std::endl;
       vns.push_back(Vec3(x, y, z));
     }

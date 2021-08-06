@@ -8,7 +8,7 @@
 struct Texture {
   virtual ~Texture() {};
   virtual Colour get(HitRec& rec) = 0;
-  virtual Colour get(double u, double v);
+  virtual Colour get(float u, float v);
   void saveImage(int size_x, int size_y, const char *filename);
 };
 
@@ -31,7 +31,7 @@ struct ImageTexture : Texture {
 };
 
 struct CheckerTexture : Texture {
-  CheckerTexture(double scale = 0.1) : scale(scale) {};
+  CheckerTexture(float scale = 0.1) : scale(scale) {};
   
   virtual Colour get(HitRec& rec) {
     int fx = rec.u / scale;
@@ -40,21 +40,21 @@ struct CheckerTexture : Texture {
     return Colour(fac);
   }
 
-  double scale;
+  float scale;
 };
 
 
 struct PerlinTexture : Texture {
-  PerlinTexture(PerlinType type = Layered, double scale = 8, int octaves = 4, 
-                double persistence = 0.5, double seed=0) 
+  PerlinTexture(PerlinType type = Layered, float scale = 8, int octaves = 4, 
+                float persistence = 0.5, float seed=0) 
       : scale(scale), octaves(octaves), persistence(persistence), type(type), 
         seed(seed) {};
   
   virtual Colour get(HitRec& rec) {
-    double x = rec.u * scale;
-    double y = rec.v * scale;
+    float x = rec.u * scale;
+    float y = rec.v * scale;
 
-    double perlin;
+    float perlin;
 
     /* It's more effcient to use the perlin 2D texture if we don't need 3D */
     if (seed == 0) perlin = Simplex::layered(octaves, persistence, x, y);
@@ -64,9 +64,9 @@ struct PerlinTexture : Texture {
   }
 
   PerlinType type;
-  double scale;
-  double persistence;
-  double seed;
+  float scale;
+  float persistence;
+  float seed;
   int octaves;
 };
 
@@ -75,13 +75,13 @@ struct Perlin4DTexture : PerlinTexture {
   using PerlinTexture::PerlinTexture;
   
   virtual Colour get(HitRec& rec) {
-    double x = rec.u * scale;
-    double y = rec.v * scale;
+    float x = rec.u * scale;
+    float y = rec.v * scale;
 
-    double theta = lerp(seed, 0.0, TAU);
-    double z = cos(theta);
-    double w = sin(theta);
-    double perlin = Simplex::layered(octaves, persistence, x, y, z, w);
+    float theta = lerp(seed, 0.0, TAU);
+    float z = cos(theta);
+    float w = sin(theta);
+    float perlin = Simplex::layered(octaves, persistence, x, y, z, w);
  
     return Simplex::convertTo(perlin, type);
   }
@@ -89,13 +89,13 @@ struct Perlin4DTexture : PerlinTexture {
 
 // 4-Dimensional perlin noise texture, uses `seed` \in [0,1] to perfectly loop
 struct SDFTexture : Texture {
-  SDFTexture(Colour col, double scale=1) : col(col), scale(scale) {};
+  SDFTexture(Colour col, float scale=1) : col(col), scale(scale) {};
   
   virtual Colour get(HitRec& rec) {
     return col * (1-rec.stepsRatio*scale);
   }
   Colour col;
-  double scale;
+  float scale;
 };
 
 

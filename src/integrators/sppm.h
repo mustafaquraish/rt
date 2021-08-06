@@ -14,7 +14,7 @@ struct SPPM : Integrator {
     if (params.exists("numIterations"))
       numIterations = params.get<int>("numIterations");
     if (params.exists("photonRange"))
-      photonRange = params.get<double>("photonRange");
+      photonRange = params.get<float>("photonRange");
   };
 
   void addVisiblePoint(const Ray& ray, Scene *scene, RNG& rng, int pixelIdx);
@@ -39,7 +39,7 @@ struct SPPM : Integrator {
   const int depth = 10;
   int numIterations = 10;
   int numPhotonsPerIter = 10000;
-  double photonRange = .2; // ??
+  float photonRange = .2; // ??
   std::vector<Photon> photons;
   PointKDTree<PhotonNode> *photonMap;
 };

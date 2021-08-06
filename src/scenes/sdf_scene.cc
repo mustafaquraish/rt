@@ -1,6 +1,6 @@
 #include <core/rt.h>
 
-double mysdf1(const Vec3& point) {
+float mysdf1(const Vec3& point) {
   Vec3 p = point;
   if (p.z < 10) p.z = 10;
   p = SDF::repeatX(p, 5);
@@ -25,14 +25,14 @@ SCENE(SDF) {
   scene->integrator = new BaseColour(params);
 
 
-  double frameRatio = params.get<double>("frameRatio");
+  float frameRatio = params.get<float>("frameRatio");
 
   Object *s;
 
   // s = new SphereSDF(new Lambertian(1));
   // scene->add(s);
 
-  // double R = lerp(frameRatio, 0.0, 4.0);
+  // float R = lerp(frameRatio, 0.0, 4.0);
   // s = new InfiniteSphereSDF(new Lambertian(1));
   // s->addTextureMap(new SDFTexture(Colour(1), 10));
   // s->Translate(R, R, 0);
@@ -46,8 +46,8 @@ SCENE(SDF) {
   // s->Translate(0, -1, 0);
   // scene->add(s);
 
-  double R = lerp(frameRatio, 0.0, PI);
-  double power = lerp(frameRatio, 5.0, 15.0);
+  float R = lerp(frameRatio, 0.0, PI);
+  float power = lerp(frameRatio, 5.0, 15.0);
   s = new MandelBulbSDF(new Lambertian(1), power);
   s->addTextureMap(new SDFTexture(Colour(1), 3.5));
   // s->RotateX(PI/2);

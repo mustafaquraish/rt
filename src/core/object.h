@@ -11,12 +11,12 @@ struct Object : Primitive {
   ~Object();
 
   // Public API for transforming objects
-  void RotateX(double t);
-  void RotateY(double t);
-  void RotateZ(double t);
-  void Scale(double x, double y, double z);
-  void Scale(double s);
-  void Translate(double x, double y, double z);
+  void RotateX(float t);
+  void RotateY(float t);
+  void RotateZ(float t);
+  void Scale(float x, float y, float z);
+  void Scale(float s);
+  void Translate(float x, float y, float z);
   
   void addNormalMap(Texture *tx);
   void addTextureMap(Texture *tx);
@@ -31,11 +31,11 @@ struct Object : Primitive {
   
   virtual BSDF *getBSDF(HitRec& rec) { return bsdf; }
   virtual bool hit(Ray& r, HitRec &rec) = 0;
-  virtual Vec3 sample(double *pdf, RNG& rng);
+  virtual Vec3 sample(float *pdf, RNG& rng);
 
   BSDF *bsdf = NULL;
   Texture *normalMap = NULL;
-  double surfaceArea = 1;
+  float surfaceArea = 1;
   Primitive *prim = NULL;
   Matrix4 T, T_inv;
   int both = 0;

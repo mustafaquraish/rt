@@ -10,8 +10,8 @@ int splitEqualCounts(std::vector<Primitive *>& prims, int start, int end,
   std::nth_element(&prims[start], &prims[mid], &prims[end], 
                    [dim](Primitive *a, Primitive *b) {
                       AABB ba = a->bounds, bb = b->bounds;
-                      double ca = ba.min[dim] + ba.max[dim];
-                      double cb = bb.min[dim] + bb.max[dim];
+                      float ca = ba.min[dim] + ba.max[dim];
+                      float cb = bb.min[dim] + bb.max[dim];
                       return ca < cb;
                    });
   return mid;
@@ -29,7 +29,7 @@ int splitSAH(std::vector<Primitive *>& prims, int start, int end,
     buckets[b].bounds = combine(buckets[b].bounds, prims[i]->bounds);
   }
 
-  double cost[nBuckets - 1];
+  float cost[nBuckets - 1];
   for (int i = 0; i < nBuckets - 1; ++i) {
     AABB b0, b1;
     int c0 = 0, c1 = 0;
@@ -76,7 +76,7 @@ BVHTree *BVH::build(std::vector<Primitive *>& list, int start, int end) {
     return node;
   }
   
-  int dim = maxIndex(bounds.max - bounds.min);
+  int dim = max_index(bounds.max - bounds.min);
 
   int mid;  
   switch (m_method) {
@@ -140,7 +140,7 @@ bool BVH::hit(Ray& ray, HitRec& rec) {
     // Internal node
     } else {
       int a = curIdx + 1, b = cur->child2Off;
-      double a1, a2, b1, b2;
+      float a1, a2, b1, b2;
 
       // Check both children's bounding boxes
       int hit_a = m_nodes[a].bounds.hit(ray, a1, a2, invD);

@@ -15,8 +15,8 @@ SCENE(Lsystems) {
   
   for (int i = 0; i < 10; i++) {
     for (int j = 0; j < 10; j++) {
-      double ioff = lerp(i/10.0, -10., 10.0);
-      double joff = lerp(j/10.0, 0., 20.0);
+      float ioff = lerp(i/10.0, -10., 10.0);
+      float joff = lerp(j/10.0, 0., 20.0);
       s = new LSystem(rand() % 4 + 8);
       s->RotateX(-PI/2);
       s->Scale(1, 1.3, 1);

@@ -37,7 +37,7 @@ struct ProgressBar {
   int total;
   int done = 0;
   int displayIncrement=1;
-  double workRatio;
+  float workRatio;
   std::string message;
 };
 

@@ -8,7 +8,7 @@ struct Emitter : BSDF {
   
   Colour eval(HitRec& rec);
   Colour sample(HitRec& rec, RNG& rng);
-  double pdf(HitRec& rec);
+  float pdf(HitRec& rec);
   Colour emittance(HitRec& rec);
 };
 

@@ -25,17 +25,17 @@ enum PerlinType {Layered, Turbulence, Marble};
 
 namespace Simplex {
 // Multi-octave Simplex noise [-1, 1]
-double layered(double octaves, double persistence, double x, double y);
-double layered(double octaves, double persistence, double x, double y, double z);
-double layered(double octaves, double persistence, double x, double y, double z, double w);
+float layered(float octaves, float persistence, float x, float y);
+float layered(float octaves, float persistence, float x, float y, float z);
+float layered(float octaves, float persistence, float x, float y, float z, float w);
 
 // Raw Simplex noise [-1, 1]
-double noise(double x);
-double noise(double x, double y);
-double noise(double x, double y, double z);
-double noise(double x, double y, double, double w);
+float noise(float x);
+float noise(float x, float y);
+float noise(float x, float y, float z);
+float noise(float x, float y, float, float w);
 
-double convertTo(double perlinValue, PerlinType type);
+float convertTo(float perlinValue, PerlinType type);
 
 };  // namespace Simplex
 

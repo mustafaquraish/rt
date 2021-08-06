@@ -5,7 +5,7 @@
 using namespace std;
 
 Colour Path::SampleLight(HitRec& rec, Scene *scene, RNG& rng) {
-  double pdf;
+  float pdf;
   HitRec tmp;
   
   if (scene->lights.size() == 0) return 0; 
@@ -19,7 +19,7 @@ Colour Path::SampleLight(HitRec& rec, Scene *scene, RNG& rng) {
   Vec3 lp = light->sample(&pdf, rng);
   
   // Vector from intersection pt to lightsource
-  Vec3 wi = norm(lp - rec.p);
+  Vec3 wi = normalized(lp - rec.p);
   rec.wi = wi;
 
   Ray shadowRay = Ray(rec.p, wi);
@@ -31,11 +31,11 @@ Colour Path::SampleLight(HitRec& rec, Scene *scene, RNG& rng) {
     tmp.wo = -shadowRay.d;
 
     pdf *= (tmp.t * tmp.t);
-    pdf /= fabs(dot(norm(wi), rec.n) * -dot(norm(wi), tmp.n));
+    pdf /= fabs(dot(normalized(wi), rec.n) * -dot(normalized(wi), tmp.n));
     pdf /= scene->lights.size();
 
 
-    constexpr double minPdf = 0.1;
+    constexpr float minPdf = 0.1;
     if (pdf < minPdf) pdf = minPdf;
 
     return rec.obj->bsdf->eval(rec) * light->bsdf->emittance(tmp) / pdf; 
@@ -74,7 +74,7 @@ Colour Path::Li(Ray &r, Scene *scene, RNG& rng) {
 
     // Russian roulette:
     if (bounce > 3) {
-      double pr = max(throughput);
+      float pr = max(throughput);
       if (rng.rand01() > pr) break;
       throughput *= 1.0 / pr;
     }

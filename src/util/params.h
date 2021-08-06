@@ -8,7 +8,7 @@ using std::string;
 
 union RenderParamItem {
   int i;
-  double d;
+  float d;
   const char *s;
   bool b;
 };
@@ -18,7 +18,7 @@ struct RenderParams {
   RenderParams(int argc, char **argv);
 
   void update(int frame);
-  void setWindow(double xBegin, double xEnd, double yBegin, double yEnd);
+  void setWindow(float xBegin, float xEnd, float yBegin, float yEnd);
 
   template <typename T>
   void set(const std::string &key, T value);

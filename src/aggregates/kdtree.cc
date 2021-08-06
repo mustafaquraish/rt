@@ -6,9 +6,9 @@
  *    KD-Tree is broken. The bug is subtle, but if you go to `camera.cc`
  *    and change the line for Non-DOF rays from
  *   
- *        Ray(p, norm(p-e))
+ *        Ray(p, normalized(p-e))
  *    to
- *        Ray(e, norm(p-e))
+ *        Ray(e, normalized(p-e))
  *   
  *    the interesction tests break, and half the scene suddenly disappears.
  *    For instance, in scene `Room` run with DebugShader, the left half of
@@ -67,8 +67,8 @@ KDTreeNode *KDTree::buildKDTree(std::vector<Primitive *>prims,
     return node;
   }
 
-  int splitDim = maxIndex(bounds.max - bounds.min);
-  double splitPos = centroid(bounds)[splitDim];
+  int splitDim = max_index(bounds.max - bounds.min);
+  float splitPos = centroid(bounds)[splitDim];
 
   AABB aa = bounds; aa.max[splitDim] = splitPos;
   AABB bb = bounds; bb.min[splitDim] = splitPos;
@@ -103,11 +103,11 @@ bool KDTree::hit(Ray& ray, HitRec& rec) {
 
   struct KDTodo {
     KDTreeNode *node;
-    double tMin;
-    double tMax;
+    float tMin;
+    float tMax;
   };
 
-  double tMin, tMax;
+  float tMin, tMax;
   if (!bounds.hit(ray, tMin, tMax, invD))
     return false;
 
@@ -133,7 +133,7 @@ bool KDTree::hit(Ray& ray, HitRec& rec) {
     } else {
 
       KDTreeNode *first, *secnd;
-      double tPlane = (cur->splitPos - ray.p[cur->axis]) * invD[cur->axis];
+      float tPlane = (cur->splitPos - ray.p[cur->axis]) * invD[cur->axis];
       bool below = (ray.p[cur->axis] < cur->splitPos) ||
                    (ray.p[cur->axis] < cur->splitPos && ray.d[cur->axis] <= 0);
       

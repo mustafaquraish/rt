@@ -43,16 +43,16 @@ Triangle::Triangle(Vec3  p0, Vec3  p1, Vec3  p2) {
 };
 
 bool Triangle::hit(Ray& r, HitRec& rec) {
-  double v, w, u, t;
+  float v, w, u, t;
   
   Vec3 e0 = p[1] - p[0];
   Vec3 e1 = p[2] - p[0];
 
   Vec3 h = cross(r.d, e1);
-  double a1 = dot(e0, h);
+  float a1 = dot(e0, h);
   if (a1 == 0) return false;
 
-  double f = 1.0 / a1;
+  float f = 1.0 / a1;
 
   Vec3 s = r.p - p[0];
   v = f * dot(s, h);

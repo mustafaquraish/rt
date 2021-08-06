@@ -7,7 +7,7 @@ using namespace std;
 
 
 Colour DirectLighting::SampleLight(HitRec& rec, Scene *scene, RNG& rng) {
-  double pdf;
+  float pdf;
   HitRec tmp;
   
   // Pick a light source
@@ -17,7 +17,7 @@ Colour DirectLighting::SampleLight(HitRec& rec, Scene *scene, RNG& rng) {
   // Light source point
   Vec3 lp = light->sample(&pdf, rng);
   // Vector from intersection pt to lightsource
-  Vec3 wi = norm(lp - rec.p);
+  Vec3 wi = normalized(lp - rec.p);
   rec.wi = wi;
 
   Vec3 contrib = AMBIENT_LIGHT;
@@ -30,12 +30,12 @@ Colour DirectLighting::SampleLight(HitRec& rec, Scene *scene, RNG& rng) {
       tmp.wo = -shadowRay.d;
 
       pdf *= (tmp.t * tmp.t);
-      pdf /= fabs(dot(norm(wi), rec.n) * -dot(norm(wi), tmp.n));
+      pdf /= fabs(dot(normalized(wi), rec.n) * -dot(normalized(wi), tmp.n));
       pdf /= scene->lights.size();
 
       if (pdf < 1) pdf = 1;
 
-      contrib = cmpWiseMax(contrib, light->bsdf->emittance(tmp) / pdf);
+      contrib = cmp_wise_max(contrib, light->bsdf->emittance(tmp) / pdf);
     }
   }
 

@@ -25,7 +25,7 @@
 template <typename ValType>
 struct PointKDTree {
   std::vector<ValType> points;
-  double splitPos;
+  float splitPos;
   int dim = -1;
   int depth = 20;
 
@@ -55,7 +55,7 @@ struct PointKDTree {
     return node;
   }
   
-  void getRange(Vec3 pt, double range, std::vector<ValType> &outputPts) {
+  void getRange(Vec3 pt, float range, std::vector<ValType> &outputPts) {
     if (dim < 0) {
       for (auto p : points) {
         float dist = length(p.pos-pt);
@@ -101,7 +101,7 @@ struct PointKDTree {
     if (points.size() < 4 || depth==0) return;
     
     // Oh no, the node is full. Need to split.
-    int splitDim = maxIndex(aabb.max - aabb.min);
+    int splitDim = max_index(aabb.max - aabb.min);
     int mid = (points.size()+1)/2;
 
     std::nth_element(points.begin(), points.begin() + mid, points.end(), 
@@ -109,7 +109,7 @@ struct PointKDTree {
                         return p1.pos[splitDim] < p2.pos[splitDim];
                       });
 
-    double splitPos = points[mid].pos[splitDim];
+    float splitPos = points[mid].pos[splitDim];
 
     AABB boxa = aabb; boxa.max[splitDim] = splitPos;
     AABB boxb = aabb; boxb.min[splitDim] = splitPos;

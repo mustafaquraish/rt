@@ -10,5 +10,5 @@ struct Mirror : BSDF {
   Mirror(Texture *tx) : BSDF(tx) { specular = true; }
   Colour eval(HitRec& rec);
   Colour sample(HitRec& rec, RNG& rng);
-  double pdf(HitRec& rec);
+  float pdf(HitRec& rec);
 };

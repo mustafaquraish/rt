@@ -20,7 +20,7 @@ void RTImageList::cleanup() {
 /******************************************************************************/
 
 Image::Image(int sx, int sy) : sx(sx), sy(sy) {
-  data = new double[sx * sy * 3];
+  data = new float[sx * sy * 3];
 }
 
 template <typename T> 
@@ -41,7 +41,7 @@ static T swapEndian(T u) {
 }
 
 template <typename T>
-void readImageData(FILE *f, double *arr, size_t num_items, double scale) {
+void readImageData(FILE *f, float *arr, size_t num_items, float scale) {
   T *raw = new T[num_items];
   if (!fread(raw, sizeof(T), num_items, f))
     fprintf(stderr, "Error reading image\n");
@@ -84,7 +84,7 @@ Image::Image(char const *fname) {
   int maxRGB;
   sscanf(&line[0], "%d\n", &maxRGB); // Read file size
 
-  data = new double[sx * sy * 3];
+  data = new float[sx * sy * 3];
 
   // printf("===maxRGB is %d\n", maxRGB);
   if (maxRGB == 255) {
@@ -105,9 +105,9 @@ Vec3 Image::get(int i, int j) {
   );
 }
 
-Vec3 Image::get(double u, double v) {
-  double dx = clamp(u * (sx-1), 0, sx-1) ;
-  double dy = clamp(v * (sy-1), 0, sy-1) ;
+Vec3 Image::get(float u, float v) {
+  float dx = clamp(u * (sx-1), 0, sx-1) ;
+  float dy = clamp(v * (sy-1), 0, sy-1) ;
   int f_x = dx, c_x = ceil(dx);
   int f_y = dy, c_y = ceil(dy);
 
@@ -115,15 +115,15 @@ Vec3 Image::get(double u, double v) {
                                     get(f_x, c_y), get(c_x, c_y));
 }
 
-double linearToSRGB(double L) {
-  double S = L * 12.92;
+float linearToSRGB(float L) {
+  float S = L * 12.92;
   if (L > 0.0031308) {
     S = 1.055 * pow(L, 1.0 / 2.4) - 0.055;
   }
   return clamp01(S);
 }
 
-void Image::save(char const *fname, bool gammaCorrect, double exposure) {
+void Image::save(char const *fname, bool gammaCorrect, float exposure) {
   FILE *f;
   unsigned char *bits24 = new unsigned char[sx * sy * 3];
   for (int i = 0; i < sx * sy * 3; i++) {

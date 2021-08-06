@@ -25,7 +25,7 @@ void Scene::addEnvMap(EnvironmentMap *tx) {
   lights.push_back(envMap);
 }
 
-void Scene::addEnvMap(const char *filename, double brightness) {
+void Scene::addEnvMap(const char *filename, float brightness) {
   addEnvMap(new EnvironmentMap(filename, brightness));
 }
 

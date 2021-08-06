@@ -9,6 +9,6 @@ Colour Lambertian::sample(HitRec &rec, RNG& rng) {
   return col(rec);
 }
 
-double Lambertian::pdf(HitRec &rec) {
+float Lambertian::pdf(HitRec &rec) {
   return dot(rec.wi, rec.n) * INV_PI;
 }

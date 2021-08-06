@@ -10,7 +10,7 @@ Colour Emitter::sample(HitRec& rec, RNG& rng) {
   return col(rec);
 }
 
-double Emitter::pdf(HitRec& rec) {
+float Emitter::pdf(HitRec& rec) {
   return dot(rec.wi, rec.n) * INV_PI;
 }
 

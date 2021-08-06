@@ -7,7 +7,7 @@ int addWrap(int a, int off, int max) {
   return x;
 }
 
-Image convertHeightMapToNormalMap(Image &heightIm, double strength) {
+Image convertHeightMapToNormalMap(Image &heightIm, float strength) {
   Image normalIm = Image(heightIm.sx, heightIm.sy);
 
   int stride = 1;
@@ -20,20 +20,20 @@ Image convertHeightMapToNormalMap(Image &heightIm, double strength) {
       int jp = addWrap(j,  stride, normalIm.sy - 1);
 
       // Get 8 neighbouring pixels
-      double TL = luminance(heightIm.get(im, jm));
-      double T =  luminance(heightIm.get(i , jm));
-      double TR = luminance(heightIm.get(ip, jm));
-      double R =  luminance(heightIm.get(ip, j ));
-      double BR = luminance(heightIm.get(ip, jp));
-      double B =  luminance(heightIm.get(i , jp));
-      double BL = luminance(heightIm.get(im, jp));
-      double L =  luminance(heightIm.get(im, j ));
+      float TL = luminance(heightIm.get(im, jm));
+      float T =  luminance(heightIm.get(i , jm));
+      float TR = luminance(heightIm.get(ip, jm));
+      float R =  luminance(heightIm.get(ip, j ));
+      float BR = luminance(heightIm.get(ip, jp));
+      float B =  luminance(heightIm.get(i , jp));
+      float BL = luminance(heightIm.get(im, jp));
+      float L =  luminance(heightIm.get(im, j ));
 
       // Sobel operator
-      double cx = (TR - TL) + (BR - BL) + 2*(R - L) * strength;
-      double cy = (TR - BR) + (TL - BL) + 2*(T - B) * strength;
+      float cx = (TR - TL) + (BR - BL) + 2*(R - L) * strength;
+      float cy = (TR - BR) + (TL - BL) + 2*(T - B) * strength;
 
-      Vec3 n = norm(Vec3(cx, cy, 1));
+      Vec3 n = normalized(Vec3(cx, cy, 1));
       normalIm.set(i, j, inverseLerp(n, -1, 1));
     }
   }

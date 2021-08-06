@@ -11,7 +11,7 @@ SCENE(Cornell) {
   Vec3 up = Vec3(0, 1, 0);
   scene->cam = Camera(e, g, up, 70, params);
 
-  // params.set<double>("photonRange", .1);
+  // params.set<float>("photonRange", .1);
   // params.set<int>("numPhotons", 10000000);
   // params.set<int>("numIterations", 10);
 
@@ -103,10 +103,10 @@ SCENE(Cornell) {
   // s->Translate(0, -5, 6);
   // scene->add(s);
 
-  double frame = 0;
-  double speed = 0.5;
+  float frame = 0;
+  float speed = 0.5;
   if (params.exists("frame")) frame = params.get<int>("frame");
-  double R = inverseLerp(frame, 0, 60);
+  float R = inverseLerp(frame, 0, 60);
 
 
   s = new DisplacedPlane(

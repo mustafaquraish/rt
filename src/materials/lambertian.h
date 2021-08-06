@@ -7,6 +7,6 @@ struct Lambertian : BSDF {
   Lambertian(Texture *tx) : BSDF(tx) { diffuse = true; }
   Colour eval(HitRec& rec);
   Colour sample(HitRec& rec, RNG& rng);
-  double pdf(HitRec& rec);
+  float pdf(HitRec& rec);
 };
 
