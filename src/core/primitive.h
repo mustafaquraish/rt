@@ -22,8 +22,7 @@ struct HitRec {
   Vec3 wo;
   Vec3 wi;
 
-  float u;
-  float v;
+  Vec2 uv;
   Object *obj;
 
   float stepsRatio; // For SDFs

@@ -17,10 +17,10 @@ SCENE(Scratch) {
 
   scene->cam = Camera(e, g, up, 45, params);
 
-  // scene->integrator = new Path(params);
-  scene->integrator = new DebugShader(params);
-  // scene->integrator = new BaseColour(params);
-  // scene->integrator = new DirectLighting(params);
+  // scene->renderer = new Path(params);
+  scene->renderer = new DebugShader(params);
+  // scene->renderer = new BaseColour(params);
+  // scene->renderer = new DirectLighting(params);
   
   Object *s;
 

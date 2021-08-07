@@ -3,5 +3,5 @@
 #include <util/image.h>
 #include <core/math.h>
 
-Image convertHeightMapToNormalMap(Image& heightIm, float strength=1);
+Image height_to_normal_map(Image& heightIm, float strength=1);
 

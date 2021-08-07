@@ -1,9 +1,9 @@
-#include <core/integrator.h>
+#include <core/renderer.h>
 #include <util/timer.h>
 #include <util/progress.h>
 #include <core/tile_manager.h>
 
-void Integrator::render(Scene *scene) {
+void Renderer::render(Scene *scene) {
   int total_samples = min(maxSamples, params.get<int>("samples"));
 
   // Create Image

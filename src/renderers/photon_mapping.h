@@ -1,15 +1,15 @@
 #pragma once
 
-#include <core/integrator.h>
+#include <core/renderer.h>
 #include <util/params.h>
 #include <core/primitive.h>
 #include <core/pointkdtree.h>
 
 
 
-struct PhotonMapping : Integrator {
+struct PhotonMapping : Renderer {
   
-  PhotonMapping(RenderParams params) : Integrator(params) {
+  PhotonMapping(RenderParams params) : Renderer(params) {
     if (params.exists("numPhotons"))
       numPhotons = params.get<int>("numPhotons");
     if (params.exists("photonRange"))

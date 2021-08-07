@@ -1,4 +1,4 @@
-#include <../src/ext/SimplexNoise.h>
+#include <../src/ext/simplex.h>
 #include <../src/util/image.h>
 
 

@@ -1,4 +1,4 @@
-#include <integrators/direct_lighting.h>
+#include <renderers/direct_lighting.h>
 
 #define PATH_MAX_BOUNCES 30
 #define AMBIENT_LIGHT 0.01

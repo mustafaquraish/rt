@@ -1,5 +1,5 @@
 #include <core/scene.h>
-#include <core/integrator.h>
+#include <core/renderer.h>
 #include <util/sysutil.h>
 
 int main(int argc, char **argv) {
@@ -8,7 +8,7 @@ int main(int argc, char **argv) {
   if (!params.get<bool>("animate")) {
 
     Scene *scene = RTSceneFactory::Create(params);
-    if (scene->integrator) scene->integrator->render(scene);
+    if (scene->renderer) scene->renderer->render(scene);
     delete scene;
 
   } else {
@@ -29,7 +29,7 @@ int main(int argc, char **argv) {
       params.update(frame);
 
       Scene *scene = RTSceneFactory::Create(params);
-      if (scene->integrator) scene->integrator->render(scene);
+      if (scene->renderer) scene->renderer->render(scene);
       delete scene;
       
       runCommand("convert temp.ppm frames/%03d.png", frame);

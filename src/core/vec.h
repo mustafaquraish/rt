@@ -156,7 +156,6 @@ inline int max_index(const Vec3 &a) { return a.x > a.y ? (a.x > a.z ? 0 : 2) : (
 inline float max(const Vec3 &a) { return a[max_index(a)]; }
 inline Vec3 cmp_wise_max(const Vec3 &a, const Vec3 &b) { return Vec3(max(a.x, b.x), max(a.y, b.y), max(a.z, b.z)); }
 
-
 inline int min_index(const Vec3 &a) { return a.x < a.y ? (a.x < a.z ? 0 : 2) : (a.y < a.z ? 1 : 2); }
 inline float min(const Vec3 &a) { return a[min_index(a)]; }
 inline Vec3 cmp_wise_min(const Vec3 &a, const Vec3 &b) { return Vec3(min(a.x, b.x), min(a.y, b.y), min(a.z, b.z)); }

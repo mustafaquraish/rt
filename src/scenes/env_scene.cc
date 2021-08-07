@@ -13,10 +13,10 @@ SCENE(Env) {
 
   // params.set("exposure", 0.8);
 
-  scene->integrator = new Path(params);
-  // scene->integrator = new DebugShader(params);
-  //  scene->integrator = new DirectLighting(params);
-  // scene->integrator = new BaseColour(params);
+  scene->renderer = new Path(params);
+  // scene->renderer = new DebugShader(params);
+  //  scene->renderer = new DirectLighting(params);
+  // scene->renderer = new BaseColour(params);
   
   Object *s;
 

@@ -15,9 +15,9 @@ SCENE(DOF) {
 
   scene->cam = Camera(e, g, up, 70, params);
 
-  scene->integrator = new Path(params);
-  // scene->integrator = new DebugShader(params);
-  // scene->integrator = new DirectLighting(params);
+  scene->renderer = new Path(params);
+  // scene->renderer = new DebugShader(params);
+  // scene->renderer = new DirectLighting(params);
   
   Object *s;
 

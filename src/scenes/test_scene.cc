@@ -15,12 +15,12 @@ SCENE(Test) {
   params.set<int>("numPhotons", 10000);
   params.set<int>("numIterations", 10);
 
-  // scene->integrator = new Path(params);
-  // scene->integrator = new PhotonMapping(params);
-  scene->integrator = new SPPM(params);
-  // scene->integrator = new DebugShader(params);
-  // scene->integrator = new DirectLighting(params);
-  // scene->integrator = new BaseColour(params);
+  // scene->renderer = new Path(params);
+  // scene->renderer = new PhotonMapping(params);
+  scene->renderer = new SPPM(params);
+  // scene->renderer = new DebugShader(params);
+  // scene->renderer = new DirectLighting(params);
+  // scene->renderer = new BaseColour(params);
   
   Object *s;
 

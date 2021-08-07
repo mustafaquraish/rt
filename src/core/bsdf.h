@@ -66,7 +66,7 @@ inline float cos2Theta(const Vec3 &v)   { return v.z * v.z;                   }
 inline float absCosTheta(const Vec3 &v) { return v.z < 0.f ? -v.z : v.z;      }
 inline float sin2Theta(const Vec3 &v)   { return 1.f - cos2Theta(v);          }
 inline float sinTheta(const Vec3 &v)    { return sqrtf(sin2Theta(v));         }
-inline float tanTheta(const Vec3 &v)    { return sinTheta(v) / cosTheta(v);  }
+inline float tanTheta(const Vec3 &v)    { return sinTheta(v) / cosTheta(v);   }
 inline float tan2Theta(const Vec3 &v)   { return sin2Theta(v) / cos2Theta(v); }
 
 inline float cosPhi(const Vec3 &v) {

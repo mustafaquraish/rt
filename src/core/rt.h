@@ -31,14 +31,14 @@ using std::endl;
 #include <objects/displaced.h>
 #include <objects/sdf.h>
 
-// Integrators
-#include <integrators/debug_shader.h>
-#include <integrators/ambient_occlusion.h>
-#include <integrators/direct_lighting.h>
-#include <integrators/path.h>
-#include <integrators/base_colour.h>
-#include <integrators/photon_mapping.h>
-#include <integrators/sppm.h>
+// Renderers
+#include <renderers/debug_shader.h>
+#include <renderers/ambient_occlusion.h>
+#include <renderers/direct_lighting.h>
+#include <renderers/path.h>
+#include <renderers/base_colour.h>
+#include <renderers/photon_mapping.h>
+#include <renderers/sppm.h>
 
 
 // Aggregates

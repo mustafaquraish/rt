@@ -1,14 +1,14 @@
 #pragma once
 
-#include <core/integrator.h>
+#include <core/renderer.h>
 #include <util/params.h>
 #include <core/primitive.h>
 #include <core/pointkdtree.h>
 
 #include <atomic>
 
-struct SPPM : Integrator {
-  SPPM(RenderParams params) : Integrator(params) {
+struct SPPM : Renderer {
+  SPPM(RenderParams params) : Renderer(params) {
     if (params.exists("numPhotons"))
       numPhotonsPerIter = params.get<int>("numPhotons");
     if (params.exists("numIterations"))

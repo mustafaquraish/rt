@@ -8,7 +8,7 @@
 
 #include <core/envmap.h>
 
-struct Integrator;
+struct Renderer;
 
 struct Scene {
   std::vector<Primitive *> obj_list;
@@ -21,7 +21,7 @@ struct Scene {
   int sx;
   int sy;
 
-  Integrator *integrator;
+  Renderer *renderer;
 
   void add(Object *obj);
   

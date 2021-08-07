@@ -1,23 +1,22 @@
 #include <util/map_converter.h>
 
-int addWrap(int a, int off, int max) {
-  int x = a + off;
+int wrapped_index(int x, int max) {
   if (x > max) x = x % max;
   if (x < 0) x = (x + max) % max; 
   return x;
 }
 
-Image convertHeightMapToNormalMap(Image &heightIm, float strength) {
+Image height_to_normal_map(Image &heightIm, float strength) {
   Image normalIm = Image(heightIm.sx, heightIm.sy);
 
   int stride = 1;
 
   for (int i = 0; i < normalIm.sx; i++) {
     for (int j = 0; j < normalIm.sy; j++) {
-      int im = addWrap(i, -stride, normalIm.sx - 1);
-      int ip = addWrap(i,  stride, normalIm.sx - 1);
-      int jm = addWrap(j, -stride, normalIm.sy - 1);
-      int jp = addWrap(j,  stride, normalIm.sy - 1);
+      int im = wrapped_index(i - stride, normalIm.sx - 1);
+      int ip = wrapped_index(i + stride, normalIm.sx - 1);
+      int jm = wrapped_index(j - stride, normalIm.sy - 1);
+      int jp = wrapped_index(j + stride, normalIm.sy - 1);
 
       // Get 8 neighbouring pixels
       float TL = luminance(heightIm.get(im, jm));

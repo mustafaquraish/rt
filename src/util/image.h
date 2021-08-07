@@ -17,8 +17,12 @@ struct Image {
   
   Colour get(int i, int j);
   Colour get(float u, float v);
+  Colour get(const Vec2& uv) { return get(uv.u, 1 - uv.v); }
   
+  Vec2 size() const { return Vec2(sx, sy); }
+
   int sx, sy;
+private:
   float *data;
 };
 
