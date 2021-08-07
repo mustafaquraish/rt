@@ -1,12 +1,12 @@
 #pragma once
 
-#include <core/integrator.h>
+#include <core/renderer.h>
 
 enum DebugType{DEBUG_NORMALS, DEBUG_DEPTH, DEBUG_COLOUR};
 
-struct DebugShader : Integrator {
+struct DebugShader : Renderer {
   DebugShader(RenderParams& params, DebugType type=DEBUG_NORMALS) 
-    : Integrator(params), type(type) {
+    : Renderer(params), type(type) {
     enableRNG = false;
     gammaCorrect = false;
     maxSamples = 1;

@@ -20,9 +20,8 @@ bool Sphere::hit(Ray& r, HitRec& rec) {
 
   rec.t = t1;
   rec.p = r.at(t1);
-  rec.u = atan2(it.z, it.x) / (2 * PI) + 0.5;
-  rec.v = 0.5 - asin(it.y) / PI;
-
+  rec.uv = Vec2(atan2(it.z, it.x) / (2 * PI) + 0.5,
+                0.5 + asin(it.y) / PI);
   Vec3 canon_n = normalMapped(it, rec);
   rec.n = normalTransform(canon_n);
   rec.obj = this;

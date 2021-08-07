@@ -43,13 +43,13 @@ KDTree::KDTree(std::vector<Primitive *>& prims){
   bounds = tbounds;
 
   int maxdepth = 8 + 1.3 * log(prims.size());
-  kdtree = buildKDTree(prims, tbounds, maxdepth);
+  kdtree = build(prims, tbounds, maxdepth);
 
   timer.stopAndDisplay();
 }
 
 
-KDTreeNode *KDTree::buildKDTree(std::vector<Primitive *>prims,
+KDTreeNode *KDTree::build(std::vector<Primitive *>prims,
                                 const AABB& bounds, int depth) {
 
   if (prims.size() == 0) return NULL;
@@ -84,8 +84,8 @@ KDTreeNode *KDTree::buildKDTree(std::vector<Primitive *>prims,
   node->axis = splitDim;
   node->splitPos = splitPos;
   node->numPrims = 0;
-  node->a = buildKDTree(primA, aa, depth - 1);
-  node->b = buildKDTree(primB, bb, depth - 1);
+  node->a = build(primA, aa, depth - 1);
+  node->b = build(primB, bb, depth - 1);
   return node;
 }
 

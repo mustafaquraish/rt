@@ -20,9 +20,9 @@ SCENE(SDF) {
 
   // params.setWindow(0.2, 0.4, 0.4, 0.6);
 
-  // scene->integrator = new DebugShader(params);
-  // scene->integrator = new AmbientOcclusion(params);
-  scene->integrator = new BaseColour(params);
+  // scene->renderer = new DebugShader(params);
+  // scene->renderer = new AmbientOcclusion(params);
+  scene->renderer = new BaseColour(params);
 
 
   float frameRatio = params.get<float>("frameRatio");

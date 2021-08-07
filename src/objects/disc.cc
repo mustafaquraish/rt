@@ -13,8 +13,7 @@ bool Disc::hit(Ray& r, HitRec& rec) {
 
   rec.p = r.at(t);
   rec.t = t;
-  rec.u = (it.x + 1) / 2;
-  rec.v = (it.y + 1) / 2;
+  rec.uv = (Vec2(it.x, it.y) + 1) / 2;
   rec.obj = this;
 
   Vec3 canon_n = normalMapped(Vec3(0, 0, 1), rec);

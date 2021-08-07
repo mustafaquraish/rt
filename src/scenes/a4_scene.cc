@@ -11,10 +11,10 @@ SCENE(A4) {
   Vec3 up = Vec3(0, 1, 0);
   scene->cam = Camera(e, g, up, 70, params);
 
-  scene->integrator = new Path(params);
-  // scene->integrator = new DebugShader(params);
-  // scene->integrator = new DirectLighting(params);
-  // scene->integrator = new BaseColour(params);
+  // scene->renderer = new Path(params);
+  // scene->renderer = new DebugShader(params);
+  scene->renderer = new DirectLighting(params);
+  // scene->renderer = new BaseColour(params);
   
   Object *s;
 

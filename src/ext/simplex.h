@@ -35,7 +35,7 @@ float noise(float x, float y);
 float noise(float x, float y, float z);
 float noise(float x, float y, float, float w);
 
-float convertTo(float perlinValue, PerlinType type);
+float transform(float perlinValue, PerlinType type);
 
 };  // namespace Simplex
 

@@ -1,4 +1,4 @@
-#include <integrators/photon_mapping.h>
+#include <renderers/photon_mapping.h>
 #include <util/progress.h>
 
 void PhotonMapping::sendPhoton(Scene *scene, RNG &rng, int depth) {
@@ -49,8 +49,8 @@ void PhotonMapping::render(Scene *scene) {
     sendPhoton(scene, rng, 10);
   }
 
-  printf("\nDone. Now calling Integrator::render()\n");
-  Integrator::render(scene);
+  printf("\nDone. Now calling Renderer::render()\n");
+  Renderer::render(scene);
   delete photonMap;
 }
 

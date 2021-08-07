@@ -9,12 +9,12 @@
 
 struct Scene;
 
-struct Integrator {
-  Integrator(RenderParams& params) : params(params) {
+struct Renderer {
+  Renderer(RenderParams& params) : params(params) {
     if (params.exists("exposure"))
       exposure = params.get<float>("exposure");
   };
-  virtual ~Integrator() {};
+  virtual ~Renderer() {};
 
   virtual void render(Scene *scene);
   virtual Colour Li(Ray& r, Scene *scene, RNG& rng) { return Vec3(0); };

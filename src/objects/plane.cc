@@ -10,8 +10,7 @@ bool Plane::hit(Ray& r, HitRec& rec) {
   } else {
     rec.t = t;
     rec.p = r.at(t);
-    rec.u = (it.x + 1) / 2.0;
-    rec.v = (it.y + 1) / 2.0;
+    rec.uv = (Vec2(it.x, it.y) + 1) / 2.0;
     Vec3 canon_n = Vec3(0, 0, 1);
     canon_n = normalMapped(canon_n, rec);
     rec.n = normalTransform(canon_n);

@@ -1,4 +1,4 @@
-#include <integrators/sppm.h>
+#include <renderers/sppm.h>
 #include <util/progress.h>
 #include <util/timer.h>
 

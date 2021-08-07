@@ -9,8 +9,7 @@ bool Cylinder::hitBase(float Z, Ray &r, HitRec &rec) {
   float xy_dist = it.x * it.x + it.y * it.y;
   if (fabs(xy_dist) > 1+TOL) return false;
   rec.t = t;
-  rec.u = (it.x + 1) / 2;
-  rec.v = (it.y + 1) / 2;
+  rec.uv = (Vec2(it.x, it.y) + 1) / 2.0;
   rec.n = normalMapped(Vec3(0, 0, Z), rec);
   r.tMax = min(r.tMax, rec.t);
   return true;
@@ -32,8 +31,8 @@ bool Cylinder::hitSide(Ray &r, HitRec &rec) {
   if (fabs(it.z) > 1+TOL) return false;
 
   rec.t = t1;
-  rec.u = atan2(rec.p.z, rec.p.x) / (2 * PI) + 0.5;
-  rec.v = 0.5 - asin(rec.p.y) / PI;
+  rec.uv = Vec2(atan2(it.z, it.x) / (2 * PI) + 0.5,
+                0.5 + asin(it.y) / PI);
   rec.n = normalMapped(Vec3(it.x, it.y, 0), rec);
   r.tMax = min(r.tMax, rec.t);
   return true;

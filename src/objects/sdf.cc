@@ -29,8 +29,8 @@ bool SDFObject::hit(Ray& r, HitRec& rec) {
   rec.t = lambda;
   rec.p = r.at(lambda);
 
-  rec.u = atan2(canon_n.z, canon_n.x) / (2 * PI) + 0.5;
-  rec.v = 0.5 - asin(canon_n.y) / PI;
+  rec.uv = Vec2(atan2(canon_n.z, canon_n.x) / (2 * PI) + 0.5,
+                0.5 + asin(canon_n.y) / PI);
 
   canon_n = normalMapped(canon_n, rec);
   rec.n = normalTransform(canon_n);

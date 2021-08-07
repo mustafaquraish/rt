@@ -1,4 +1,4 @@
-#include <integrators/ambient_occlusion.h>
+#include <renderers/ambient_occlusion.h>
 
 Colour AmbientOcclusion::Li(Ray &ray, Scene *scene, RNG& rng) {
   HitRec rec, tmp;

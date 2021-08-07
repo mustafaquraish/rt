@@ -1,5 +1,5 @@
 #include <core/scene.h>
-#include <core/integrator.h>
+#include <core/renderer.h>
 
 #include <materials/emitter.h>
 
@@ -30,7 +30,7 @@ void Scene::addEnvMap(const char *filename, float brightness) {
 }
 
 void Scene::addEnvMap(Colour col) {
-  addEnvMap(new EnvironmentMap(new ContantTexture(col)));
+  addEnvMap(new EnvironmentMap(new ConstantTexture(col)));
 }
 
 void Scene::addEnvMap(Object *obj) {
@@ -52,7 +52,7 @@ void Scene::finalize() {
 Scene::~Scene() {
   RTMeshList::cleanup();
   delete world;
-  delete integrator;
+  delete renderer;
 }
 
 

@@ -9,7 +9,7 @@ SCENE(Lsystems) {
   Vec3 up = Vec3(0, 1, 0);
   scene->cam = Camera(e, g, up, 53, params);
 
-  scene->integrator = new DebugShader(params);
+  scene->renderer = new DebugShader(params);
 
   Object *s;
   

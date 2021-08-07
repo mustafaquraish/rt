@@ -1,4 +1,4 @@
-#include <integrators/path.h>
+#include <renderers/path.h>
 
 #define PATH_MAX_BOUNCES 30
 

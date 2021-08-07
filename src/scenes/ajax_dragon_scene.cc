@@ -9,8 +9,8 @@ SCENE(AjaxDragon) {
   Vec3 up = Vec3(0, 1, 0);
   scene->cam = Camera(e, g, up, 55, params);
 
-  // scene->integrator = new DebugShader(params);
-  scene->integrator = new AmbientOcclusion(params);
+  // scene->renderer = new DebugShader(params);
+  scene->renderer = new AmbientOcclusion(params);
 
   Object *s;
 

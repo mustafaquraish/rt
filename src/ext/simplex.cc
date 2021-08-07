@@ -19,7 +19,7 @@
 
 #include <math.h>
 
-#include <ext/SimplexNoise.h>
+#include <ext/simplex.h>
 
 namespace Simplex {
 
@@ -97,8 +97,8 @@ static const int simplex[64][4] = {
 
 int fastfloor(float x) { return x > 0 ? (int) x : (int) x - 1; }
 
-float dot(int* g, float x, float y)                     { return g[0]*x + g[1]*y; }
-float dot(int* g, float x, float y, float z)           { return g[0]*x + g[1]*y + g[2]*z; }
+float dot(int* g, float x, float y)                   { return g[0]*x + g[1]*y; }
+float dot(int* g, float x, float y, float z)          { return g[0]*x + g[1]*y + g[2]*z; }
 float dot(int* g, float x, float y, float z, float w) { return g[0]*x + g[1]*y + g[2]*z + g[3]*w; }
 
 
@@ -386,8 +386,7 @@ float noise(float x, float y, float z, float w) {
   j3 = simplex[c][1] >= 1 ? 1 : 0;
   k3 = simplex[c][2] >= 1 ? 1 : 0;
   l3 = simplex[c][3] >= 1 ? 1 : 0;
-  // The fifth corner has all coordinate offsets = 1, so no need to look that
-  // up.
+  // The fifth corner has all coordinate offsets = 1, so no need to look that up.
 
   float x1 = x0 - i1 + G4;  // Offsets for second corner in (x,y,z,w) coords
   float y1 = y0 - j1 + G4;
@@ -461,7 +460,7 @@ float noise(float x, float y, float z, float w) {
   return 27.0 * (n0 + n1 + n2 + n3 + n4);
 }
 
-float convertTo(float perlin, PerlinType type) {
+float transform(float perlin, PerlinType type) {
   switch (type) {
     case Layered:    return perlin * 0.5 + 0.5;     break;
     case Turbulence: return abs(perlin);            break;

@@ -3,6 +3,6 @@
 
 int main() {
   Image heightIm = Image("../assets/tex/sand-bump.ppm");
-  Image normalIm = convertHeightMapToNormalMap(heightIm, 2);
+  Image normalIm = height_to_normal_map(heightIm, 2);
   normalIm.save("perlin.ppm", false);
 }

@@ -19,8 +19,8 @@ struct EnvironmentMap : Object {
     rec.t = 1;
     Vec3 it = normalized(ray.d);
     rec.n = -it;
-    rec.u = atan2(it.z, it.x) / (2 * PI) + 0.5;
-    rec.v = 0.5 + asin(it.y) / PI;
+    rec.uv = Vec2(atan2(it.z, it.x) / (2 * PI) + 0.5,
+                  0.5 + asin(it.y) / PI);
     return true; 
   };
 

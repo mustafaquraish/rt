@@ -2,9 +2,7 @@
 
 #include <util/params.h>
 
-struct Tile {
-  int xBegin, xEnd, yBegin, yEnd;
-};
+struct Tile { int xBegin, xEnd, yBegin, yEnd; };
 typedef Tile Window;
 
 #define MIN_TILES 64
@@ -57,4 +55,3 @@ struct TileManager {
 };
 
 #undef MIN_TILES
-
