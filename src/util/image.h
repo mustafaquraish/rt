@@ -22,8 +22,7 @@ struct Image {
   Vec2 size() const { return Vec2(sx, sy); }
 
   int sx, sy;
-private:
-  float *data;
+  float *m_data;
 };
 
 struct RTImageList {
