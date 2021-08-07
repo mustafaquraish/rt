@@ -2,14 +2,16 @@ CC        = g++
 INCLUDE   = src
 OBJ       = build
 SRC       = src
-SRCS      = $(wildcard $(SRC)/**/*.cc) src/main.cc
+SRCS      = $(SRC)/main.cc
+SRCS     += $(wildcard $(SRC)/*/*.cc)
+SRCS     += $(wildcard $(SRC)/*/*/*.cc)
 DEPDIR   := $(OBJ)/deps
 DEPFILES := $(patsubst $(SRC)/%.cc,$(DEPDIR)/%.d,$(SRCS))
 OBJS      = $(patsubst $(SRC)/%.cc,$(OBJ)/%.o,$(SRCS))
 DEPFLAGS  = -MT $@ -MMD -MP -MF $(DEPDIR)/$*.d
 EXE       = raytrace
 CFLAGS    = -g -I$(INCLUDE) -std=c++17
-LDLIBS    = -lm
+LDLIBS    = -lm -lpng
 MODE      = "Debug"
 
 .PHONY: all run clean release debug

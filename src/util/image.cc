@@ -1,5 +1,7 @@
 #include <util/image.h>
 
+#include <util/image/ppm.h>
+#include <util/image/png.h>
 
 void RTImageList::registerImage(std::string filename, Image *img) {
   imgFileMapping[filename] = img;
@@ -19,89 +21,27 @@ void RTImageList::cleanup() {
 
 /******************************************************************************/
 
+auto get_extension(std::string_view fn) {
+  return fn.substr(fn.find_last_of(".") + 1);
+}
+
+/******************************************************************************/
+
 Image::Image(int sx, int sy) : sx(sx), sy(sy) {
-  data = new float[sx * sy * 3];
-}
-
-template <typename T> 
-static T swapEndian(T u) {
-  static_assert(CHAR_BIT == 8, "CHAR_BIT != 8");
-
-  union {
-    T u;
-    unsigned char u8[sizeof(T)];
-  } source, dest;
-
-  source.u = u;
-
-  for (size_t k = 0; k < sizeof(T); k++)
-    dest.u8[k] = source.u8[sizeof(T) - k - 1];
-
-  return dest.u;
-}
-
-template <typename T>
-void readImageData(FILE *f, float *arr, size_t num_items, float scale) {
-  T *raw = new T[num_items];
-  if (!fread(raw, sizeof(T), num_items, f))
-    fprintf(stderr, "Error reading image\n");
-
-  for (int i = 0; i < num_items; ++i)
-    raw[i] = swapEndian<T>(raw[i]);
-
-
-  for (int i = 0; i < num_items; ++i)
-    arr[i] = raw[i] / scale;
-  delete[] raw;
+  m_data = new float[sx * sy * 3];
 }
 
 Image::Image(char const *fname) {
-  FILE *f;
-  char line[1024];
-
-  char *tmp; // | These are to keep the compiler happy. Want to ignore
-  int un;    // | Value of fgets() and fread()
-
-  f = fopen(fname, "rb+");
-  if (f == NULL) {
-    std::cerr << "Error: Unable to open file " << fname << " for reading\n";
-    exit(1);
-  }
-
-  tmp = fgets(line, 1000, f);
-  if (strcmp(line, "P6\n") != 0) {
-    std::cerr << "Error: Wrong file format.\n";
-    exit(1);
-  }
-
-  // Skip over comments
-  do {
-    tmp = fgets(line, 511, f);
-  } while (line[0] == '#');
-  sscanf(&line[0], "%d %d\n", &sx, &sy); // Read file size
-
-  tmp = fgets(&line[0], 9, f);           // Read the remaining header line
-  int maxRGB;
-  sscanf(&line[0], "%d\n", &maxRGB); // Read file size
-
-  data = new float[sx * sy * 3];
-
-  // printf("===maxRGB is %d\n", maxRGB);
-  if (maxRGB == 255) {
-    readImageData<uint8_t>(f, data, 3 * sx * sy, maxRGB);
-  } else {
-    readImageData<uint16_t>(f, data, 3 * sx * sy, maxRGB);
-  }
-
-  un = un || tmp; // Use both temp variables so compiler doesn't shout
-  fclose(f);
+  auto extension = get_extension(fname);
+  if (extension == "ppm") { PPM::load(*this, fname); }
+  if (extension == "png") { PNG::load(*this, fname); }
 }
 
 Vec3 Image::get(int i, int j) {
   return Vec3(
-    data[(i + j * sx)*3 + 0],
-    data[(i + j * sx)*3 + 1],
-    data[(i + j * sx)*3 + 2]
+      m_data[(i + j * sx) * 3 + 0],
+      m_data[(i + j * sx) * 3 + 1],
+      m_data[(i + j * sx) * 3 + 2]
   );
 }
 
@@ -124,44 +64,33 @@ float linearToSRGB(float L) {
 }
 
 void Image::save(char const *fname, bool gammaCorrect, float exposure) {
-  FILE *f;
-  unsigned char *bits24 = new unsigned char[sx * sy * 3];
   for (int i = 0; i < sx * sy * 3; i++) {
     if (!gammaCorrect) {
-      bits24[i] = clamp01(data[i] * exposure) * 255.0;
+      m_data[i] = clamp01(m_data[i] * exposure);
     } else {
-      bits24[i] = linearToSRGB(data[i] * exposure) * 255.0;
+      m_data[i] = linearToSRGB(m_data[i] * exposure);
     }
   }
+  auto extension = get_extension(fname);
+  if (extension == "ppm") { PPM::save(*this, fname); }
+  if (extension == "png") { PNG::save(*this, fname); }
 
-  f = fopen(fname, "wb+");
-  if (f == NULL) {
-    std::cerr << "Unable to open file " << fname << "\n";
-    return;
-  }
-
-  fprintf(f, "P6\n");
-  fprintf(f, "%d %d\n", sx, sy);
-  fprintf(f, "255\n");
-  fwrite(bits24, sx * sy * 3 * sizeof(unsigned char), 1, f);
-  fclose(f);
-  delete[] bits24;
   printf("[+] Saved output file: %s\n", fname);
   return;
 }
 
 void Image::set(int i, int j, Colour col) {
-  data[(i + j * sx) * 3 + 0] = col.x;
-  data[(i + j * sx) * 3 + 1] = col.y;
-  data[(i + j * sx) * 3 + 2] = col.z;
+  m_data[(i + j * sx) * 3 + 0] = col.x;
+  m_data[(i + j * sx) * 3 + 1] = col.y;
+  m_data[(i + j * sx) * 3 + 2] = col.z;
 }
 
 void Image::splat(int i, int j, Colour col) {
-  data[(i + j * sx) * 3 + 0] += + col.x;
-  data[(i + j * sx) * 3 + 1] += + col.y;
-  data[(i + j * sx) * 3 + 2] += + col.z;
+  m_data[(i + j * sx) * 3 + 0] += + col.x;
+  m_data[(i + j * sx) * 3 + 1] += + col.y;
+  m_data[(i + j * sx) * 3 + 2] += + col.z;
 }
 
 Image::~Image() { 
-  delete[] data; 
+  delete[] m_data;
 }
