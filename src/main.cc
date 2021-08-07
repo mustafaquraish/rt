@@ -26,15 +26,15 @@ int main(int argc, char **argv) {
     params.set<const char *>("output", "temp.ppm");
     for (int frame = frameBegin; frame < frameEnd; frame++) {
       printf("\n================ Frame %d ===================\n", frame);
-      params.update(frame);
+      params.update_frame(frame);
 
       Scene *scene = RTSceneFactory::Create(params);
       if (scene->renderer) scene->renderer->render(scene);
       delete scene;
       
-      runCommand("convert temp.ppm frames/%03d.png", frame);
+      run_command("convert temp.ppm frames/%03d.png", frame);
     }
-    runCommand("convert frames/*.png %s", origOut);
+    run_command("convert frames/*.png %s", origOut);
   }
 
   return 0;

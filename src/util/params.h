@@ -17,8 +17,8 @@ struct RenderParams {
   RenderParams() {} ;
   RenderParams(int argc, char **argv);
 
-  void update(int frame);
-  void setWindow(float xBegin, float xEnd, float yBegin, float yEnd);
+  void update_frame(int frame);
+  void set_window(float xBegin, float xEnd, float yBegin, float yEnd);
 
   template <typename T>
   void set(const std::string &key, T value);

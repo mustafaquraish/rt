@@ -6,7 +6,7 @@
 #include <stdio.h>
 
 /** Run command on system shell **/
-int runCommand(const char *format, ...) {
+int run_command(const char *format, ...) {
   char buffer[512];
   va_list args;
   va_start(args, format);
