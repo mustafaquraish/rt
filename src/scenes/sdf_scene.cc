@@ -18,7 +18,7 @@ SCENE(SDF) {
   Vec3 up = Vec3(0, 1, 0);
   scene->cam = Camera(e, g, up, 50, params);
 
-  // params.setWindow(0.2, 0.4, 0.4, 0.6);
+  // params.set_window(0.2, 0.4, 0.4, 0.6);
 
   // scene->renderer = new DebugShader(params);
   // scene->renderer = new AmbientOcclusion(params);

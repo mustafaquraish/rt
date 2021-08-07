@@ -81,15 +81,15 @@ bool RenderParams::exists(const std::string &key) {
   return (data.find(key) != data.end());
 }
 
-void RenderParams::update(int frame) {
+void RenderParams::update_frame(int frame) {
   // Init stuff for static image
   set("frame", frame);
   float frameRatio = frame / (float) get<int>("frameTotal");
   set("frameRatio", frameRatio);
 }
 
-void RenderParams::setWindow(float xBegin, float xEnd, 
-                             float yBegin, float yEnd) {
+void RenderParams::set_window(float xBegin, float xEnd, 
+                              float yBegin, float yEnd) {
   set("xBegin", xBegin);
   set("yBegin", yBegin);
   set("xEnd", xEnd);
@@ -184,6 +184,6 @@ RenderParams::RenderParams(int argc, char **argv) {
   set("scene", scene);
   set("tileSize", 8);
 
-  setWindow(0, 1, 0, 1);
-  update(frameBegin);
+  set_window(0, 1, 0, 1);
+  update_frame(frameBegin);
 }
