@@ -2,6 +2,7 @@
 
 #include <util/image/ppm.h>
 #include <util/image/png.h>
+#include <util/image/bmp.h>
 
 void RTImageList::registerImage(std::string filename, Image *img) {
   imgFileMapping[filename] = img;
@@ -35,6 +36,7 @@ Image::Image(char const *fname) {
   auto extension = get_extension(fname);
   if (extension == "ppm") { PPM::load(*this, fname); }
   if (extension == "png") { PNG::load(*this, fname); }
+  if (extension == "bmp") { BMP::load(*this, fname); }
 }
 
 Vec3 Image::get(int i, int j) {
@@ -74,6 +76,7 @@ void Image::save(char const *fname, bool gammaCorrect, float exposure) {
   auto extension = get_extension(fname);
   if (extension == "ppm") { PPM::save(*this, fname); }
   if (extension == "png") { PNG::save(*this, fname); }
+  if (extension == "bmp") { BMP::save(*this, fname); }
 
   printf("[+] Saved output file: %s\n", fname);
   return;
