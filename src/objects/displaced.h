@@ -2,33 +2,32 @@
  * Displacement-mapped objects
  */
 
-#ifndef __DISPLACED_H__
-#define __DISPLACED_H__
+#pragma once
 
-#include "objects/parametric_surface.h"
+#include <objects/parametric_surface.h>
 
 struct DisplacedSphere : ParametricSurface {
   DisplacedSphere(
     Texture *displacementMap, 
     BSDF *mat, 
-    double scale=.2, 
+    float scale=.2, 
     int resolution = 100, 
     bool interpNormals=true
-  ) : ParametricSurface(mat, resolution, resolution, 0, TAU, 0, PI),
+  ) : ParametricSurface(mat, resolution, resolution, 0, TAU, EPS, PI-EPS),
       displacementMap(displacementMap), 
       scale(scale) {
     interpolateNormals = interpNormals;
   };
 
-  Vec P(double a, double b) {
-    double u = map(a, aMin, aMax, 0, 1);
-    double v = map(b, bMin, bMax, 0, 1);
-    double offset = luminance(displacementMap->get(u, v)) * scale;
+  Vec3 P(float a, float b) {
+    float u = map(a, aMin, aMax, 0, 1);
+    float v = map(b, bMin, bMax, 0, 1);
+    float offset = luminance(displacementMap->get(u, v)) * scale;
     
-    Vec pt = Vec(cos(a) * sin(b), sin(a) * sin(b), cos(b));
+    Vec3 pt = Vec3(cos(a) * sin(b), sin(a) * sin(b), cos(b));
     return pt * (1+offset);
   }
-  double scale;
+  float scale;
   Texture *displacementMap;
 };
 
@@ -36,7 +35,7 @@ struct DisplacedPlane : ParametricSurface {
   DisplacedPlane(
     Texture *displacementMap, 
     BSDF *mat, 
-    double scale=.2,
+    float scale=.2,
     int resolution = 100, 
     bool interpNormals=true
   ) : ParametricSurface(mat, resolution, resolution, -1, 1, -1, 1),
@@ -45,15 +44,12 @@ struct DisplacedPlane : ParametricSurface {
     interpolateNormals = interpNormals;
   };
 
-  Vec P(double a, double b) {
-    double u = map(a, aMin, aMax, 0, 1);
-    double v = map(b, bMin, bMax, 0, 1);
-    double offset = luminance(displacementMap->get(u, v)) * scale;
-    return Vec(a,b,offset);
+  Vec3 P(float a, float b) {
+    float u = map(a, aMin, aMax, 0, 1);
+    float v = map(b, bMin, bMax, 0, 1);
+    float offset = luminance(displacementMap->get(u, v)) * scale;
+    return Vec3(a, b, offset);
   }
-  double scale;
+  float scale;
   Texture *displacementMap;
 };
-
-
-#endif // __Displaced_H__

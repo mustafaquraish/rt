@@ -1,20 +1,34 @@
 
-#include "objects/parametric_surface.h"
+#include <objects/parametric_surface.h>
 
 using namespace std;
 
-Vec ParametricSurface::N(double a, double b) {
-  double EPS = 10e-5;
-  Vec p_ab = P(a, b);
-  double a2 = clamp(a+EPS, aMin, aMax);
-  double b2 = clamp(b+EPS, bMin, bMax);
-  Vec ta = norm((P(a2, b ) - p_ab) / EPS);
-  Vec tb = norm((P(a , b2) - p_ab) / EPS);
+Vec3 ParametricSurface::N(float a, float b) {
+  float a2 = a + EPS;
+  float b2 = b + EPS;
+
+  Vec3 pab = P(a, b);
+  Vec3 pa2b = P(a2, b );
+  Vec3 pab2 = P(a, b2 );
+
+  Vec3 da = (pa2b - pab) / EPS;
+  Vec3 db = (pab2 - pab) / EPS;
+
+  Vec3 ta = normalized(da);
+  Vec3 tb = normalized(db);
+
+  if (isnan(ta.x) || isnan(tb.x)) {
+    printf("got nan in parametric surface normal\n");
+    Vec3 p1_ab = P(a, b);
+    Vec3 p1a2b = P(a2, b );
+    Vec3 p1ab2 = P(a, b2 );
+  }
+
   return cross(tb, ta);
 }
 
-Vec ParametricSurface::T(double a, double b) {
-  return Vec(
+Vec3 ParametricSurface::T(float a, float b) {
+  return Vec3(
     map(a, aMin, aMax, 0, 1),
     map(b, bMin, bMax, 0, 1),
     0
@@ -28,36 +42,36 @@ void ParametricSurface::finalize() {
 }
 
 std::vector<Primitive *> ParametricSurface::createSurface() {
-  double d_a = (aMax - aMin) / (double)aCount;
-  double d_b = (bMax - bMin) / (double)bCount;
+  float d_a = (aMax - aMin) / (float)aCount;
+  float d_b = (bMax - bMin) / (float)bCount;
 
   std::vector<Primitive *> tris_list;
 
   for (int i = 0; i < aCount; i++) {
-    double a1 = aMin + d_a * i;
-    double a2 = aMin + d_a * (i + 1);
+    float a1 = aMin + d_a * i;
+    float a2 = aMin + d_a * (i + 1);
 
     for (int j = 0; j < bCount; j++) {
-      double b1 = bMin + d_b * j;
-      double b2 = bMin + d_b * (j + 1);
+      float b1 = bMin + d_b * j;
+      float b2 = bMin + d_b * (j + 1);
 
       // Get current circle points / normals./ tex coords..
       //   names represent p_ab, n_ab and t_ab
-      Vec p_11 = P(a1, b1); Vec t_11 = T(a1, b1);
-      Vec p_12 = P(a1, b2); Vec t_12 = T(a1, b2);
+      Vec3 p_11 = P(a1, b1); Vec3 t_11 = T(a1, b1);
+      Vec3 p_12 = P(a1, b2); Vec3 t_12 = T(a1, b2);
 
-      Vec p_21 = P(a2, b1); Vec t_21 = T(a2, b1);
-      Vec p_22 = P(a2, b2); Vec t_22 = T(a2, b2);
+      Vec3 p_21 = P(a2, b1); Vec3 t_21 = T(a2, b1);
+      Vec3 p_22 = P(a2, b2); Vec3 t_22 = T(a2, b2);
       
       Triangle *t1, *t2;
       if (interpolateNormals) {
-        Vec n_11 = N(a1, b1), n_12 = N(a1, b2); 
-        Vec n_21 = N(a2, b1), n_22 = N(a2, b2);
+        Vec3 n_11 = N(a1, b1), n_12 = N(a1, b2);
+        Vec3 n_21 = N(a2, b1), n_22 = N(a2, b2);
         t1 = new Triangle(p_11, p_12, p_22, n_11, n_12, n_22, t_11, t_12, t_22);
         t2 = new Triangle(p_11, p_22, p_21, n_11, n_22, n_21, t_11, t_22, t_21);
       } else {
-        Vec n1 = cross(p_12 - p_11, p_22 - p_11);
-        Vec n2 = cross(p_22 - p_11, p_21 - p_11);
+        Vec3 n1 = cross(p_12 - p_11, p_22 - p_11);
+        Vec3 n2 = cross(p_22 - p_11, p_21 - p_11);
         t1 = new Triangle(p_11, p_12, p_22, n1, n1, n1, t_11, t_12, t_22);
         t2 = new Triangle(p_11, p_22, p_21, n2, n2, n2, t_11, t_22, t_21);
       }

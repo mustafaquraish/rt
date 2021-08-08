@@ -1,4 +1,4 @@
-#include "materials/lambertian.h"
+#include <materials/lambertian.h>
 
 Colour Lambertian::eval(HitRec &rec) {
   return col(rec) * INV_PI;
@@ -9,6 +9,6 @@ Colour Lambertian::sample(HitRec &rec, RNG& rng) {
   return col(rec);
 }
 
-double Lambertian::pdf(HitRec &rec) {
+float Lambertian::pdf(HitRec &rec) {
   return dot(rec.wi, rec.n) * INV_PI;
 }

@@ -1,8 +1,8 @@
-#ifndef __BVH_H__
-#define __BVH_H__
+#pragma once
 
-#include "core/primitive.h"
-#include "core/aabb.h"
+#include <core/aabb.h>
+#include <core/primitive.h>
+
 #include <vector>
 
 // Structure used when creating the BVH
@@ -24,16 +24,21 @@ struct BVHLinear {
 };
 
 struct BVH : Aggregate {
-  BVH(std::vector<Primitive *>& list, int start=0, int end=-1);
+  enum BuildMethod {
+    SAH,
+    Median,
+  };
+
+  BVH(std::vector<Primitive *>&, BuildMethod=SAH);
   ~BVH() {};
   bool hit(Ray& ray, HitRec& rec);
   
   /* Internal building utilities */
-  BVHTree *buildBVH(std::vector<Primitive *>& list, int start, int end);
+  BVHTree *build(std::vector<Primitive *>& list, int start, int end);
   int flatten(BVHTree *root);
   
-  std::vector<BVHLinear> nodes;
-  std::vector<Primitive *> primitives;
+  std::vector<BVHLinear> m_nodes;
+  std::vector<Primitive *> m_prims;
+  BuildMethod m_method;
 };
 
-#endif // __BVH_H__

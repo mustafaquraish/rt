@@ -1,7 +1,6 @@
-#ifndef __RNG_H__
-#define __RNG_H__
+#pragma once
 
-#include "core/math.h"
+#include <core/math.h>
 #include <time.h>
 
 struct RNG {
@@ -20,7 +19,7 @@ struct RNG {
     w = rand();
   }
 
-  inline double rand01() {
+  inline float rand01() {
     int t = x ^ (x << 11);
     x = y, y = z, z = w;
     return (w = w ^ (w >> 19) ^ (t ^ (t >> 8))) * (1/2147483647.0);
@@ -39,26 +38,26 @@ struct RNG {
     return r % (max - min + 1) + min;
   }
 
-  inline Vec randomVector() {
-    return 2 * Vec(rand01(), rand01(), rand01()) - 1;
+  inline Vec3 randomVector() {
+    return 2 * Vec3(rand01(), rand01(), rand01()) - 1;
   }
 
-  inline Vec randomVectorUnitSphere() {
+  inline Vec3 randomVectorUnitSphere() {
     while (true) {
-      Vec p = randomVector();
-      if (lengthSq(p) >= 1) continue;
+      Vec3 p = randomVector();
+      if (length_sq(p) >= 1) continue;
       return p;
     }
   }
 
-  inline Vec randomUnitDisk() {
-    double ang = rand01() * 2 * PI;
-    double r = sqrt(rand01());
-    return Vec(cos(ang) * r, sin(ang) * r, 0);
+  inline Vec3 randomUnitDisk() {
+    float ang = rand01() * 2 * PI;
+    float r = sqrt(rand01());
+    return Vec3(cos(ang) * r, sin(ang) * r, 0);
   }
 
-  inline Vec randomVectorCosineHemisphere(const Vec &n) {
-    return norm(n + norm(randomVectorUnitSphere()));
+  inline Vec3 randomVectorCosineHemisphere(const Vec3 &n) {
+    return normalized(n + normalized(randomVectorUnitSphere()));
   }
   
   int x;
@@ -67,4 +66,3 @@ struct RNG {
   int w;
 };
 
-#endif // __RNG_H__

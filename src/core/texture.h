@@ -1,98 +1,110 @@
-#ifndef __TEXTURE_H__
-#define __TEXTURE_H__
+#pragma once
 
-#include "core/primitive.h"
+#include <core/primitive.h>
 #include <unordered_map>
-#include "util/image.h"
-#include "ext/SimplexNoise.h"
+#include <util/image.h>
+#include <ext/simplex.h>
 
+/**
+ * The abstract Texture class all textures should subclass from. 
+ */
 struct Texture {
   virtual ~Texture() {};
-  virtual Colour get(HitRec& rec) = 0;
-  virtual Colour get(double u, double v);
-  void saveImage(int size_x, int size_y, const char *filename);
+
+  virtual Colour get(const Vec2 &coords) { return Colour(0, 1, 0); };
+  virtual Colour get(float u, float v) { return get(Vec2(u, v)); }
+  
+  // This is useful to be able to create create complex textures 
+  // based on the normals/distance/etc. at the intersection point.
+  virtual Colour get(const HitRec& rec) { return get(rec.uv); }
+
+  void save(int size_x, int size_y, const char *filename);
+};
+
+
+struct ConstantTexture : Texture {
+  ConstantTexture(Colour col) : m_col(col) {}
+  Colour get(const Vec2 &coords) final { return m_col; }
+private:
+  Colour m_col; 
 };
 
 struct ImageTexture : Texture {
   ImageTexture(const char *filename) { 
-    im = RTImageList::getImage(filename);
-    if (im == NULL) {
-      im = new Image(filename);
-      RTImageList::registerImage(filename, im);
+    m_img = RTImageList::getImage(filename);
+    if (m_img == NULL) {
+      m_img = new Image(filename);
+      RTImageList::registerImage(filename, m_img);
     } 
   }
-  virtual Colour get(HitRec& rec) { return im->get(rec.u, 1-rec.v); }
+  virtual Colour get(const Vec2 &coords) { return m_img->get(coords); }
 private:
-  Image *im = NULL; 
+  Image *m_img = nullptr; 
 };
 
 struct CheckerTexture : Texture {
-  CheckerTexture(double scale = 0.1) : scale(scale) {};
+  CheckerTexture(float scale = 0.1) : scale(scale) {};
   
-  virtual Colour get(HitRec& rec) {
-    int fx = rec.u / scale;
-    int fy = rec.v / scale;
+  virtual Colour get(const Vec2 &coords) {
+    int fx = coords.u / scale;
+    int fy = coords.v / scale;
     bool fac = (fx + fy) % 2;
     return Colour(fac);
   }
 
-  double scale;
+  float scale;
 };
 
 
 struct PerlinTexture : Texture {
-  PerlinTexture(PerlinType type = Layered, double scale = 8, int octaves = 4, 
-                double persistence = 0.5, double seed=0) 
+  PerlinTexture(PerlinType type = Layered, float scale = 8, int octaves = 4, 
+                float persistence = 0.5, float seed=0) 
       : scale(scale), octaves(octaves), persistence(persistence), type(type), 
         seed(seed) {};
   
-  virtual Colour get(HitRec& rec) {
-    double x = rec.u * scale;
-    double y = rec.v * scale;
+  virtual Colour get(const Vec2 &coords) {
+    Vec2 pos = coords * scale;
 
-    double perlin;
-
+    float perlin;
     /* It's more effcient to use the perlin 2D texture if we don't need 3D */
-    if (seed == 0) perlin = Simplex::layered(octaves, persistence, x, y);
-    else           perlin = Simplex::layered(octaves, persistence, x, y, seed);
+    if (seed == 0) perlin = Simplex::layered(octaves, persistence, pos.u, pos.v);
+    else           perlin = Simplex::layered(octaves, persistence, pos.u, pos.v, seed);
     
-    return Simplex::convertTo(perlin, type);
+    return Simplex::transform(perlin, type);
   }
 
   PerlinType type;
-  double scale;
-  double persistence;
-  double seed;
+  float scale;
+  float persistence;
+  float seed;
   int octaves;
 };
 
-// 4-Dimensional perlin noise texture, uses `seed` \in [0,1] to perfectly loop
+// 4-Dimensional perlin noise texture, uses `seed` in [0,1] to perfectly loop
 struct Perlin4DTexture : PerlinTexture {
   using PerlinTexture::PerlinTexture;
   
-  virtual Colour get(HitRec& rec) {
-    double x = rec.u * scale;
-    double y = rec.v * scale;
+  virtual Colour get(const Vec2 &coords) {
+    Vec2 pos = coords * scale;
 
-    double theta = lerp(seed, 0.0, TAU);
-    double z = cos(theta);
-    double w = sin(theta);
-    double perlin = Simplex::layered(octaves, persistence, x, y, z, w);
+    float theta = lerp(seed, 0.0, TAU);
+    float z = cos(theta);
+    float w = sin(theta);
+    float perlin = Simplex::layered(octaves, persistence, pos.u, pos.v, z, w);
  
-    return Simplex::convertTo(perlin, type);
+    return Simplex::transform(perlin, type);
   }
 };
 
 // 4-Dimensional perlin noise texture, uses `seed` \in [0,1] to perfectly loop
 struct SDFTexture : Texture {
-  SDFTexture(Colour col, double scale=1) : col(col), scale(scale) {};
+  SDFTexture(Colour col, float scale=1) : col(col), scale(scale) {};
   
   virtual Colour get(HitRec& rec) {
     return col * (1-rec.stepsRatio*scale);
   }
   Colour col;
-  double scale;
+  float scale;
 };
 
 
-#endif // __TEXTURE_H__

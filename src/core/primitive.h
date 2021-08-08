@@ -6,39 +6,36 @@
  *  holds a primitive.
  */
 
-#ifndef __PRIMITIVE_H__
-#define __PRIMITIVE_H__
+#pragma once
 
-#include "core/ray.h"
-#include "core/aabb.h"
+#include <core/ray.h>
+#include <core/aabb.h>
 
 // Forward declare
 struct Object;
 
 struct HitRec {
-  double t;
-  Vec p;
-  Vec n;
+  float t;
+  Vec3 p;
+  Vec3 n;
   
-  Vec wo;
-  Vec wi;
+  Vec3 wo;
+  Vec3 wi;
 
-  double u;
-  double v;
+  Vec2 uv;
   Object *obj;
 
-  double stepsRatio; // For SDFs
+  float stepsRatio; // For SDFs
 };
 
 struct Primitive {
   virtual ~Primitive() {};
   virtual bool hit(Ray& r, HitRec &rec) = 0;
   // Primitive bounds
-  AABB bounds = AABB(Vec(-INFINITY), Vec(INFINITY));
+  AABB bounds = AABB(Vec3(-INFINITY), Vec3(INFINITY));
 };
 
 struct Aggregate : Primitive {
   virtual bool hit(Ray& r, HitRec &rec) = 0;
 };
 
-#endif // __PRIMITIVE_H__

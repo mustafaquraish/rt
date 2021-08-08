@@ -1,4 +1,4 @@
-#include "core/rt.h"
+#include <core/rt.h>
 
 using namespace std;
 
@@ -6,15 +6,21 @@ SCENE(Cornell) {
 
   Scene *scene = new Scene();
   
-  Vec e = Vec(0, 0, -15);
-  Vec g = -e;
-  Vec up = Vec(0, 1, 0);
+  Vec3 e = Vec3(0, 0, -15);
+  Vec3 g = -e;
+  Vec3 up = Vec3(0, 1, 0);
   scene->cam = Camera(e, g, up, 70, params);
 
-  scene->integrator = new Path(params);
-  // scene->integrator = new DirectLighting(params);
-  scene->integrator = new DebugShader(params);
-  // scene->integrator = new BaseColour(params);
+  // params.set<float>("photonRange", .1);
+  // params.set<int>("numPhotons", 10000000);
+  // params.set<int>("numIterations", 10);
+
+  // scene->renderer = new Path(params);
+  // scene->renderer = new DirectLighting(params);
+  // scene->renderer = new DebugShader(params);
+  // scene->renderer = new PhotonMapping(params);
+  // scene->renderer = new PhotonMapping(params);
+  scene->renderer = new BaseColour(params);
   
   Object *s;
 
@@ -97,10 +103,10 @@ SCENE(Cornell) {
   // s->Translate(0, -5, 6);
   // scene->add(s);
 
-  double frame = 0;
-  double speed = 0.5;
+  float frame = 0;
+  float speed = 0.5;
   if (params.exists("frame")) frame = params.get<int>("frame");
-  double R = inverseLerp(frame, 0, 60);
+  float R = inverseLerp(frame, 0, 60);
 
 
   s = new DisplacedPlane(
@@ -164,7 +170,7 @@ SCENE(Cornell) {
   // s->Translate(-3, -15, 6);
   // scene->add(s);
 
-  s = new Disc(new Emitter(Colour(12, 12, 12)));
+  s = new Disc(new Emitter(Colour(2, 2, 2)));
   s->Scale(2.5);
   s->RotateX(PI/2);
   s->Translate(0,9.9995,5);

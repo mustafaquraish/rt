@@ -1,13 +1,14 @@
-#include "integrators/direct_lighting.h"
+#include <renderers/direct_lighting.h>
 
 #define PATH_MAX_BOUNCES 30
 #define AMBIENT_LIGHT 0.01
+#define MIN_PDF_LIGHT 0.1
 
 using namespace std;
 
 
 Colour DirectLighting::SampleLight(HitRec& rec, Scene *scene, RNG& rng) {
-  double pdf;
+  float pdf;
   HitRec tmp;
   
   // Pick a light source
@@ -15,27 +16,27 @@ Colour DirectLighting::SampleLight(HitRec& rec, Scene *scene, RNG& rng) {
 
 
   // Light source point
-  Vec lp = light->sample(&pdf, rng);
+  Vec3 lp = light->sample(&pdf, rng);
   // Vector from intersection pt to lightsource
-  Vec wi = norm(lp - rec.p);
+  Vec3 wi = normalized(lp - rec.p);
   rec.wi = wi;
 
-  Vec contrib = AMBIENT_LIGHT;
+  Vec3 contrib = AMBIENT_LIGHT;
 
   Ray shadowRay = Ray(rec.p, wi);
   if (scene->hit(shadowRay, tmp) && tmp.obj == light) {
-      // Light ray from bad direction
-      if (dot(wi, tmp.n) < 0 || dot(wi, rec.n) > 0) {
+    // Light ray from bad direction
+    if (dot(wi, tmp.n) < 0 || dot(wi, rec.n) > 0) {
       
       tmp.wo = -shadowRay.d;
 
       pdf *= (tmp.t * tmp.t);
-      pdf /= fabs(dot(norm(wi), rec.n) * -dot(norm(wi), tmp.n));
+      pdf /= fabs(dot(normalized(wi), rec.n) * -dot(normalized(wi), tmp.n));
       pdf /= scene->lights.size();
 
-      if (pdf < 1) pdf = 1;
+      if (pdf < MIN_PDF_LIGHT) pdf = MIN_PDF_LIGHT;
 
-      contrib = cmpWiseMax(contrib, light->bsdf->emittance(tmp) / pdf);
+      contrib = cmp_wise_max(contrib, light->bsdf->emittance(tmp) / pdf);
     }
   }
 
@@ -50,7 +51,7 @@ Colour DirectLighting::Li(Ray &r, Scene *scene, RNG& rng) {
 
   Ray ray = Ray(r.p, r.d);
   for (int bounce = 0; bounce < PATH_MAX_BOUNCES; bounce++) {    
-    if (!scene->world->hit(ray, rec)) break;
+    if (!scene->hit(ray, rec)) break;
     
     BSDF *bsdf = rec.obj->bsdf;
     rec.wo = -ray.d;
@@ -65,3 +66,5 @@ Colour DirectLighting::Li(Ray &r, Scene *scene, RNG& rng) {
   }
   return 0;
 }
+
+#undef MIN_PDF_LIGHT

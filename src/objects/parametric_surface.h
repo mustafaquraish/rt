@@ -3,20 +3,19 @@
  * A surface of revolution turns itself into a mesh.
  */
 
-#ifndef __PARAMETRIC_SURFACE_H__
-#define __PARAMETRIC_SURFACE_H__
+#pragma once
 
-#include "objects/triangle_mesh.h"
+#include <objects/triangle_mesh.h>
 #include <vector>
 
 struct ParametricSurface : TriangleMesh {
   ParametricSurface(BSDF *mat,
                     int aCount,  // Cuts along parameter a
                     int bCount,  // Cuts along parameter b
-                    double aMin, // a min value
-                    double aMax, // a max value
-                    double bMin, // b min value
-                    double bMax  // b max value
+                    float aMin, // a min value
+                    float aMax, // a max value
+                    float bMin, // b min value
+                    float bMax  // b max value
                     )
       : TriangleMesh(mat), aCount(aCount), aMin(aMin), aMax(aMax),
         bCount(bCount), bMin(bMin), bMax(bMax) {}
@@ -26,34 +25,34 @@ struct ParametricSurface : TriangleMesh {
   void finalize();
 
   int aCount, bCount;
-  double aMin, aMax;
-  double bMin, bMax;
+  float aMin, aMax;
+  float bMin, bMax;
 
   bool interpolateNormals = true;
 
   // Parametric function to give points along surface
-  virtual Vec P(double a, double b) = 0;
+  virtual Vec3 P(float a, float b) = 0;
 
 private:
   // Numerically compute normal
-  Vec N(double a, double b);
+  Vec3 N(float a, float b);
   // Get Tex coords for point
-  Vec T(double a, double b);
+  Vec3 T(float a, float b);
 };
 
 struct SphereParametric : ParametricSurface {
   SphereParametric(BSDF *mat,
                    int aCount = 20,   // Cuts along parameter a
                    int bCount = 20,   // Cuts along parameter b
-                   double aMin = 0,   // a min value
-                   double aMax = TAU, // a max value
-                   double bMin = 0,   // b min value
-                   double bMax = PI   // b max value
+                   float aMin = TOL,   // a min value
+                   float aMax = TAU,   // a max value
+                   float bMin = EPS,   // b min value
+                   float bMax = PI-EPS // b max value
                    )
       : ParametricSurface(mat, aCount, bCount, aMin, aMax, bMin, bMax){};
 
-  Vec P(double a, double b) {
-    return Vec(cos(a) * sin(b), sin(a) * sin(b), cos(b));
+  Vec3 P(float a, float b) {
+    return Vec3(cos(a) * sin(b), sin(a) * sin(b), cos(b));
   }
 };
 
@@ -61,18 +60,17 @@ struct SaddleParametric : ParametricSurface {
   SaddleParametric(BSDF *mat,
                    int aCount = 20,  // Cuts along parameter a
                    int bCount = 20,  // Cuts along parameter b
-                   double aMin = -1, // a min value
-                   double aMax = 1,  // a max value
-                   double bMin = -1, // b min value
-                   double bMax = 1   // b max value
+                   float aMin = -1, // a min value
+                   float aMax = 1,  // a max value
+                   float bMin = -1, // b min value
+                   float bMax = 1   // b max value
                    )
       : ParametricSurface(mat, aCount, bCount, aMin, aMax, bMin, bMax) {
     bothSides = true;
   };
 
-  Vec P(double a, double b) {
-    return Vec(a, b, a*a - b*b);
+  Vec3 P(float a, float b) {
+    return Vec3(a, b, a * a - b * b);
   }
 };
 
-#endif // __PARAMETRIC_SURFACE_H__

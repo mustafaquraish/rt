@@ -1,14 +1,12 @@
-#ifndef __PLANE_H__
-#define __PLANE_H__
+#pragma once
 
-#include "core/object.h"
+#include <core/object.h>
 
 struct Plane : Object {
 Plane(BSDF *mat) : Object(mat) {
-    bounds = AABB(Vec(-1,-1,0), Vec(1,1,0));
+    bounds = AABB(Vec3(-1, -1, 0), Vec3(1, 1, 0));
   };
   bool hit(Ray& r, HitRec &rec);
-  Vec sample(double *pdf, RNG& rng);
+  Vec3 sample(float *pdf, RNG& rng);
 };
 
-#endif // __PLANE_H__

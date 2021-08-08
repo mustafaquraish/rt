@@ -1,15 +1,15 @@
-#include "core/rt.h"
+#include <core/rt.h>
 
 SCENE(Ajax) {
 
   Scene *scene = new Scene();
   
-  Vec e = Vec(0, 0, -15);
-  Vec g = -e;
-  Vec up = Vec(0, 1, 0);
+  Vec3 e = Vec3(0, 0, -15);
+  Vec3 g = -e;
+  Vec3 up = Vec3(0, 1, 0);
   scene->cam = Camera(e, g, up, 55, params);
 
-  scene->integrator = new AmbientOcclusion(params);
+  scene->renderer = new AmbientOcclusion(params);
 
   Object *s;
 

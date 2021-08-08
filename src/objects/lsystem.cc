@@ -1,14 +1,14 @@
-#include "objects/lsystem.h"
-#include "core/rt.h"
+#include <objects/lsystem.h>
+#include <core/rt.h>
 #include <unordered_map>
 
 
-void LSystem::createLSystem(char type, int depth, Matrix pTransform,
+void LSystem::createLSystem(char type, int depth, Matrix4 pTransform,
                             std::vector<Primitive *>& obj_list, RNG& rng) {
   
   if (depth > maxDepth) type = 'd';
 
-  Matrix curTransform;
+  Matrix4 curTransform;
   Object *curNode;
 
   if (type == 'a') {
@@ -25,7 +25,7 @@ void LSystem::createLSystem(char type, int depth, Matrix pTransform,
   }
   curNode->Translate(0, 0, 1);
 
-  double frac = (type == 'a') ? PI/9 : PI/6;
+  float frac = (type == 'a') ? PI/9 : PI/6;
   curTransform = ScaleMatrix(0.8, 0.8, 0.8) * curTransform;
   curTransform = RotateXMatrix(lerp(rng.rand01(), -frac, frac)) * curTransform;
   curTransform = RotateYMatrix(lerp(rng.rand01(), -frac, frac)) * curTransform;
@@ -51,8 +51,10 @@ void LSystem::createLSystem(char type, int depth, Matrix pTransform,
 void LSystem::finalize() {
   std::vector<Primitive *> obj_list;
   RNG rng = RNG(seed);
-  createLSystem('a', 0, Matrix(), obj_list, rng);
-  objs = new BVH(obj_list);
+  createLSystem('a', 0, Matrix4(), obj_list, rng);
+  // objs = new BVH(obj_list);
+  // objs = new KDTree(obj_list);
+  objs = new AGGREGATE(obj_list);
   bounds = objs->bounds;
   Object::finalize();
 }

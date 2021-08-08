@@ -16,7 +16,7 @@ test_img: test_img.cc ../src/util/image.cc
 test_sphere: test_sphere.cc ../src/objects/sphere.cc ../src/core/object.cc
 	$(CC) $(CFLAGS) -o $@ $^
 
-test_perlin: test_perlin.cc ../src/util/image.cc ../src/ext/SimplexNoise.cc
+test_perlin: test_perlin.cc ../src/util/image.cc ../src/ext/simplex.cc
 	$(CC) $(CFLAGS) -o $@ $^
 
 test_converter: test_converter.cc ../src/util/map_converter.cc ../src/util/image.cc

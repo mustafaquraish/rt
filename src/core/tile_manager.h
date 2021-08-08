@@ -1,11 +1,8 @@
-#ifndef __TILE_MANAGER_H__
-#define __TILE_MANAGER_H__
+#pragma once
 
-#include "util/params.h"
+#include <util/params.h>
 
-struct Tile {
-  int xBegin, xEnd, yBegin, yEnd;
-};
+struct Tile { int xBegin, xEnd, yBegin, yEnd; };
 typedef Tile Window;
 
 #define MIN_TILES 64
@@ -16,10 +13,10 @@ struct TileManager {
     int sy = params.get<int>("height");
 
     // Compute window bounds in pixels
-    window.xBegin = floor(sx * params.get<double>("xBegin"));
-    window.yBegin = floor(sy * params.get<double>("yBegin"));
-    window.xEnd = ceil(sx * params.get<double>("xEnd"));
-    window.yEnd = ceil(sy * params.get<double>("yEnd"));
+    window.xBegin = floor(sx * params.get<float>("xBegin"));
+    window.yBegin = floor(sy * params.get<float>("yBegin"));
+    window.xEnd = ceil(sx * params.get<float>("xEnd"));
+    window.yEnd = ceil(sy * params.get<float>("yEnd"));
 
     tileSize = params.get<int>("tileSize");
 
@@ -27,15 +24,15 @@ struct TileManager {
     int numPixelsInWindow = (window.xEnd - window.xBegin) * 
                             (window.yEnd - window.yBegin);
     int numPixelsInTile = tileSize * tileSize;
-    int maxTiles = ceil( numPixelsInWindow / (double) numPixelsInTile);
+    int maxTiles = ceil( numPixelsInWindow / (float) numPixelsInTile);
 
     // If this is lower than some threshold, then change the tile size
     if (maxTiles < MIN_TILES) {
-      tileSize = ceil( sqrt(numPixelsInWindow / (double) MIN_TILES) );
+      tileSize = ceil( sqrt(numPixelsInWindow / (float) MIN_TILES) );
     }
 
-    xTiles = ceil((window.xEnd - window.xBegin) / (double)tileSize);
-    yTiles = ceil((window.yEnd - window.yBegin) / (double)tileSize);
+    xTiles = ceil((window.xEnd - window.xBegin) / (float)tileSize);
+    yTiles = ceil((window.yEnd - window.yBegin) / (float)tileSize);
     numTiles = xTiles * yTiles;
   }
 
@@ -58,5 +55,3 @@ struct TileManager {
 };
 
 #undef MIN_TILES
-
-#endif // __TILE_MANAGER_H__
