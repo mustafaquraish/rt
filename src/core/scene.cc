@@ -1,8 +1,12 @@
-#include "core/scene.h"
-#include "aggregates/bvh.h"
-#include "aggregates/primitive_list.h"
-#include "objects/triangle_mesh.h"
-#include "core/integrator.h"
+#include <core/scene.h>
+#include <core/renderer.h>
+
+#include <materials/emitter.h>
+
+#include <objects/triangle_mesh.h>
+
+#include <aggregates/bvh.h>
+#include <aggregates/primitive_list.h>
 
 void Scene::add(Object *obj) { 
   // Finalize object first...
@@ -14,6 +18,30 @@ void Scene::add(Object *obj) {
     lights.push_back(obj);
 };
 
+void Scene::addEnvMap(EnvironmentMap *tx) {
+  envMap = tx;
+  envMap->finalize();
+  // envMap->saveImage(512, 512, "envTest.ppm");
+  lights.push_back(envMap);
+}
+
+void Scene::addEnvMap(const char *filename, float brightness) {
+  addEnvMap(new EnvironmentMap(filename, brightness));
+}
+
+void Scene::addEnvMap(Colour col) {
+  addEnvMap(new EnvironmentMap(new ConstantTexture(col)));
+}
+
+void Scene::addEnvMap(Object *obj) {
+  EnvironmentMap *env;
+  if ( (env = static_cast<EnvironmentMap *>(obj)) == NULL) {
+    fprintf(stderr, "Error, Object* cannot be converted to EnvironmentMap*\n");
+    exit(1);
+  }
+  addEnvMap(env);
+}
+
 void Scene::finalize() { 
   if (obj_list.size() > 15) 
     world = new BVH(obj_list);
@@ -24,7 +52,7 @@ void Scene::finalize() {
 Scene::~Scene() {
   RTMeshList::cleanup();
   delete world;
-  delete integrator;
+  delete renderer;
 }
 
 

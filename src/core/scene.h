@@ -1,31 +1,44 @@
-#ifndef __SCENE_H__
-#define __SCENE_H__
+#pragma once
 
-#include "core/camera.h"
-#include "core/object.h"
+#include <core/camera.h>
+#include <core/object.h>
 
 #include <unordered_map>
 #include <vector>
 
-struct Integrator;
+#include <core/envmap.h>
+
+struct Renderer;
 
 struct Scene {
   std::vector<Primitive *> obj_list;
   std::vector<Object *> lights;
+
   Aggregate *world;
+  EnvironmentMap *envMap = NULL;
 
   Camera cam;
   int sx;
   int sy;
 
-  Integrator *integrator;
+  Renderer *renderer;
 
   void add(Object *obj);
+  
+  void addEnvMap(EnvironmentMap *tx);
+  void addEnvMap(const char *filename, float brightness=10);
+  void addEnvMap(Colour col);
+  void addEnvMap(Object *obj);
+
   void finalize();
   ~Scene();
 
   // In header so compiler can inline it easier; performance critical.
-  bool hit(Ray &ray, HitRec &rec) { return world->hit(ray, rec); }
+  bool hit(Ray &ray, HitRec &rec) { 
+    if (world->hit(ray, rec)) return true;
+    if (envMap) return envMap->hit(ray, rec); 
+    return false;
+  }
 };
 
 
@@ -48,4 +61,6 @@ struct RTSceneFactory {
   } RT_Scene_instance_##name;                                                 \
   Scene *RT_Scene_##name(RenderParams &params)
 
-#endif // __SCENE_H__
+
+
+

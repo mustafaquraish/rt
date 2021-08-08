@@ -1,4 +1,4 @@
-#include "core/rt.h"
+#include <core/rt.h>
 
 using namespace std;
 
@@ -6,14 +6,15 @@ SCENE(Orbs) {
 
   Scene *scene = new Scene();
   
-  Vec e = Vec(0, -4, -20);
-  Vec g = Vec(0, -2, 0) - e;
-  Vec up = Vec(0, 1, 0);
+  Vec3 e = Vec3(0, -4, -20);
+  Vec3 g = Vec3(0, -2, 0) - e;
+  Vec3 up = Vec3(0, 1, 0);
   scene->cam = Camera(e, g, up, 70, params);
 
-  scene->integrator = new Path(params);
-  scene->integrator = new DebugShader(params);
-  // scene->integrator = new DirectLighting(params);
+  // scene->renderer = new Path(params);
+  // scene->renderer = new DebugShader(params);
+  // scene->renderer = new DirectLighting(params);
+  scene->renderer = new BaseColour(params);
   
   Object *s;
 
@@ -81,8 +82,8 @@ SCENE(Orbs) {
 
       if (i == 1 && j == 0) continue;
 
-      double xOff = -6.5 + i * 6.5;
-      double zOff =    1 + j * 4;
+      float xOff = -6.5 + i * 6.5;
+      float zOff =    1 + j * 4;
 
       s = new Cylinder(new Lambertian(1));
       s->Scale(2, 1, 1);

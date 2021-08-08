@@ -1,4 +1,4 @@
-#include "core/rt.h"
+#include <core/rt.h>
 
 using namespace std;
 
@@ -6,23 +6,23 @@ SCENE(Room) {
 
   Scene *scene = new Scene();
   
-  Vec e = Vec(0, -4, -40);
-  Vec g = Vec(0, -1.2, 0) - e;
-  Vec up = Vec(0, 1, 0);
+  Vec3 e = Vec3(0, -4, -40);
+  Vec3 g = Vec3(0, -1.2, 0) - e;
+  Vec3 up = Vec3(0, 1, 0);
 
-  double dist = length(Vec(-2, -2, -7.5) - e);
-  // double dist = length(Vec(-6.5, -9, 1) - e);
+  float dist = length(Vec3(-2, -2, -7.5) - e);
+  // float dist = length(Vec3(-6.5, -9, 1) - e);
 
-  params.set<double>("aperture", .5);
-  params.set<double>("focus_dist", 35);
+  params.set<float>("aperture", .5);
+  params.set<float>("focus_dist", 35);
 
 
   scene->cam = Camera(e, g, up, 32, params);
 
-  scene->integrator = new Path(params);
-  // scene->integrator = new DebugShader(params);
-  // scene->integrator = new BaseColour(params);
-  // scene->integrator = new DirectLighting(params);
+  scene->renderer = new Path(params);
+  // scene->renderer = new DebugShader(params);
+  // scene->renderer = new BaseColour(params);
+  // scene->renderer = new DirectLighting(params);
   
   Object *s;
 
@@ -65,6 +65,7 @@ SCENE(Room) {
   // Left 
   s = new DisplacedSphere(
     new ImageTexture("assets/tex/sand-bump.ppm"),
+    // new ImageTexture("assets/tex/water2-bump.ppm"),
     new Transmissive(2.2, Colour(.95))
   );
   s->Scale(2);
@@ -93,8 +94,8 @@ SCENE(Room) {
 
       // if (i == 1 && j == 0) continue;
 
-      double xOff = -6.5 + i * 6.5;
-      double zOff =    1 + j * 4;
+      float xOff = -6.5 + i * 6.5;
+      float zOff =    1 + j * 4;
 
       s = new Cylinder(new Lambertian(1));
       s->Scale(2, 1, 1);
@@ -203,6 +204,7 @@ SCENE(Room) {
   s->Translate(0,9.5,5);
   scene->add(s);
 
+  // scene->world = new KDTree(scene->obj_list);
   scene->world = new AGGREGATE(scene->obj_list);
   // scene->world = new PrimitiveList(scene->obj_list);
   

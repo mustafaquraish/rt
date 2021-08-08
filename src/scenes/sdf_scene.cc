@@ -1,7 +1,7 @@
-#include "core/rt.h"
+#include <core/rt.h>
 
-double mysdf1(const Vec& point) {
-  Vec p = point;
+float mysdf1(const Vec3& point) {
+  Vec3 p = point;
   if (p.z < 10) p.z = 10;
   p = SDF::repeatX(p, 5);
   p = SDF::repeatY(p, 5);
@@ -13,26 +13,26 @@ SCENE(SDF) {
 
   Scene *scene = new Scene();
   
-  Vec e = Vec(0, 0, -15);
-  Vec g = -e;
-  Vec up = Vec(0, 1, 0);
+  Vec3 e = Vec3(0, 0, -15);
+  Vec3 g = -e;
+  Vec3 up = Vec3(0, 1, 0);
   scene->cam = Camera(e, g, up, 50, params);
 
-  // params.setWindow(0.2, 0.4, 0.4, 0.6);
+  // params.set_window(0.2, 0.4, 0.4, 0.6);
 
-  // scene->integrator = new DebugShader(params);
-  // scene->integrator = new AmbientOcclusion(params);
-  scene->integrator = new BaseColour(params);
+  // scene->renderer = new DebugShader(params);
+  // scene->renderer = new AmbientOcclusion(params);
+  scene->renderer = new BaseColour(params);
 
 
-  double frameRatio = params.get<double>("frameRatio");
+  float frameRatio = params.get<float>("frameRatio");
 
   Object *s;
 
   // s = new SphereSDF(new Lambertian(1));
   // scene->add(s);
 
-  // double R = lerp(frameRatio, 0.0, 4.0);
+  // float R = lerp(frameRatio, 0.0, 4.0);
   // s = new InfiniteSphereSDF(new Lambertian(1));
   // s->addTextureMap(new SDFTexture(Colour(1), 10));
   // s->Translate(R, R, 0);
@@ -46,8 +46,8 @@ SCENE(SDF) {
   // s->Translate(0, -1, 0);
   // scene->add(s);
 
-  double R = lerp(frameRatio, 0.0, PI);
-  double power = lerp(frameRatio, 5.0, 15.0);
+  float R = lerp(frameRatio, 0.0, PI);
+  float power = lerp(frameRatio, 5.0, 15.0);
   s = new MandelBulbSDF(new Lambertian(1), power);
   s->addTextureMap(new SDFTexture(Colour(1), 3.5));
   // s->RotateX(PI/2);

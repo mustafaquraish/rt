@@ -2,8 +2,8 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "util/obj_loader.h"
-#include "objects/triangle.h"
+#include <util/obj_loader.h>
+#include <objects/triangle.h>
 
 
 /* Quick utility function to check if a string is a prefix of another */
@@ -19,28 +19,28 @@ std::vector<Primitive *> wavefrontObjLoader(const char *fname) {
   }
   
   char buf[128];
-  std::vector<Vec> vs;
-  std::vector<Vec> vns;
-  std::vector<Vec> vts;
+  std::vector<Vec3> vs;
+  std::vector<Vec3> vns;
+  std::vector<Vec3> vts;
   std::vector<Primitive *> faces;
 
-  double x, y, z;
+  float x, y, z;
   // Store vertices
   while (fgets(buf, 128, f)) {
     if (prefix("v ", buf)) {
-      sscanf(buf, "v %lf %lf %lf", &x, &y, &z);
-      // std::cout << "Vertex: " << Vec(x,y,z) << std::endl;
-      vs.push_back(Vec(x,y,z));
+      sscanf(buf, "v %f %f %f", &x, &y, &z);
+      // std::cout << "Vertex: " << Vec3(x,y,z) << std::endl;
+      vs.push_back(Vec3(x, y, z));
     }
     if (prefix("vt ", buf)) {
-      sscanf(buf, "vt %lf %lf", &x, &y);
+      sscanf(buf, "vt %f %f", &x, &y);
       // std::cout << "TexCod: " << x << " " << y << std::endl;
-      vts.push_back(Vec(x,y,0));
+      vts.push_back(Vec3(x, y, 0));
     }
     if (prefix("vn ", buf)) {
-      sscanf(buf, "vn %lf %lf %lf", &x, &y, &z);
-      // std::cout << "Normal: " << Vec(x,y,z) << std::endl;
-      vns.push_back(Vec(x,y,z));
+      sscanf(buf, "vn %f %f %f", &x, &y, &z);
+      // std::cout << "Normal: " << Vec3(x,y,z) << std::endl;
+      vns.push_back(Vec3(x, y, z));
     }
 
     if (prefix("f ", buf)) {

@@ -1,9 +1,9 @@
-#include "core/integrator.h"
-#include "util/timer.h"
-#include "util/progress.h"
-#include "core/tile_manager.h"
+#include <core/renderer.h>
+#include <util/timer.h>
+#include <util/progress.h>
+#include <core/tile_manager.h>
 
-void Integrator::render(Scene *scene) {
+void Renderer::render(Scene *scene) {
   int total_samples = min(maxSamples, params.get<int>("samples"));
 
   // Create Image
@@ -22,8 +22,8 @@ void Integrator::render(Scene *scene) {
     Tile tile = tileManager.getTile(t);
     RNG rng = RNG(t);
     
-    for (int x = tile.xBegin; x < tile.xEnd; x++) {
-      for (int y = tile.yBegin; y < tile.yEnd; y++) {
+    for (int y = tile.yBegin; y < tile.yEnd; y++) {
+      for (int x = tile.xBegin; x < tile.xEnd; x++) {
         Colour col = 0;
         for (int sample = 0; sample < total_samples; sample++) {
           Ray ray = (enableRNG) ? scene->cam.getRay(x, y, rng) 
@@ -39,6 +39,6 @@ void Integrator::render(Scene *scene) {
   timer.stopAndDisplay();
 
   char *output = params.get<char *>("output");
-  im.save(output, gammaCorrect);
+  im.save(output, gammaCorrect, exposure);
   return;
 }

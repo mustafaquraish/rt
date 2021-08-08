@@ -1,9 +1,8 @@
-#ifndef __IMAGE_H__
-#define __IMAGE_H__
+#pragma once
 
 #include <stdio.h>
 #include <string.h>
-#include "core/math.h"
+#include <core/math.h>
 #include <unordered_map>
 
 struct Image {
@@ -11,16 +10,19 @@ struct Image {
   Image(char const *fname);
   ~Image();
   
-  void save(char const *fname, bool gammaCorrect=true);
+  void save(char const *fname, bool gammaCorrect=true, float exposure=1.0);
   
   void set(int i, int j, Colour col);
   void splat(int i, int j, Colour col);
   
   Colour get(int i, int j);
-  Colour get(double u, double v);
+  Colour get(float u, float v);
+  Colour get(const Vec2& uv) { return get(uv.u, 1 - uv.v); }
   
+  Vec2 size() const { return Vec2(sx, sy); }
+
   int sx, sy;
-  double *data;
+  float *m_data;
 };
 
 struct RTImageList {
@@ -32,4 +34,3 @@ struct RTImageList {
   static void cleanup();
 };
 
-#endif // __IMAGE_H__

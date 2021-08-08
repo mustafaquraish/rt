@@ -3,27 +3,25 @@
  * TriangleMesh() object.
  */
 
-#ifndef __TRIANGLE_H__
-#define __TRIANGLE_H__
+#pragma once
 
-#include "core/primitive.h"
+#include <core/primitive.h>
 
 struct Triangle : Primitive {
-  Triangle(Vec  p0, Vec  p1, Vec  p2, 
-           Vec  n0, Vec  n1, Vec  n2, 
-           Vec ab0, Vec ab1, Vec ab2);
+  Triangle(Vec3  p0, Vec3  p1, Vec3  p2,
+           Vec3  n0, Vec3  n1, Vec3  n2,
+           Vec3 ab0, Vec3 ab1, Vec3 ab2);
 
-  Triangle(Vec  p0, Vec  p1, Vec  p2, 
-           Vec  n0, Vec  n1, Vec  n2);
+  Triangle(Vec3  p0, Vec3  p1, Vec3  p2,
+           Vec3  n0, Vec3  n1, Vec3  n2);
            
-  Triangle(Vec  p0, Vec  p1, Vec  p2);
+  Triangle(Vec3  p0, Vec3  p1, Vec3  p2);
   
   bool hit(Ray& r, HitRec &rec);
-  Vec baryCentricWeights(const Vec& p);
+  Vec3 baryCentricWeights(const Vec3& p);
 
-  Vec p[3];
-  Vec n[3];
-  Vec uv[3];
+  Vec3 p[3];
+  Vec3 n[3];
+  Vec3 uv[3];
 };
 
-#endif // __TRIANGLE_H__
