@@ -12,7 +12,7 @@ A ray-tracer written in C++. Heavily WIP.
 
 Geometry:
 - Arbitrary object transformations
-- Wavefront OBJ parser (only triangle meshes)
+- Wavefront OBJ parser
 - Two level Bounded Volume Hierarchies
 - Implicit surfaces through Ray Marching
 - Parametric Surfaces (Paraboloids, etc)*
@@ -41,3 +41,7 @@ Misc:
 - Depth of Field
 
 ---
+
+Some meshes from the following resource have been tested successfully: (McGuire Computer Graphics Archive)[https://casual-effects.com/data/].
+
+Currently the engine only supports PNG/PPM/BMP3 files, so if the textures included with the `.obj` file is in a different format, then use the provided script `./scripts/convert_images
