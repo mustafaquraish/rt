@@ -18,20 +18,23 @@ SCENE(Scratch) {
   scene->cam = Camera(e, g, up, 45, params);
 
   // scene->renderer = new Path(params);
-  scene->renderer = new DebugShader(params);
+  // scene->renderer = new DebugShader(params);
   // scene->renderer = new BaseColour(params);
-  // scene->renderer = new DirectLighting(params);
+  scene->renderer = new DirectLighting(params);
+  // scene->renderer = new AmbientOcclusion(params);
   
   Object *s;
 
-  // s = new TriangleMesh("assets/obj/room.obj", new Lambertian(Colour(.95)));
-  s = new TriangleMesh("assets/obj/living_room.obj", new Lambertian(Colour(.95)));
-  s->Translate(-10, -1, -5);
-  s->Scale(3);
+  s = new TriangleMesh("assets/obj/room.obj", new Lambertian(Colour(.95)));
   scene->add(s);
 
+  // s = new TriangleMesh("assets/obj/living_room.obj", new Lambertian(Colour(.95)));
+  // s->Translate(-10, -1, -5);
+  // s->Scale(3);
+  // scene->add(s);
 
-  s = new Sphere(new Emitter(Colour(.99, .7, .5)*15));
+
+  s = new Sphere(new Emitter(Colour(.99, .7, .5)));
   s->Scale(1, 1, 1);
   // s->RotateX(PI/2);
   s->Translate(5.03f, 2.91f, -2.20f);
