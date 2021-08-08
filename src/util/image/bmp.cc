@@ -58,24 +58,7 @@ bool load(Image &img, const char *filename) {
     std::cerr << "Incorrect file format, use BMP 4.0 24-bit.\n";
     return false;
   }
-
-  // printf("bf_type = %d\n", bf.bf_type);
-  // printf("bf_size = %d\n", bf.bf_size);
-  // printf("bf_reserved_1 = %d\n", bf.bf_reserved_1);
-  // printf("bf_reserved_2 = %d\n", bf.bf_reserved_2);
-  // printf("bf_offset_bits = %d\n", bf.bf_offset_bits);
-
-  // printf("bi_size = %d\n", bi.bi_size);
-  // printf("bi_width = %d\n", bi.bi_width);
-  // printf("bi_height = %d\n", bi.bi_height);
-  // printf("bi_planes = %d\n", bi.bi_planes);
-  // printf("bi_bit_count = %d\n", bi.bi_bit_count);
-  // printf("bi_compression = %d\n", bi.bi_compression);
-  // printf("bi_size_image = %d\n", bi.bi_size_image);
-  // printf("bi_x_pels_per_meter = %d\n", bi.bi_x_px_meter);
-  // printf("bi_y_pels_per_meter = %d\n", bi.bi_y_px_meter);
-  // printf("bi_clr_used = %d\n", bi.bi_clr_used);
-  // printf("bi_clr_important = %d\n", bi.bi_clr_important);
+  
 
   int sy = abs(bi.bi_height);
   int sx = abs(bi.bi_width);

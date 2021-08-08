@@ -2,6 +2,7 @@
 
 #define PATH_MAX_BOUNCES 30
 #define AMBIENT_LIGHT 0.01
+#define MIN_PDF_LIGHT 0.1
 
 using namespace std;
 
@@ -33,7 +34,7 @@ Colour DirectLighting::SampleLight(HitRec& rec, Scene *scene, RNG& rng) {
       pdf /= fabs(dot(normalized(wi), rec.n) * -dot(normalized(wi), tmp.n));
       pdf /= scene->lights.size();
 
-      if (pdf < 1) pdf = 1;
+      if (pdf < MIN_PDF_LIGHT) pdf = MIN_PDF_LIGHT;
 
       contrib = cmp_wise_max(contrib, light->bsdf->emittance(tmp) / pdf);
     }
@@ -65,3 +66,5 @@ Colour DirectLighting::Li(Ray &r, Scene *scene, RNG& rng) {
   }
   return 0;
 }
+
+#undef MIN_PDF_LIGHT

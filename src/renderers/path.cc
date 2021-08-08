@@ -1,6 +1,7 @@
 #include <renderers/path.h>
 
 #define PATH_MAX_BOUNCES 30
+#define MIN_PDF_LIGHT 0.1
 
 using namespace std;
 
@@ -34,9 +35,7 @@ Colour Path::SampleLight(HitRec& rec, Scene *scene, RNG& rng) {
     pdf /= fabs(dot(normalized(wi), rec.n) * -dot(normalized(wi), tmp.n));
     pdf /= scene->lights.size();
 
-
-    constexpr float minPdf = 0.1;
-    if (pdf < minPdf) pdf = minPdf;
+    if (pdf < MIN_PDF_LIGHT) pdf = MIN_PDF_LIGHT;
 
     return rec.obj->bsdf->eval(rec) * light->bsdf->emittance(tmp) / pdf; 
   }
@@ -83,3 +82,5 @@ Colour Path::Li(Ray &r, Scene *scene, RNG& rng) {
   }
   return L;
 }
+
+#undef MIN_PDF_LIGHT
