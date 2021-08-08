@@ -17,6 +17,11 @@ struct RTMeshList {
   static void cleanup();
 };
 
+enum MeshType {
+  Simple,    // Load only the geometry of the mesh 
+  Full,      // Load the geometry and materials, create sub-meshes
+};
+template <MeshType Type=Simple>
 struct TriangleMesh : Object {
   TriangleMesh(BSDF *mat);
   TriangleMesh(const char *fname, BSDF *mat, bool bothSides=false);

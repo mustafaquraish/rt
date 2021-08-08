@@ -8,7 +8,7 @@
 #include <objects/triangle_mesh.h>
 #include <vector>
 
-struct ParametricSurface : TriangleMesh {
+struct ParametricSurface : TriangleMesh<Simple> {
   ParametricSurface(BSDF *mat,
                     int aCount,  // Cuts along parameter a
                     int bCount,  // Cuts along parameter b
