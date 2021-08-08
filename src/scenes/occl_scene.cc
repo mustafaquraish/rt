@@ -13,14 +13,14 @@ SCENE(Occlusion) {
 
   Object *s;
 
-  s = new TriangleMesh("assets/obj/ev3.obj", new Lambertian(Colour(1, 0, 0)));
+  s = new TriangleMesh<Simple>("assets/obj/ev3.obj", new Lambertian(Colour(1, 0, 0)));
   // s->RotateY(PI);
   s->Scale(0.4, 0.4, 0.4);
   s->RotateX(PI);
   s->Translate(-1, -3.5, 3.);
   scene->add(s);
 
-  s = new TriangleMesh("assets/obj/pinata.obj", new Lambertian(Colour(1, 0, 0)));
+  s = new TriangleMesh<Simple>("assets/obj/pinata.obj", new Lambertian(Colour(1, 0, 0)));
   s->RotateY(-PI/8 - PI/2);
   // s->Scale(0.4, 0.4, 0.4);
   // s->RotateX(PI);
@@ -40,7 +40,7 @@ SCENE(Occlusion) {
   s->Translate(0, -4, 5);
   scene->add(s);
 
-  scene->world = new AGGREGATE(scene->obj_list);
+  scene->world = new BVH(scene->obj_list);
   
   return scene;
 }

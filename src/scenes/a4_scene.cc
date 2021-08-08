@@ -70,7 +70,7 @@ SCENE(A4) {
   s->Translate(0,9.9995,5);
   scene->add(s);
 
-  // scene->world = new AGGREGATE(scene->obj_list);
+  // scene->world = new BVH(scene->obj_list);
   scene->world = new PrimitiveList(scene->obj_list);
   
   return scene;

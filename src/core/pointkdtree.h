@@ -20,6 +20,7 @@
 #include <core/math.h>
 #include <core/aabb.h>
 
+#include <algorithm>
 #include <vector>
 
 template <typename ValType>

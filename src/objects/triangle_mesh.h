@@ -21,10 +21,11 @@ enum MeshType {
   Simple,    // Load only the geometry of the mesh 
   Full,      // Load the geometry and materials, create sub-meshes
 };
-template <MeshType Type=Simple>
+template <MeshType Type=MeshType::Simple>
 struct TriangleMesh : Object {
   TriangleMesh(BSDF *mat);
-  TriangleMesh(const char *fname, BSDF *mat, bool bothSides=false);
+  
+  TriangleMesh(const char *fname, BSDF *mat=nullptr, bool bothSides=false);
 
   // Caller should set the `prims` vector to contain all the Triangles.
   void loadTriangles(std::vector<Primitive *>& prims);

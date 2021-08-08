@@ -17,7 +17,7 @@ struct ParametricSurface : TriangleMesh<Simple> {
                     float bMin, // b min value
                     float bMax  // b max value
                     )
-      : TriangleMesh(mat), aCount(aCount), aMin(aMin), aMax(aMax),
+      : TriangleMesh<Simple>(mat), aCount(aCount), aMin(aMin), aMax(aMax),
         bCount(bCount), bMin(bMin), bMax(bMax) {}
 
   std::vector<Primitive *> createSurface();
@@ -37,7 +37,7 @@ private:
   // Numerically compute normal
   Vec3 N(float a, float b);
   // Get Tex coords for point
-  Vec3 T(float a, float b);
+  Vec2 T(float a, float b);
 };
 
 struct SphereParametric : ParametricSurface {

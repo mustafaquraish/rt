@@ -2,8 +2,6 @@
 #include <stdarg.h>
 #include <string.h>
 
-Timer::Timer(){}
-
 Timer::Timer(std::string message) : message(message) { }
 
 Timer::Timer(const char *format, ...) {
@@ -18,13 +16,15 @@ Timer::Timer(const char *format, ...) {
 using namespace std::chrono;
 
 Timer& Timer::start() {
+  stopped = false;
   startTime = std::chrono::steady_clock::now();
   return *this;
 }
 
 Timer& Timer::stop() {
   auto endTime = std::chrono::steady_clock::now();
-  timeElapsed += endTime - startTime;
+  timeElapsed = endTime - startTime;
+  stopped = true;
   return *this;
 }
 
@@ -39,4 +39,11 @@ void Timer::display() {
 void Timer::stopAndDisplay() {
   stop();
   display();
+}
+
+Timer::~Timer() {
+  if (!stopped) {
+    stop();
+    display();
+  }
 }

@@ -27,11 +27,10 @@ Vec3 ParametricSurface::N(float a, float b) {
   return cross(tb, ta);
 }
 
-Vec3 ParametricSurface::T(float a, float b) {
-  return Vec3(
+Vec2 ParametricSurface::T(float a, float b) {
+  return Vec2(
     map(a, aMin, aMax, 0, 1),
-    map(b, bMin, bMax, 0, 1),
-    0
+    map(b, bMin, bMax, 0, 1)
   );
 }
 
@@ -57,11 +56,11 @@ std::vector<Primitive *> ParametricSurface::createSurface() {
 
       // Get current circle points / normals./ tex coords..
       //   names represent p_ab, n_ab and t_ab
-      Vec3 p_11 = P(a1, b1); Vec3 t_11 = T(a1, b1);
-      Vec3 p_12 = P(a1, b2); Vec3 t_12 = T(a1, b2);
+      Vec3 p_11 = P(a1, b1); Vec2 t_11 = T(a1, b1);
+      Vec3 p_12 = P(a1, b2); Vec2 t_12 = T(a1, b2);
 
-      Vec3 p_21 = P(a2, b1); Vec3 t_21 = T(a2, b1);
-      Vec3 p_22 = P(a2, b2); Vec3 t_22 = T(a2, b2);
+      Vec3 p_21 = P(a2, b1); Vec2 t_21 = T(a2, b1);
+      Vec3 p_22 = P(a2, b2); Vec2 t_22 = T(a2, b2);
       
       Triangle *t1, *t2;
       if (interpolateNormals) {

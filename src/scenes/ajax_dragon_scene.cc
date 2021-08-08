@@ -14,14 +14,14 @@ SCENE(AjaxDragon) {
 
   Object *s;
 
-  s = new TriangleMesh("assets/obj/ajax.obj", new Lambertian(Colour(1, 0, 0)));
+  s = new TriangleMesh<Simple>("assets/obj/ajax.obj", new Lambertian(Colour(1, 0, 0)));
   s->RotateY(-PI/4 - PI/2);
   s->Scale(0.25, 0.25, 0.25);
   s->RotateY(-PI/8);
   s->Translate(-6, -4, -7);
   scene->add(s);
 
-  s = new TriangleMesh("assets/obj/dragon.obj", new Lambertian(Colour(1, 0, 0)));
+  s = new TriangleMesh<Simple>("assets/obj/dragon.obj", new Lambertian(Colour(1, 0, 0)));
   s->RotateY(-PI/4);
   s->Scale(2, 2, 2);
   // s->RotateY(-PI/8);
@@ -35,7 +35,7 @@ SCENE(AjaxDragon) {
   s->Translate(0, -4, 5);
   scene->add(s);
 
-  scene->world = new AGGREGATE(scene->obj_list);
+  scene->world = new BVH(scene->obj_list);
   
   return scene;
 }

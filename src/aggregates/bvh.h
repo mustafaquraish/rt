@@ -24,12 +24,15 @@ struct BVHLinear {
 };
 
 struct BVH : Aggregate {
+  inline static bool time_build = true;
+  inline static void set_time_build(bool state) { BVH::time_build = state; }
+
   enum BuildMethod {
     SAH,
     Median,
   };
 
-  BVH(std::vector<Primitive *>&, BuildMethod=SAH);
+  BVH(std::vector<Primitive *>&, BuildMethod=Median);
   ~BVH() {};
   bool hit(Ray& ray, HitRec& rec);
   

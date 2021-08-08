@@ -10,7 +10,6 @@ using std::endl;
 #include <core/ray.h>
 #include <core/object.h>
 #include <core/camera.h>
-#include <core/definitions.h>
 
 // Utilities
 #include <util/image.h>

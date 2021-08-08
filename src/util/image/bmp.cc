@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <util/image/bmp.h>
 
 namespace BMP {
@@ -32,7 +33,6 @@ typedef struct {
   uint32_t bi_clr_important = 0;
 } __attribute__((__packed__)) BMPInfoHeader;
 
-
 bool load(Image &img, const char *filename) {
   // Open input file
   FILE *f = fopen(filename, "rb");
@@ -47,18 +47,16 @@ bool load(Image &img, const char *filename) {
   BMPFileHeader bf;
   BMPInfoHeader bi;
 
-  (void) fread(&bf, sizeof(BMPFileHeader), 1, f);
-  (void) fread(&bi, sizeof(BMPInfoHeader), 1, f);
+  assert(fread(&bf, sizeof(BMPFileHeader), 1, f));
+  assert(fread(&bi, sizeof(BMPInfoHeader), 1, f));
 
   // Ensure file is (likely) a 24-bit uncompressed BMP 4.0
-  if (bf.bf_type != 0x4d42 || bf.bf_offset_bits != 54 ||
-      bi.bi_size != 40 || bi.bi_bit_count != 24 ||
-      bi.bi_compression != 0) {
+  if (bf.bf_type != 0x4d42 || bf.bf_offset_bits != 54 || bi.bi_size != 40 ||
+      bi.bi_bit_count != 24 || bi.bi_compression != 0) {
     fclose(f);
     std::cerr << "Incorrect file format, use BMP 4.0 24-bit.\n";
     return false;
   }
-  
 
   int sy = abs(bi.bi_height);
   int sx = abs(bi.bi_width);
@@ -70,7 +68,7 @@ bool load(Image &img, const char *filename) {
   // Iterate over file's scanlines
   for (int i = 0; i < sy; i++) {
     // Read row into pixel array
-    fread(&bits24[i*sx*3], 3, sx, f);
+    assert(fread(&bits24[i * sx * 3], 3, sx, f));
     // Skip over padding
     fseek(f, padding, SEEK_CUR);
   }
@@ -109,7 +107,7 @@ bool save(Image &img, const char *filename) {
       bits24[data_index * 3 + 0] = img.m_data[img_index * 3 + 2] * 255.0;
     }
   }
-  
+
   BMPFileHeader bf;
   BMPInfoHeader bi;
   bf.bf_size = img.sx * img.sy * 3 + 54;
@@ -123,13 +121,13 @@ bool save(Image &img, const char *filename) {
     return false;
   }
   // Write file header
-  (void) fwrite(&bf, sizeof(BMPFileHeader), 1, f);
-  (void) fwrite(&bi, sizeof(BMPInfoHeader), 1, f);
+  assert(fwrite(&bf, sizeof(BMPFileHeader), 1, f));
+  assert(fwrite(&bi, sizeof(BMPInfoHeader), 1, f));
   // Write image data
-  (void) fwrite(bits24, img.sx * img.sy * 3, 1, f);
+  assert(fwrite(bits24, img.sx * img.sy * 3, 1, f));
   fclose(f);
   delete[] bits24;
   return true;
 }
 
-} // namespace PPM
+}  // namespace BMP
