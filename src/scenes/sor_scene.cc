@@ -56,7 +56,7 @@ SCENE(SOR) {
   s->Translate(0, -4, 5);
   scene->add(s);
 
-  scene->world = new AGGREGATE(scene->obj_list);
+  scene->world = new BVH(scene->obj_list);
   
   return scene;
 }

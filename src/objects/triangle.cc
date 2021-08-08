@@ -1,13 +1,13 @@
 /**
  * This is NOT an object, but it just extends Primitive. Used in the 
- * TriangleMesh() object.
+ * TriangleMesh<Simple>() object.
  */
 
 #include <objects/triangle.h>
 
 Triangle::Triangle(Vec3 p0, Vec3 p1, Vec3 p2,
                    Vec3 n0, Vec3 n1, Vec3 n2,
-                   Vec3 t0, Vec3 t1, Vec3 t2) {
+                   Vec2 t0, Vec2 t1, Vec2 t2) {
 
   p[0] = p0; n[0] = n0; uv[0] = t0;
   p[1] = p1; n[1] = n1; uv[1] = t1;
@@ -73,8 +73,10 @@ bool Triangle::hit(Ray& r, HitRec& rec) {
   rec.n = Vec3(n[0].x * u + n[1].x * v + n[2].x * w,
                n[0].y * u + n[1].y * v + n[2].y * w,
                n[0].z * u + n[1].z * v + n[2].z * w);
-  rec.uv = Vec2(uv[0].x * u + uv[1].x * v + uv[2].x * w,
-                uv[0].y * u + uv[1].y * v + uv[2].y * w);
+  rec.uv = Vec2(
+    1 - (uv[0].x * u + uv[1].x * v + uv[2].x * w),
+    uv[0].y * u + uv[1].y * v + uv[2].y * w
+  );
   r.tMax = min(r.tMax, t);
 
   return 1;

@@ -1,3 +1,5 @@
+#include <assert.h>
+#include <limits.h>
 #include <util/image/ppm.h>
 
 namespace PPM {
@@ -42,16 +44,16 @@ bool load(Image &img, const char *filename) {
     return false;
   }
 
-  (void) fgets(line, 1000, f);
+  assert(fgets(line, 1000, f));
   if (strcmp(line, "P6\n") != 0) {
     std::cerr << "Error: Wrong file format.\n";
     return false;
   }
   // Skip over comments
-  do { (void) fgets(line, 511, f); } while (line[0] == '#');
+  do { assert(fgets(line, 511, f)); } while (line[0] == '#');
   sscanf(&line[0], "%d %d\n", &img.sx, &img.sy); // Read file size
 
-  (void) fgets(&line[0], 9, f);           // Read the remaining header line
+  assert(fgets(&line[0], 9, f));           // Read the remaining header line
   int maxRGB;
   sscanf(&line[0], "%d\n", &maxRGB); // Read file size
 

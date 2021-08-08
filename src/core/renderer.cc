@@ -14,7 +14,8 @@ void Renderer::render(Scene *scene) {
   // Set up tile manager, timer and progress bar
   TileManager tileManager = TileManager(params);
   ProgressBar progress = ProgressBar(tileManager.numTiles, "Render").start();
-  Timer timer = Timer("Render").start();
+  
+  Timer timer = Timer("Rendering");
 
   #pragma omp parallel for schedule(dynamic, 1)
   for (int t = 0; t < tileManager.numTiles; t++) {

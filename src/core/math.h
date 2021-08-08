@@ -123,6 +123,11 @@ inline Vec3 from_polar(float theta, float phi) {
   return { cos(theta) * sin(phi), sin(theta) * sin(phi), cos(phi) };
 }
 
+inline float modulus(float a, float p) {
+  if (a > 0) return  fmod(a, p);
+  else       return -fmod(a, p);
+}
+
 /***************************** Quadratic Solving *****************************/
 
 inline bool solve_quadratic(float a, float b, float c,

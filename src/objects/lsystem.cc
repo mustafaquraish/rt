@@ -54,7 +54,7 @@ void LSystem::finalize() {
   createLSystem('a', 0, Matrix4(), obj_list, rng);
   // objs = new BVH(obj_list);
   // objs = new KDTree(obj_list);
-  objs = new AGGREGATE(obj_list);
+  objs = new BVH(obj_list);
   bounds = objs->bounds;
   Object::finalize();
 }

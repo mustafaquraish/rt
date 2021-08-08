@@ -13,7 +13,7 @@ SCENE(Ajax) {
 
   Object *s;
 
-  s = new TriangleMesh("assets/obj/ajax.obj", new Lambertian(Colour(1, 0, 0)));
+  s = new TriangleMesh<Simple>("assets/obj/ajax.obj", new Lambertian(Colour(1, 0, 0)));
   s->RotateY(-PI/4 - PI/2);
   s->Scale(0.25, 0.25, 0.25);
   // s->RotateX(PI);
@@ -27,7 +27,7 @@ SCENE(Ajax) {
   s->Translate(0, -4, 5);
   scene->add(s);
 
-  scene->world = new AGGREGATE(scene->obj_list);
+  scene->world = new BVH(scene->obj_list);
   
   return scene;
 }

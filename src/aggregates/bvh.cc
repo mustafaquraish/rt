@@ -109,14 +109,14 @@ int BVH::flatten(BVHTree *root) {
 
 BVH::BVH(std::vector<Primitive *>& prims, BVH::BuildMethod method)
     : m_method(method) {
-  Timer timer = Timer("Creating BVH from %6lu objects", prims.size()).start();
+  
+  Timer timer("Creating BVH from %lu objects", prims.size());
+  if (!BVH::time_build) timer.stop(); // Stopping it manually won't display
 
   BVHTree *bvh = build(prims, 0, prims.size());
   bounds = bvh->bounds;
   m_prims = prims;
   flatten(bvh);
-
-  timer.stopAndDisplay();
 }
 
 bool BVH::hit(Ray& ray, HitRec& rec) {

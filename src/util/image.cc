@@ -3,6 +3,7 @@
 #include <util/image/ppm.h>
 #include <util/image/png.h>
 #include <util/image/bmp.h>
+#include <util/timer.h>
 
 void RTImageList::registerImage(std::string filename, Image *img) {
   imgFileMapping[filename] = img;
@@ -34,9 +35,11 @@ Image::Image(int sx, int sy) : sx(sx), sy(sy) {
 
 Image::Image(char const *fname) {
   auto extension = get_extension(fname);
-  if (extension == "ppm") { PPM::load(*this, fname); }
-  if (extension == "png") { PNG::load(*this, fname); }
-  if (extension == "bmp") { BMP::load(*this, fname); }
+  if      (extension == "ppm") { PPM::load(*this, fname); }
+  else if (extension == "png") { PNG::load(*this, fname); }
+  else if (extension == "bmp") { BMP::load(*this, fname); }
+  else { printf("[-] File '%s' unsupported\n", fname); exit(1); }
+
 }
 
 Vec3 Image::get(int i, int j) {
@@ -48,8 +51,12 @@ Vec3 Image::get(int i, int j) {
 }
 
 Vec3 Image::get(float u, float v) {
+  u = modulus(u, 1.0f);
+  v = modulus(v, 1.0f);
+  
   float dx = clamp(u * (sx-1), 0, sx-1) ;
   float dy = clamp(v * (sy-1), 0, sy-1) ;
+
   int f_x = dx, c_x = ceil(dx);
   int f_y = dy, c_y = ceil(dy);
 
@@ -66,6 +73,7 @@ float linearToSRGB(float L) {
 }
 
 void Image::save(char const *fname, bool gammaCorrect, float exposure) {
+  Timer timer("Saving '%s'", fname);
   for (int i = 0; i < sx * sy * 3; i++) {
     if (!gammaCorrect) {
       m_data[i] = clamp01(m_data[i] * exposure);
@@ -74,12 +82,10 @@ void Image::save(char const *fname, bool gammaCorrect, float exposure) {
     }
   }
   auto extension = get_extension(fname);
-  if (extension == "ppm") { PPM::save(*this, fname); }
-  if (extension == "png") { PNG::save(*this, fname); }
-  if (extension == "bmp") { BMP::save(*this, fname); }
-
-  printf("[+] Saved output file: %s\n", fname);
-  return;
+  if      (extension == "ppm") { PPM::save(*this, fname); }
+  else if (extension == "png") { PNG::save(*this, fname); }
+  else if (extension == "bmp") { BMP::save(*this, fname); }
+  else { printf("[-] File '%s' unsupported\n", fname); exit(1); }
 }
 
 void Image::set(int i, int j, Colour col) {

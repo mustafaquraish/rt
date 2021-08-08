@@ -76,7 +76,7 @@ SCENE(Room) {
 
   // Center
   // s = new Sphere(new Transmissive(2.2, Colour(.95)));
-  s = new TriangleMesh("assets/obj/dragon.obj", new Transmissive(1.47, Colour(.95)));
+  s = new TriangleMesh<Simple>("assets/obj/dragon.obj", new Transmissive(1.47, Colour(.95)));
   s->Scale(2);
   s->Translate(0, -10, -5);
   scene->add(s);
@@ -205,7 +205,7 @@ SCENE(Room) {
   scene->add(s);
 
   // scene->world = new KDTree(scene->obj_list);
-  scene->world = new AGGREGATE(scene->obj_list);
+  scene->world = new BVH(scene->obj_list);
   // scene->world = new PrimitiveList(scene->obj_list);
   
   return scene;
