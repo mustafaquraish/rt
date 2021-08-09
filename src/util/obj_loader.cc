@@ -162,7 +162,13 @@ void MeshData::read_triangles() {
   if (f == NULL) fprintf(stderr, "[-] Can't open \"%s\"\n", m_obj_path.c_str()), exit(1);
 
   char line[128];
-  while (fgets(line, 128, f)) { read_basic_from_line(line); }
+  while (fgets(line, 128, f)) {
+    char *cur = line;
+    while (isspace(*cur)) cur++;
+    if (*cur == '\0' || *cur == '#') continue;
+
+    read_basic_from_line(line);
+  }
 }
 
 void MeshData::read_material_file(const char *filename) {
@@ -193,17 +199,21 @@ void MeshData::read_material_file(const char *filename) {
     material_name = new_name;
   };
 
-  while (fgets(line, 128, f)) { 
-    if (sscanf(line, "newmtl %s", buf)) { flush_material(buf); }
-    if (sscanf(line, "Kd %f %f %f", &r, &g, &b)) { mat.Kd = Colour(r, g, b); }
-    if (sscanf(line, "Ka %f %f %f", &r, &g, &b)) { mat.Ka = Colour(r, g, b); }
-    if (sscanf(line, "Ke %f %f %f", &r, &g, &b)) { mat.Ke = Colour(r, g, b); }
-    if (sscanf(line, "Ks %f %f %f", &r, &g, &b)) { mat.Ks = Colour(r, g, b); }
-    if (sscanf(line, "Tf %f %f %f", &r, &g, &b)) { mat.Tf = Colour(r, g, b); }
-    if (sscanf(line, "illum %d", &v)) { mat.illum = v; }
-    if (sscanf(line, "Ns %f", &r)) { mat.Ns = r; }
-    if (sscanf(line, "Ni %f", &r)) { mat.ref_idx = r; }
-    if (sscanf(line, "map_Kd %s", buf)) { 
+  while (fgets(line, 128, f)) {
+    char *cur = line;
+    while (isspace(*cur)) cur++;
+    if (*cur == '\0' || *cur == '#') continue;
+
+    if (sscanf(cur, "newmtl %s", buf)) { flush_material(buf); }
+    if (sscanf(cur, "Kd %f %f %f", &r, &g, &b)) { mat.Kd = Colour(r, g, b); }
+    if (sscanf(cur, "Ka %f %f %f", &r, &g, &b)) { mat.Ka = Colour(r, g, b); }
+    if (sscanf(cur, "Ke %f %f %f", &r, &g, &b)) { mat.Ke = Colour(r, g, b); }
+    if (sscanf(cur, "Ks %f %f %f", &r, &g, &b)) { mat.Ks = Colour(r, g, b); }
+    if (sscanf(cur, "Tf %f %f %f", &r, &g, &b)) { mat.Tf = Colour(r, g, b); }
+    if (sscanf(cur, "illum %d", &v)) { mat.illum = v; }
+    if (sscanf(cur, "Ns %f", &r)) { mat.Ns = r; }
+    if (sscanf(cur, "Ni %f", &r)) { mat.ref_idx = r; }
+    if (sscanf(cur, "map_Kd %s", buf)) { 
       mat.texmap = buf; 
       std::replace(mat.texmap.begin(), mat.texmap.end(), '\\', '/');
     }
@@ -270,12 +280,16 @@ void MeshData::read_sub_meshes() {
 
   char line[128];
   char buf[128];
-  while (fgets(line, 128, f)) { 
-    read_basic_from_line(line); 
-    if (sscanf(line, "mtllib %s", buf)) { read_material_file(buf); }
-    if (sscanf(line, "usemtl %s", buf)) { build_sub_mesh(), m_cur_material_name = buf; }
-    // if (sscanf(line, "g %s", buf)) { m_cur_material_name = buf; }
-    if (sscanf(line, "o %s", buf)) { build_sub_mesh(); }
+  while (fgets(line, 128, f)) {
+    char *cur = line;
+    while (isspace(*cur)) cur++;
+    if (*cur == '\0' || *cur == '#') continue;
+
+    read_basic_from_line(cur);
+    if (sscanf(cur, "mtllib %s", buf)) { read_material_file(buf); }
+    if (sscanf(cur, "usemtl %s", buf)) { build_sub_mesh(), m_cur_material_name = buf; }
+    // if (sscanf(cur, "g %s", buf)) { m_cur_material_name = buf; }
+    if (sscanf(cur, "o %s", buf)) { build_sub_mesh(); }
   }
   build_sub_mesh();
   printf("[+] Loaded %d sub meshes\n", (int)m_sub_meshes.size());
