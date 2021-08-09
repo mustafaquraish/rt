@@ -3,6 +3,9 @@
 
 namespace PNG {
 
+// Just ignore warnings when loading the PNG
+void warn_fn(png_structp, png_const_charp) {  }
+
 /**
  * Read the given PNG file and save it into a 2D array of bytes
  */
@@ -12,7 +15,7 @@ bool load(Image &img, const char *filename) {
     return false;
   }
   png_structp png_ptr =
-      png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+      png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, warn_fn);
   if (!png_ptr) {
     fclose(fp);
     return false;
@@ -82,11 +85,10 @@ bool load(Image &img, const char *filename) {
  */
 bool save(Image &img, const char *filename) {
   FILE *fp = fopen(filename, "wb");
-  if (!fp) {
-    return false;
-  }
+  if (!fp) return false;
+  png_error_ptr p;
   png_structp png_ptr =
-      png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+      png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, warn_fn);
   if (!png_ptr) {
     fclose(fp);
     return false;
