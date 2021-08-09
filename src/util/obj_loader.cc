@@ -5,11 +5,16 @@
 
 #include <aggregates/bvh.h>
 #include <aggregates/kdtree.h>
-#include <materials/lambertian.h>
 #include <objects/triangle_mesh.h>
 #include <core/texture.h>
 #include <util/obj_loader.h>
 #include <util/timer.h>
+
+#include <materials/lambertian.h>
+#include <materials/mirror.h>
+#include <materials/transmissive.h>
+#include <materials/emitter.h>
+
 
 namespace WavefrontOBJ {
 
@@ -17,12 +22,17 @@ struct MeshData {
   MeshData(const char *filepath) {
     m_obj_path = filepath;
     m_obj_base_path = m_obj_path.substr(0, m_obj_path.find_last_of("/\\") + 1);
-    std::cout << "obj path: " << m_obj_path << std::endl;
-    std::cout << "obj base path: " << m_obj_base_path << std::endl;
   }
 
   struct MeshMaterial {
-    Colour col;
+    Colour Kd = Colour(1);
+    Colour Ka = Colour(0);
+    Colour Ke = 0;
+    Colour Ks = Colour(1);
+    Colour Tf = Colour(1);
+    int illum = 0;
+    float Ns = 0;
+    float ref_idx = 1.0;
     std::string texmap;
   };
   
@@ -116,20 +126,11 @@ void MeshData::make_triangle_from_points(Vertex &v0, Vertex &v1, Vertex &v2) {
     t = new Triangle(vs(v0.v),  vs(v1.v),  vs(v2.v),
                      vns(v0.n), vns(v1.n), vns(v2.n),
                      vts(v0.t), vts(v1.t), vts(v2.t));
-    // printf("Triangle has tex: (%f %f), (%f %f), (%f %f)\n",
-    //        vts(v0.t).u, 
-    //        vts(v0.t).v,
-    //        vts(v1.t).u,
-    //        vts(v1.t).v,
-    //        vts(v2.t).u,
-    //        vts(v2.t).v);
   }
   m_faces.push_back(t);
 }
 
 void MeshData::read_faces_from_line(char *line) {
-  // printf("-- Reading faces from line: ''%s''\n", line);
-
   Vertex v0, v1, v2;
   Triangle *t;
 
@@ -182,20 +183,26 @@ void MeshData::read_material_file(const char *filename) {
   MeshMaterial mat;
   std::string material_name;
   float r, g, b;  
+  int v;
 
   auto flush_material = [&](const char *new_name) {
     if (!material_name.empty() || m_materials.find(material_name) != m_materials.end()) {
-      // std::cout << "Adding new material ("<< material_name << ") with col: " << mat.col << " an tex: ("<<mat.texmap<<")\n";
       m_materials[material_name] = mat;
-      mat.texmap.clear();
-      mat.col = {0, 1, 0};
+      mat = MeshMaterial();
     }
     material_name = new_name;
   };
 
   while (fgets(line, 128, f)) { 
     if (sscanf(line, "newmtl %s", buf)) { flush_material(buf); }
-    if (sscanf(line, "Kd %f %f %f", &r, &g, &b)) { mat.col = Colour(r, g, b); }
+    if (sscanf(line, "Kd %f %f %f", &r, &g, &b)) { mat.Kd = Colour(r, g, b); }
+    if (sscanf(line, "Ka %f %f %f", &r, &g, &b)) { mat.Ka = Colour(r, g, b); }
+    if (sscanf(line, "Ke %f %f %f", &r, &g, &b)) { mat.Ke = Colour(r, g, b); }
+    if (sscanf(line, "Ks %f %f %f", &r, &g, &b)) { mat.Ks = Colour(r, g, b); }
+    if (sscanf(line, "Tf %f %f %f", &r, &g, &b)) { mat.Tf = Colour(r, g, b); }
+    if (sscanf(line, "illum %d", &v)) { mat.illum = v; }
+    if (sscanf(line, "Ns %f", &r)) { mat.Ns = r; }
+    if (sscanf(line, "Ni %f", &r)) { mat.ref_idx = r; }
     if (sscanf(line, "map_Kd %s", buf)) { 
       mat.texmap = buf; 
       std::replace(mat.texmap.begin(), mat.texmap.end(), '\\', '/');
@@ -212,11 +219,40 @@ void MeshData::build_sub_mesh() {
   MeshMaterial &mat = res->second;
 
   BSDF *bsdf = nullptr;
-  if (mat.texmap.empty()) {
-    bsdf = new Lambertian(mat.col);
+  Colour chosen_col = 1;
+
+  constexpr float LIGHT_BRIGHTNESS = 10.0f;
+  if (mat.Ke.valid()) {
+    // Hack for now so we don't have unreasonale results
+    chosen_col = mat.Ke / max(mat.Ke) / 3.0f;
+    bsdf = new Lambertian(chosen_col);
+    
+    // @TODO: Add support for mesh-based light sources
+    // chosen_col = mat.Ke * LIGHT_BRIGHTNESS;
+    // bsdf = new Emitter(chosen_col);
+
+  } else if (mat.illum == 7) {
+    chosen_col = mat.Ks;
+    if (max(chosen_col) < 0.6) {
+      chosen_col *= (0.6 / max(chosen_col));
+    }
+    if (mat.ref_idx == 1) mat.ref_idx = 1.5;
+    bsdf = new Transmissive(mat.ref_idx, chosen_col);
+  } else if (mat.illum > 2 && mat.Ns >= 1000) {
+    chosen_col = mat.Ks;    
+    bsdf = new Mirror(chosen_col); 
   } else {
+    chosen_col = mat.Kd + mat.Ka;
+    bsdf = new Lambertian(chosen_col);
+  }
+
+  if (!mat.texmap.empty()) {
     std::string full_path = m_obj_base_path + mat.texmap;
-    bsdf = new Lambertian(new ImageTexture(full_path.c_str()));
+    if (chosen_col.valid()) {
+      bsdf->m_tx = new TintedImageTexture(full_path.c_str(), chosen_col);
+    } else {
+      bsdf->m_tx = new ImageTexture(full_path.c_str());
+    }
   }
   
   auto *mesh = new TriangleMesh<Simple>(bsdf);
