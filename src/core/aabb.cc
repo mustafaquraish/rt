@@ -104,6 +104,10 @@ Vec3 centroid(const AABB& a) {
   return (a.min + a.max) / 2;
 }
 
+Vec3 range(const AABB& a) {
+  return (a.max - a.min);
+}
+
 bool overlap(const AABB& a, const AABB& b) {
   bool x = (a.max.x >= b.min.x) && (a.min.x <= b.max.x);
   bool y = (a.max.y >= b.min.y) && (a.min.y <= b.max.y);

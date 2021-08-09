@@ -28,5 +28,6 @@ AABB combine(const AABB& a, const AABB& b);
 AABB transformed(const Matrix4& T, const AABB& b);
 bool overlap(const AABB& a, const AABB& b);
 Vec3 centroid(const AABB& a);
+Vec3 range(const AABB& a);
 float area(const AABB& a);
 

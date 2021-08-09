@@ -36,3 +36,18 @@ struct TriangleMesh : Object {
   bool bothSides = false;
 };
 
+template <MeshType Type=MeshType::Simple>
+struct RescaledMesh : TriangleMesh<Type> {
+  using TriangleMesh<Type>::TriangleMesh;
+
+  virtual void finalize() override {
+    float scale = max(range(this->mesh->bounds));
+    this->T *= ScaleMatrix(1/scale, 1/scale, 1/scale);
+    
+    Vec3 pt = -centroid(this->mesh->bounds);
+    this->T *= TranslateMatrix(pt.x, pt.y, pt.z);
+ 
+    TriangleMesh<Type>::finalize();
+  }
+};
+
