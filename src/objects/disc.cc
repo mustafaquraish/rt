@@ -18,6 +18,7 @@ bool Disc::hit(Ray& r, HitRec& rec) {
 
   Vec3 canon_n = normalMapped(Vec3(0, 0, 1), rec);
   rec.n = normalTransform(canon_n);
+  if (dot(r.d, rec.n) > 0) rec.n = -rec.n;
   r.tMax = min(r.tMax, rec.t);
 
   return true;
