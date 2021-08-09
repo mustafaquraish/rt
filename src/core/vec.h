@@ -25,6 +25,8 @@ union Vec2 {
 
   float &operator[] (int idx)       { return m_vals[idx]; }
   float  operator[] (int idx) const { return m_vals[idx]; };
+
+  bool valid() const { return x != 0 || y != 0; }
 };
 
 inline std::ostream &operator<<(std::ostream &os, const Vec2 &t) {
@@ -101,6 +103,8 @@ union Vec3 {
 
   float &operator[] (int idx)       { return V[idx]; }
   float  operator[] (int idx) const { return V[idx]; };
+
+  bool valid() const { return x != 0 || y != 0 || z != 0; }
 };
 
 inline std::ostream &operator<<(std::ostream &os, const Vec3 &t) {
