@@ -42,6 +42,16 @@ private:
   Image *m_img = nullptr; 
 };
 
+struct TintedImageTexture : ImageTexture {
+  TintedImageTexture(const char *filename, Colour col) 
+    : ImageTexture(filename), m_col(col) {}
+  virtual Colour get(const Vec2 &coords) { 
+    return ImageTexture::get(coords) * m_col; 
+  }
+  Colour m_col;
+};
+
+
 struct CheckerTexture : Texture {
   CheckerTexture(float scale = 0.1) : scale(scale) {};
   
