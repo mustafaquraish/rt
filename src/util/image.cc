@@ -74,6 +74,10 @@ float linearToSRGB(float L) {
 
 void Image::save(char const *fname, bool gammaCorrect, float exposure) {
   Timer timer("Saving '%s'", fname);
+  
+  float *temp  = new float[sx * sy * 3];
+  std::copy(m_data, m_data + sx * sy * 3, temp);
+
   for (int i = 0; i < sx * sy * 3; i++) {
     if (!gammaCorrect) {
       m_data[i] = clamp01(m_data[i] * exposure);
@@ -86,6 +90,9 @@ void Image::save(char const *fname, bool gammaCorrect, float exposure) {
   else if (extension == "png") { PNG::save(*this, fname); }
   else if (extension == "bmp") { BMP::save(*this, fname); }
   else { printf("[-] File '%s' unsupported\n", fname); exit(1); }
+
+  std::copy(temp, temp + sx * sy * 3, m_data);
+  delete[] temp;
 }
 
 void Image::set(int i, int j, Colour col) {
