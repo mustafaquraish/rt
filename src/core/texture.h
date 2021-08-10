@@ -24,7 +24,7 @@ struct Texture {
 
 struct ConstantTexture : Texture {
   ConstantTexture(Colour col) : m_col(col) {}
-  Colour get(const Vec2 &coords) final { return m_col; }
+  Colour get(const Vec2 &coords) override { return m_col; }
 private:
   Colour m_col; 
 };
@@ -37,7 +37,9 @@ struct ImageTexture : Texture {
       RTImageList::registerImage(filename, m_img);
     } 
   }
-  virtual Colour get(const Vec2 &coords) { return m_img->get(coords); }
+  virtual Colour get(const Vec2 &coords) override { 
+    return m_img->get(coords); 
+  }
 private:
   Image *m_img = nullptr; 
 };
@@ -45,7 +47,7 @@ private:
 struct TintedImageTexture : ImageTexture {
   TintedImageTexture(const char *filename, Colour col) 
     : ImageTexture(filename), m_col(col) {}
-  virtual Colour get(const Vec2 &coords) { 
+  virtual Colour get(const Vec2 &coords) override { 
     return ImageTexture::get(coords) * m_col; 
   }
   Colour m_col;
@@ -55,7 +57,7 @@ struct TintedImageTexture : ImageTexture {
 struct CheckerTexture : Texture {
   CheckerTexture(float scale = 0.1) : scale(scale) {};
   
-  virtual Colour get(const Vec2 &coords) {
+  virtual Colour get(const Vec2 &coords) override {
     int fx = coords.u / scale;
     int fy = coords.v / scale;
     bool fac = (fx + fy) % 2;
@@ -72,7 +74,7 @@ struct PerlinTexture : Texture {
       : scale(scale), octaves(octaves), persistence(persistence), type(type), 
         seed(seed) {};
   
-  virtual Colour get(const Vec2 &coords) {
+  virtual Colour get(const Vec2 &coords) override {
     Vec2 pos = coords * scale;
 
     float perlin;
@@ -94,7 +96,7 @@ struct PerlinTexture : Texture {
 struct Perlin4DTexture : PerlinTexture {
   using PerlinTexture::PerlinTexture;
   
-  virtual Colour get(const Vec2 &coords) {
+  virtual Colour get(const Vec2 &coords) override {
     Vec2 pos = coords * scale;
 
     float theta = lerp(seed, 0.0, TAU);
@@ -110,7 +112,7 @@ struct Perlin4DTexture : PerlinTexture {
 struct SDFTexture : Texture {
   SDFTexture(Colour col, float scale=1) : col(col), scale(scale) {};
   
-  virtual Colour get(HitRec& rec) {
+  virtual Colour get(const HitRec& rec) override {
     return col * (1-rec.stepsRatio*scale);
   }
   Colour col;
