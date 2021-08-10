@@ -6,17 +6,17 @@ SCENE(Fireplace) {
 
   Scene *scene = new Scene();
   
-  Vec3 e = Vec3(5, 20, -50);
-  Vec3 g = RotateYMatrix(PI/4.5) * Vec3(0, 0, 1);
+  Vec3 e = Vec3(90, 20, -50);
+  Vec3 g = RotateYMatrix(-PI/2.5) * Vec3(0, 0, 1);
   
   Vec3 up = Vec3(0, 1, 0);
 
-  scene->cam = Camera(e, g, up, 80, params);
+  scene->cam = Camera(e, g, up, 70, params);
 
-  scene->renderer = new Path(params);
+  // scene->renderer = new Path(params);
   // scene->renderer = new DebugShader(params);
   // scene->renderer = new BaseColour(params);
-  // scene->renderer = new DirectLighting(params); 
+  scene->renderer = new DirectLighting(params); 
   // scene->renderer = new AmbientOcclusion(params);
   
   Object *s;
@@ -25,11 +25,11 @@ SCENE(Fireplace) {
   s->Scale(20);
   scene->add(s);
 
-  s = new Disc(new Emitter(Colour(.99, .7, .5) * 10));
+  s = new Disc(new Emitter(Colour(.99, .7, .5) * 5));
   s->RotateX(PI/2);
   s->Scale(10, 10, 10);
   // s->RotateX(PI/2);
-  s->Translate(70, 56, -30);
+  s->Translate(30, 56, -35);
   scene->add(s);
 
   // scene->world = new BVH(scene->obj_list);
