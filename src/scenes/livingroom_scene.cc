@@ -7,15 +7,15 @@ SCENE(Living) {
   Scene *scene = new Scene();
   
 
-  Vec3 e = Vec3(0, 1, 35);
-  Vec3 g = RotateYMatrix(PI/4) * Vec3(0, -.5, 1);
+  Vec3 e = Vec3(-30, 1, 120);
+  Vec3 g = RotateYMatrix(-PI/10) * Vec3(0, -.4, -1);
 
   // Vec3 e = Vec3(0, 1, 2);
   // Vec3 g = Vec3(1, 1, 0) - e;
   
   Vec3 up = Vec3(0, 1, 0);
 
-  scene->cam = Camera(e, g, up, 90, params);
+  scene->cam = Camera(e, g, up, 70, params);
 
   scene->renderer = new Path(params);
   // scene->renderer = new DebugShader(params);
