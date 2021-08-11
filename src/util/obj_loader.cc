@@ -102,6 +102,7 @@ void load(TriangleMesh<Type> &mesh, const char *filename) {
 
 MeshData::Vertex::Vertex(const char *token) {
   // printf("Reading vertex from token: %s\n", token);
+  v = t = n = 0;
   if      (sscanf(token, "%d/%d/%d", &v, &t, &n) == 3) { type = PosTexNormal; }
   else if (sscanf(token, "%d//%d", &v, &n) == 2) { type = PosNormal; }
   else if (sscanf(token, "%d", &v) == 1) { type = Pos; }
@@ -161,8 +162,8 @@ void MeshData::read_triangles() {
   FILE *f = fopen(m_obj_path.c_str(), "r");
   if (f == NULL) fprintf(stderr, "[-] Can't open \"%s\"\n", m_obj_path.c_str()), exit(1);
 
-  char line[128];
-  while (fgets(line, 128, f)) {
+  char line[2048];
+  while (fgets(line, 2048, f)) {
     char *cur = line;
     while (isspace(*cur)) cur++;
     if (*cur == '\0' || *cur == '#') continue;
@@ -183,8 +184,8 @@ void MeshData::read_material_file(const char *filename) {
   FILE *f = fopen(full_path.c_str(), "r");
   if (f == NULL) fprintf(stderr, "[-] Can't open \"%s\"\n", full_path.c_str()), exit(1);
 
-  char line[128];
-  char buf[128];
+  char line[2048];
+  char buf[2048];
 
   MeshMaterial mat;
   std::string material_name;
@@ -199,7 +200,7 @@ void MeshData::read_material_file(const char *filename) {
     material_name = new_name;
   };
 
-  while (fgets(line, 128, f)) {
+  while (fgets(line, 2048, f)) {
     char *cur = line;
     while (isspace(*cur)) cur++;
     if (*cur == '\0' || *cur == '#') continue;
@@ -278,9 +279,9 @@ void MeshData::read_sub_meshes() {
   FILE *f = fopen(m_obj_path.c_str(), "r");
   if (f == NULL) fprintf(stderr, "[-] Can't open \"%s\"\n", m_obj_path.c_str()), exit(1);
 
-  char line[128];
-  char buf[128];
-  while (fgets(line, 128, f)) {
+  char line[2048];
+  char buf[2048];
+  while (fgets(line, 2048, f)) {
     char *cur = line;
     while (isspace(*cur)) cur++;
     if (*cur == '\0' || *cur == '#') continue;
