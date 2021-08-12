@@ -13,10 +13,10 @@ SCENE(Fireplace) {
 
   scene->cam = Camera(e, g, up, 70, params);
 
-  scene->renderer = new Path(params);
+  // scene->renderer = new Path(params);
   // scene->renderer = new DebugShader(params);
   // scene->renderer = new BaseColour(params);
-  // scene->renderer = new DirectLighting(params); 
+  scene->renderer = new DirectLighting(params); 
   // scene->renderer = new AmbientOcclusion(params);
   
   Object *s;
