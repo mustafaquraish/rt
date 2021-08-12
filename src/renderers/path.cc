@@ -55,8 +55,6 @@ Colour Path::Li(Ray &r, Scene *scene, RNG& rng) {
   for (int bounce = 0; bounce < PATH_MAX_BOUNCES; bounce++) {
     if (!scene->hit(ray, rec)) break;
 
-    if (isnan(rec.n.x)) printf("got nan in path.cc\n");
-
     BSDF *bsdf = rec.obj->bsdf;
     rec.wo = -ray.d;
 
