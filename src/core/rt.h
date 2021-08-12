@@ -24,6 +24,7 @@ using std::endl;
 #include <objects/disc.h>
 #include <objects/implicit.h>
 #include <objects/lsystem.h>
+#include <objects/constant_medium.h>
 #include <objects/triangle_mesh.h>
 #include <objects/bevel_curve.h>
 #include <objects/surface_revolution.h>
