@@ -15,6 +15,7 @@ struct CSGObject : Object {
   virtual void finalize() override {
     m_obj_a->finalize();
     m_obj_b->finalize();
+    this->bounds = combine(m_obj_a->bounds, m_obj_b->bounds);
     Object::finalize();
   }
 
