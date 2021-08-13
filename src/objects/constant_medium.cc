@@ -1,9 +1,7 @@
 #include <objects/constant_medium.h>
 #include <core/rng.h>
 
-thread_local RNG RNGInstance;
-
-bool ConstantVolume::hit(Ray& r, HitRec& rec) {
+bool ConstantMedium::hit(Ray& r, HitRec& rec) {
   Ray transformed = rayTransform(r);
 
   HitRec r1, r2;
@@ -24,7 +22,7 @@ bool ConstantVolume::hit(Ray& r, HitRec& rec) {
   }
 
   double dst = (t2 - t1);
-  double hd = -(1/m_density) * log(RNGInstance.rand01());
+  double hd = -(1/m_density) * log(Random.rand01());
 
   if (hd < dst) {
     rec.t = t1 + hd;

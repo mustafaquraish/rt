@@ -2,8 +2,8 @@
 
 #include <core/object.h>
 
-struct ConstantVolume : Object {
-  ConstantVolume(float density, Object *obj) 
+struct ConstantMedium : Object {
+  ConstantMedium(float density, Object *obj) 
     : Object(nullptr), m_obj(obj), m_density(density) { };
   bool hit(Ray &r, HitRec &rec) override;
 
