@@ -128,7 +128,7 @@ bool CSGObject::hit(Ray &r, HitRec &rec) {
     rec = (res.min.t > TOL) ? res.min : res.max;
     rec.p = r.at(rec.t);
     rec.n = normalTransform(rec.n);
-    rec.obj = this;
+    if (this->bsdf) { rec.obj = this; }
     return true;
   }
 
