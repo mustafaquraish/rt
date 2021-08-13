@@ -2,14 +2,14 @@
 
 #include <core/object.h>
 
-struct CSG : Object {
-  enum CSGType {
-    Union,
-    Intersection,
-    Difference,
-  };
+enum CSGType {
+  Union,
+  Intersection,
+  Difference,
+};
 
-  CSG(CSGType type, Object *a, Object *b)
+struct CSGObject : Object {
+  CSGObject(CSGType type, Object *a, Object *b)
     : m_type(type), m_obj_a(a), m_obj_b(b) { };
 
   virtual void finalize() override {
@@ -20,18 +20,7 @@ struct CSG : Object {
 
   virtual bool hit(Ray &r, HitRec &rec) override;
 
-
 private:
-  struct CSGData {
-    HitRec a1, a2, b1, b2;
-    bool hit[2];
-  };
-
-  void set_rec(HitRec &t, HitRec &rec);
-
-  bool hit_union(Ray &, CSGData &, HitRec &);
-  bool hit_intersection(Ray &, CSGData &, HitRec &);
-  bool hit_difference(Ray &, CSGData &, HitRec &);
 
   CSGType m_type;
   Object *m_obj_a;

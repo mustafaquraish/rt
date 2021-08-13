@@ -1,96 +1,136 @@
 #include <objects/csg.h>
 
-void CSG::set_rec(HitRec &t, HitRec &rec) {
-  if (t.t < rec.t) {
-    rec = t;
+namespace CSG {
+
+struct CSGRange {
+  HitRec min, max;
+  bool hit;
+};
+
+bool get_both_intersections(Object *obj, Ray& ray, HitRec& r1, HitRec& r2) {
+  Ray temp_ray = Ray(ray.p, ray.d);
+  if (obj->hit(temp_ray, r1)) {
+    if (dot(r1.n, ray.d) < 0) {
+      temp_ray = Ray(ray.at(r1.t), ray.d);
+      obj->hit(temp_ray, r2);
+      r2.t += r1.t;
+    } else {
+      std::swap(r1, r2);
+      r1.t = -1;
+    }
+    return true;
   }
+  return false;
 }
 
-bool CSG::hit_union(Ray &ray, CSGData &data, HitRec &rec) { 
-  // if (!data.hit[0] && !data.hit[1]) return false;
-  // if (!data.hit[0]) { *rec = r[1]; rec->obj = obj; return true; }
-  // if (!data.hit[1]) { *rec = r[0]; rec->obj = obj; return true; }
-
-  // rec->obj = obj;
-
-  // if (a1 <= b1) {
-  //   set_rec(0, a1, na1);
-  //   if      (a2 < b1) set_rec(1, a2, na2);
-  //   else if (a2 > b2) set_rec(1, a2, na2);
-  //   else              set_rec(1, b2, nb2);
-
-  // } else {
-  //   set_rec(0, b1, nb1);
-  //   if      (b2 < a1) set_rec(1, b2, nb2);
-  //   else if (b2 > a2) set_rec(1, b2, nb2);
-  //   else              set_rec(1, a2, na2);
-  // }
-
+void set_correct_rec(Object *o, HitRec &r1, HitRec &r2, HitRec &actual) {
+  actual = r1.t < 0 ? r2 : r1;
+  actual.obj = o;
 }
 
+bool Union(CSGRange &a, CSGRange &b, CSGRange &res) { 
+  if (!a.hit && !b.hit) return false;
+  if (!a.hit) { res = b; return true; }
+  if (!b.hit) { res = a; return true; }
 
-bool CSG::hit_difference(Ray &ray, CSGData &data, HitRec &rec) { return false; }
-
-
-bool CSG::hit_intersection(Ray &ray, CSGData &data, HitRec &rec) {
-  if (!data.hit[0] || !data.hit[1]) return false;
-  if ((data.a1.t < data.b1.t && data.a2.t < data.b1.t) ||
-      (data.b1.t < data.a1.t && data.b2.t < data.a1.t)) {
-    return false;
-  }
-  if (data.a1.t < data.b1.t) {
-    set_rec(data.b1, rec);
-    if (data.a2.t < data.b2.t) set_rec(data.a2, rec);
-    else                       set_rec(data.b2, rec);
+  if (a.min.t <= b.min.t) {
+    res.min = a.min;
+    if      (a.max.t < b.min.t) res.max = a.max;
+    else if (a.max.t > b.max.t) res.max = a.max;
+    else                        res.max = b.max;
 
   } else {
-    set_rec(data.a1, rec);
-    if (data.b2.t < data.a2.t) set_rec(data.b2, rec);
-    else         set_rec(data.a2, rec);
+    res.min = b.min;
+    if      (b.max.t < a.min.t) res.max = b.max;
+    else if (b.max.t > a.max.t) res.max = b.max;
+    else                        res.max = a.max;
   }
   return true;
 }
 
-bool CSG::hit(Ray &r, HitRec &rec) {
+
+bool Difference(CSGRange &a, CSGRange &b, CSGRange &res) { 
+  if (!a.hit) return false;
+  if (a.hit && !b.hit) { res = a; return true; }
+  if (b.min.t < a.min.t && a.max.t < b.max.t) return false;
+
+  if (a.min.t <= b.min.t) {
+    res.min = a.min;
+    if      (a.max.t < b.min.t) res.max = a.max;
+    else if (a.max.t < b.max.t) {
+      res.max = b.min;
+      res.max.n = -res.max.n;
+    }
+
+    // Need to see where the light ray starts, so we give return
+    // the appropriate component
+    else if (b.min.t > TOL) {
+      res.max = b.min;
+      res.max.n = -res.max.n;
+
+    } else if (b.max.t > TOL) {
+      res.min = b.max;
+      res.min.n = -res.min.n;
+
+      res.max = a.max;
+    }
+
+  // CAREFUL: not symmetric
+  } else {
+    if      (b.max.t < a.min.t) res.min = a.min, res.max = a.max;
+    else if (b.max.t < a.max.t) {
+      res.min = b.max;
+      res.min.n = -res.min.n;
+      
+      res.max = a.max;
+    }
+  }
+  return true;
+}
+
+
+bool Intersection(CSGRange &a, CSGRange &b, CSGRange &res) {
+  if (!a.hit || !b.hit) return false;
+
+  if ((a.min.t < b.min.t && a.max.t < b.min.t) || 
+      (b.min.t < a.min.t && b.max.t < a.min.t)) { 
+    return false; 
+  } 
+
+  if (a.min.t <= b.min.t) {
+    res.min = b.min;
+    if (a.max.t <= b.max.t) res.max = a.max;
+    else                    res.max = b.max;
+  } else {
+    res.min = a.min;
+    if (b.max.t <= a.max.t) res.max = b.max;
+    else                    res.max = a.max;
+  }
+  return true;
+}
+
+}
+
+bool CSGObject::hit(Ray &r, HitRec &rec) {
   Ray transformed = rayTransform(r);
-
-  CSGData data;
-  data.a1.t = -1;
-  data.a2.t = -1;
-  data.b1.t = -1;
-  data.b2.t = -1;
-
-  if (m_obj_a->hit(transformed, data.a1)) {
-    if (dot(data.a1.n, transformed.d) < 0) {
-      Ray temp_ray = Ray(transformed.at(data.a1.t), transformed.d);
-      m_obj_a->hit(temp_ray, data.a2);
-      data.a2.t += data.a1.t;
-    } else {
-      std::swap(data.a1, data.a2);
-    }
-    data.hit[0] = true;
-  }
-
-  if (m_obj_b->hit(transformed, data.b1)) {
-    if (dot(data.b1.n, transformed.d) < 0) {
-      Ray temp_ray = Ray(transformed.at(data.b1.t), transformed.d);
-      m_obj_b->hit(temp_ray, data.b2);
-      data.b2.t += data.b1.t;
-    } else {
-      std::swap(data.b1, data.b2);
-    }
-    data.hit[1] = true;
-  }
+  
+  CSG::CSGRange a, b, res; 
+  a.hit = CSG::get_both_intersections(m_obj_a, transformed, a.min, a.max);
+  b.hit = CSG::get_both_intersections(m_obj_b, transformed, b.min, b.max);
 
   switch (m_type) {
-    case Union:
-      return hit_union(r, data, rec);
-    case Intersection:
-      return hit_intersection(r, data, rec);
-    case Difference:
-      return hit_difference(r, data, rec);
+    case Union:        res.hit = CSG::Union(a, b, res); break;
+    case Intersection: res.hit = CSG::Intersection(a, b, res); break;
+    case Difference:   res.hit = CSG::Difference(a, b, res); break;
   }
 
-  // Shouldn't get here
+  if (res.hit) {
+    rec = (res.min.t > TOL) ? res.min : res.max;
+    rec.p = r.at(rec.t);
+    rec.n = normalTransform(rec.n);
+    rec.obj = this;
+    return true;
+  }
+
   return false;
 }
