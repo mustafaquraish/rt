@@ -31,7 +31,11 @@ bool ConstantVolume::hit(Ray& r, HitRec& rec) {
     rec.p = r.at(rec.t);
     rec.uv = Vec2(0, 0);
     rec.n = {0, 0, 1};
-    rec.obj = m_obj;
+    if (this->bsdf) {
+      rec.obj = this;
+    } else {
+      rec.obj = r1.obj;
+    }
     r.tMax = rec.t;
     return true;
   }
