@@ -55,21 +55,23 @@ SCENE(csg) {
 
   Object *a, *b;
 
-  a = new Sphere(new Lambertian(Colour(1, 1, 1)));
+  double f = params.get<float>("frameRatio");
+  
+  a = new Sphere(nullptr);
   a->Scale(3.75, 3.75, 3.75);
   a->Translate(0, -4, 4.5);  
   // scene->add(a);
 
-  b = new Cube(new Lambertian(Colour(1, 1, 1)));
+  b = new Cube(nullptr);
   b->Scale(3);
+  b->RotateY(f*TAU);
   b->Translate(0, -4, 4.5);  
   // scene->add(b);
 
-  s = new CSG(CSG::CSGType::Intersection, a, b);
+
+  s = new CSGObject(CSGType::Difference, b, a);
+  s->bsdf = new Transmissive(1.47, Colour(0.5, 1, 0.5));
   scene->add(s);
-
-
-
 
   s = new Plane(new Emitter(Colour(12, 12, 12)));
   s->Scale(.5,2.5,10);
