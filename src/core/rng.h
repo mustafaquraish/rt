@@ -66,3 +66,4 @@ struct RNG {
   int w;
 };
 
+inline thread_local RNG Random;
