@@ -2,7 +2,29 @@
 
 using namespace std;
 
-SCENE(Medium) {
+struct MyPerlin : Texture {
+  MyPerlin() {}
+  virtual Colour get(const HitRec &rec) override {
+    Vec3 pt = rec.p / 5;
+    float perlin = Simplex::layered(8, 0.5, pt.x, pt.y, pt.z);
+    return Simplex::transform(perlin, Layered);
+  }
+};
+
+struct MyDensity : DensityTexture {
+  MyDensity(float intensity, float scale=2) 
+    : m_intensity(intensity), m_scale(scale) {}
+  virtual float get(const Vec3& p) { 
+    Vec3 pt = p * m_scale;
+    float perlin = Simplex::layered(8, 0.5, pt.x, pt.y, pt.z);
+    return Simplex::transform(perlin, Turbulence) * m_intensity;
+  };
+  
+  float m_intensity;
+  float m_scale;
+};
+
+SCENE(medium) {
 
   Scene *scene = new Scene();
   
@@ -52,38 +74,87 @@ SCENE(Medium) {
   s->Translate(0, 510, 5);
   scene->add(s);
 
-  // left sphere
-  s =  new ConstantVolume(0.2, 
-    new Sphere(new Lambertian(Colour(1, 1, 0)))
-  );
-  s->Scale(3.75, 3.75, 3.75);
-  s->Translate(-5, -4, 4.5);
-  scene->add(s);
 
-  // right sphere
-  s = new ConstantVolume(0.2,
-    new Cube(new Lambertian(Colour(0, 1, 0)))
-  );
-  s->Scale(3.75, 3.75, 3.75);
-  s->RotateX(PI/5);
-  s->RotateZ(PI/8);
-  s->Translate(4, -3.75, 6.5);
-  scene->add(s);
+  Object *a, *b;
 
-  s = new ConstantVolume(0.3,
-    new TorusSOR(new Lambertian(Colour(0, 0, 1)))
-  );
-  s->Scale(1.3);
-  s->RotateX(PI/5);
-  s->RotateZ(PI/8);
-  s->Translate(0, +3.75, 6.5);
-  scene->add(s);
+  double f = params.get<float>("frameRatio");
   
-  s = new Plane(new Emitter(Colour(12, 12, 12)*2));
-  s->Scale(.5,2.5,10);
+  // a = new Sphere(new Lambertian(Colour(0,1,0)));
+  // a->Scale(5, 3.75, 5);
+  // a->Translate(0, 2.5, 4.5);  
+  // scene->add(a);
+
+  // b = new Cube(new Lambertian(Colour(1, 1, 0)));
+  // b->Scale(3);
+  // b->RotateY(f*TAU);
+  // b->RotateX(-PI/8);
+  // b->Translate(0, -4, 4.5);  
+  // // scene->add(b);
+
+  // b = new Sphere(new Lambertian(Colour(0,1,0)));
+  // b->Scale(5, 3.75, 5);
+  // b->Translate(0, -2.5, 4.5);  
+  // // scene->add(a);
+
+
+
+  // s = new CSGObject(CSGType::Intersection, a, b);
+  // s->bsdf = new Transmissive(1.47, Colour(1));
+  // // s->bsdf = new Lambertian(Colour(0.5, 1, 0.5));
+  // s->RotateY(f*TAU);
+  // scene->add(s);
+
+
+
+
+  // s = new ConstantMedium(3,  
+  //   new TriangleMesh<Simple>("assets/obj/altostratus00.obj", 
+  //                               new Lambertian(Colour(1))))
+  // ;
+  // s->Scale(0.1, 0.2, 0.1);
+  // // s->Translate(0, 0, -3);
+  // scene->add(s);
+
+  // s = new Medium(new ConstantDensityTexture(0.01),
+  // s = new Medium(new MyDensity(0.1, 3),
+  s = new ConstantMedium(1.5,  
+    new TriangleMesh<Simple>("assets/obj/altostratus00.obj", new Lambertian(Colour(1)))
+  );
+  s->Scale(0.1, 0.2, 0.1);
+  s->Translate(0, 0, 5);
+  scene->add(s);
+
+  // s = new Medium(new PerlinDensityTexture(0.05, 2),
+  //   new Cube(new Lambertian(Colour(.9, .8, .7)))
+  // );
+  // s->Scale(5, 5, 1);
+  // s->Translate(0, 0, 5);
+  // scene->add(s);
+
+  // s = new Cube(new Lambertian(
+  //   new MyPerlin()
+  //   ));
+  // s->Scale(5, 5, 1);
+  // s->Translate(0, 0, 5);
+  // scene->add(s);
+
+  s = new Disc(new Emitter(Colour(15, 15, 12)));
+  s->Scale(3,2.5,3);
   s->RotateX(PI/2);
   s->Translate(0,9.9995,5);
   scene->add(s);
+
+  s = new Disc(new Emitter(Colour(15, 15, 12)));
+  s->Scale(3,2.5,3);
+  s->RotateY(-PI/2);
+  s->Translate(9.99995 ,0,5);
+  // scene->add(s);
+
+  s = new Plane(new Emitter(Colour(3)));
+  s->Scale(5,5,3);
+  // s->RotateX(PI/2);
+  s->Translate(0,0,9);
+  // scene->add(s);
 
   // scene->world = new BVH(scene->obj_list);
   scene->world = new PrimitiveList(scene->obj_list);
