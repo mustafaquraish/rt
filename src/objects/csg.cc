@@ -12,20 +12,24 @@ bool get_both_intersections(Object *obj, Ray& ray, HitRec& r1, HitRec& r2) {
   if (obj->hit(temp_ray, r1)) {
     if (dot(r1.n, ray.d) < 0) {
       temp_ray = Ray(ray.at(r1.t), ray.d);
-      obj->hit(temp_ray, r2);
-      r2.t += r1.t;
+      // We normally expect there to be a 2nd intersection
+      if (obj->hit(temp_ray, r2)) {
+        r2.t += r1.t;
+      
+      // In some degenerate cases, there isn't one due to numerical issues
+      // (specifically, this happens with cylinders). So, we just set both
+      // intersection points to be the same, and let the CSG code handle it.
+      } else {
+        r2 = r1;
+      }
     } else {
       std::swap(r1, r2);
       r1.t = 0;
+      r1.obj = nullptr;
     }
     return true;
   }
   return false;
-}
-
-void set_correct_rec(Object *o, HitRec &r1, HitRec &r2, HitRec &actual) {
-  actual = r1.t < 0 ? r2 : r1;
-  actual.obj = o;
 }
 
 bool Union(CSGRange &a, CSGRange &b, CSGRange &res) { 
