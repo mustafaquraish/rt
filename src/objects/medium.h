@@ -14,13 +14,16 @@ struct ConstantDensityTexture : DensityTexture {
 };
 
 struct PerlinDensityTexture : DensityTexture {
-  PerlinDensityTexture(float intensity) : m_intensity(intensity) {}
+  PerlinDensityTexture(float intensity, float scale=2) 
+    : m_intensity(intensity), m_scale(scale) {}
   virtual float get(const Vec3& p) { 
-    float perlin = Simplex::layered(4, 0.5, p.x, p.y, p.z);
+    Vec3 pt = p * m_scale;
+    float perlin = Simplex::layered(8, 0.5, pt.x, pt.y, pt.z);
     return Simplex::transform(perlin, Layered) * m_intensity;
   };
   
   float m_intensity;
+  float m_scale;
 };
 
 
