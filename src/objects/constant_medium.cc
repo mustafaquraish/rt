@@ -28,9 +28,9 @@ bool ConstantMedium::hit(Ray& r, HitRec& rec) {
     rec.t = t1 + hd;
     rec.p = r.at(rec.t);
     rec.uv = Vec2(0, 0);
-    rec.n = {0, 0, 1};
+    rec.n = normalized(Random.randomVector());
     if (this->bsdf) {
-      rec.obj = this;
+      rec.obj = this; 
     } else {
       rec.obj = r1.obj;
     }
