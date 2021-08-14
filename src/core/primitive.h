@@ -23,7 +23,7 @@ struct HitRec {
   Vec3 wi;
 
   Vec2 uv;
-  Object *obj;
+  Object *obj = nullptr;
 
   float stepsRatio; // For SDFs
 };
