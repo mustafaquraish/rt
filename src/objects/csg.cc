@@ -16,7 +16,7 @@ bool get_both_intersections(Object *obj, Ray& ray, HitRec& r1, HitRec& r2) {
       r2.t += r1.t;
     } else {
       std::swap(r1, r2);
-      r1.t = -1;
+      r1.t = 0;
     }
     return true;
   }
@@ -73,7 +73,7 @@ bool Difference(CSGRange &a, CSGRange &b, CSGRange &res) {
       res.min.n = -res.min.n;
 
       res.max = a.max;
-    }
+    } else { return false; }
 
   // CAREFUL: not symmetric
   } else {
@@ -83,7 +83,7 @@ bool Difference(CSGRange &a, CSGRange &b, CSGRange &res) {
       res.min.n = -res.min.n;
       
       res.max = a.max;
-    }
+    } else { return false; }
   }
   return true;
 }
@@ -125,10 +125,14 @@ bool CSGObject::hit(Ray &r, HitRec &rec) {
   }
 
   if (res.hit) {
+    if (res.min.t < TOL && res.max.t < TOL) 
+      return false; 
+    
     rec = (res.min.t > TOL) ? res.min : res.max;
     rec.p = r.at(rec.t);
     rec.n = normalTransform(rec.n);
     if (this->bsdf) { rec.obj = this; }
+    r.tMax = rec.t;
     return true;
   }
 
