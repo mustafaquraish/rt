@@ -25,6 +25,8 @@ SCENE(Living) {
   
   Object *s;
 
+  WavefrontOBJ::set_use_mesh_lights(false);
+
   s = new TriangleMesh(Full, "assets/obj/living_room/living_room.obj");
   s->Translate(0, -2, 0);
   s->Scale(20, 20, 20);
