@@ -23,6 +23,5 @@ struct KDTree : Aggregate {
 
   KDTreeNode *kdtree;
   
-  std::vector<Primitive *> primitives;
   std::vector<Primitive *> primitiveIndices;
 };

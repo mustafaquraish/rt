@@ -59,9 +59,9 @@ KDTreeNode *KDTree::build(std::vector<Primitive *>prims,
   int num = prims.size();
   if (num <= 2 || depth == 0) {
     node->numPrims = num;
-    node->primOff = primitives.size();
+    node->primOff = m_prims.size();
     for (auto p : prims) {
-      primitives.push_back(p);
+      m_prims.push_back(p);
     }
     node->axis = -1;
     return node;
@@ -126,7 +126,7 @@ bool KDTree::hit(Ray& ray, HitRec& rec) {
     if (cur->numPrims > 0) {
 
       for (int i = 0; i < cur->numPrims; i++)
-        if (primitives[cur->primOff + i]->hit(ray, rec))
+        if (m_prims[cur->primOff + i]->hit(ray, rec))
           hit = true;
 
     // Internal node

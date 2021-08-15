@@ -41,7 +41,6 @@ struct BVH : Aggregate {
   int flatten(BVHTree *root);
   
   std::vector<BVHLinear> m_nodes;
-  std::vector<Primitive *> m_prims;
   BuildMethod m_method;
 };
 
