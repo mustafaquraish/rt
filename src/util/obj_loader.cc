@@ -91,12 +91,12 @@ void load(TriangleMesh<Type> &mesh, const char *filename) {
   MeshData data(filename);
   if constexpr (Type == MeshType::Simple) {
     data.read_triangles();
-    mesh.mesh = new BVH(data.m_faces);
+    mesh.loadTriangles(data.m_faces);
   } else {
     BVH::set_time_build(false);
     data.read_sub_meshes();
     BVH::set_time_build(true);
-    mesh.mesh = new BVH(data.m_sub_meshes);
+    mesh.loadTriangles(data.m_sub_meshes);
   }
 }
 
