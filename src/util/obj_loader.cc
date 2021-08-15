@@ -86,10 +86,9 @@ int prefix(const char *pre, const char *str) {
   return strncmp(pre, str, strlen(pre)) == 0;
 }
 
-template <MeshType Type>
-void load(TriangleMesh<Type> &mesh, const char *filename) {
+void load(TriangleMesh &mesh, const char *filename) {
   MeshData data(filename);
-  if constexpr (Type == MeshType::Simple) {
+  if (mesh.m_type == MeshType::Simple) {
     data.read_triangles();
     mesh.loadTriangles(data.m_faces);
   } else {
@@ -266,7 +265,7 @@ void MeshData::build_sub_mesh() {
     }
   }
   
-  auto *mesh = new TriangleMesh<Simple>(bsdf);
+  auto *mesh = new TriangleMesh(bsdf);
   mesh->loadTriangles(m_faces);
   m_sub_meshes.push_back(mesh);
 
@@ -295,8 +294,5 @@ void MeshData::read_sub_meshes() {
   build_sub_mesh();
   printf("[+] Loaded %d sub meshes\n", (int)m_sub_meshes.size());
 }
-
-template void load(TriangleMesh<Simple> &, const char *);
-template void load(TriangleMesh<Full> &, const char *);
 
 }

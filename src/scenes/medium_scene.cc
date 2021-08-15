@@ -108,7 +108,7 @@ SCENE(medium) {
 
 
   // s = new ConstantMedium(3,  
-  //   new TriangleMesh<Simple>("assets/obj/altostratus00.obj", 
+  //   new TriangleMesh(Simple, "assets/obj/altostratus00.obj", 
   //                               new Lambertian(Colour(1))))
   // ;
   // s->Scale(0.1, 0.2, 0.1);
@@ -118,7 +118,7 @@ SCENE(medium) {
   // s = new Medium(new ConstantDensityTexture(0.01),
   // s = new Medium(new MyDensity(0.1, 3),
   s = new ConstantMedium(1.5,  
-    new TriangleMesh<Simple>("assets/obj/altostratus00.obj", new Lambertian(Colour(1)))
+    new TriangleMesh(Simple, "assets/obj/altostratus00.obj", new Lambertian(Colour(1)))
   );
   s->Scale(0.1, 0.2, 0.1);
   s->Translate(0, 0, 5);

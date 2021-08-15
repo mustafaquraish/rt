@@ -1,6 +1,6 @@
 /**
  * This is NOT an object, but it just extends Primitive. Used in the 
- * TriangleMesh<Simple>() object.
+ * TriangleMesh() object.
  */
 
 #include <objects/triangle.h>

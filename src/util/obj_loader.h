@@ -5,7 +5,6 @@
 
 namespace WavefrontOBJ {
 
-template <MeshType Type>
-void load(TriangleMesh<Type> &mesh, const char *fname);
+void load(TriangleMesh &mesh, const char *fname);
 
 }

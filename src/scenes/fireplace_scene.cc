@@ -21,7 +21,7 @@ SCENE(Fireplace) {
   
   Object *s;
 
-  s = new TriangleMesh<Full>("assets/obj/fireplace_room/fireplace_room.obj");
+  s = new TriangleMesh(Full, "assets/obj/fireplace_room/fireplace_room.obj");
   s->Scale(20);
   scene->add(s);
 

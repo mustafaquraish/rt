@@ -8,7 +8,7 @@
 #include <objects/triangle_mesh.h>
 #include <vector>
 
-struct ParametricSurface : TriangleMesh<Simple> {
+struct ParametricSurface : TriangleMesh {
   ParametricSurface(BSDF *mat,
                     int aCount,  // Cuts along parameter a
                     int bCount,  // Cuts along parameter b
@@ -17,7 +17,7 @@ struct ParametricSurface : TriangleMesh<Simple> {
                     float bMin, // b min value
                     float bMax  // b max value
                     )
-      : TriangleMesh<Simple>(mat), aCount(aCount), aMin(aMin), aMax(aMax),
+      : TriangleMesh(mat), aCount(aCount), aMin(aMin), aMax(aMax),
         bCount(bCount), bMin(bMin), bMax(bMax) {}
 
   std::vector<Primitive *> createSurface();

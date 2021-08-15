@@ -32,14 +32,12 @@ void RTMeshList::cleanup() {
 
 /*****************************************************************************/
 
-template <MeshType Type>
-TriangleMesh<Type>::TriangleMesh(BSDF *mat) : Object(mat) {}
+TriangleMesh::TriangleMesh(BSDF *mat) : Object(mat), m_type(MeshType::Simple) {}
 
-template <MeshType Type>
-TriangleMesh<Type>::TriangleMesh(const char *fname, BSDF *mat, bool bothSides) 
-    : Object(mat), bothSides(bothSides) { 
+TriangleMesh::TriangleMesh(MeshType type, const char *fname, BSDF *mat, bool bothSides) 
+    : Object(mat), bothSides(bothSides), m_type(type) { 
   
-  if constexpr (Type == MeshType::Simple) {
+  if (m_type == MeshType::Simple) {
     if (mat == nullptr) {
       fprintf(stderr, "Error: No material specified for simple mesh, assigning default...\n");
       setMaterial(new Lambertian(1));
@@ -54,8 +52,7 @@ TriangleMesh<Type>::TriangleMesh(const char *fname, BSDF *mat, bool bothSides)
 };
 
 // Caller should set the `prims` vector to contain all the Triangles.
-template <MeshType Type>
-void TriangleMesh<Type>::loadTriangles(std::vector<Primitive *>& prims) {
+void TriangleMesh::loadTriangles(std::vector<Primitive *>& prims) {
   
   if (prims.size() < 10) {
     mesh = new PrimitiveList(prims);
@@ -66,8 +63,7 @@ void TriangleMesh<Type>::loadTriangles(std::vector<Primitive *>& prims) {
   RTMeshList::registerMesh(mesh);
 }
 
-template <MeshType Type>
-bool TriangleMesh<Type>::hit(Ray& r, HitRec &rec) {
+bool TriangleMesh::hit(Ray& r, HitRec &rec) {
   Ray transformed = rayTransform(r);
   if (!mesh) {
     printf("Error: `mesh` not set for TriangleMesh.\n");
@@ -81,13 +77,9 @@ bool TriangleMesh<Type>::hit(Ray& r, HitRec &rec) {
   r.tMax = min(r.tMax, rec.t);
   if (bothSides && dot(rec.n, r.d) > 0) rec.n = -rec.n;
 
-  if constexpr (Type == Simple) {
+  if (m_type == Simple) {
     rec.obj = this;
   }
 
   return true;
 }
-
-// Explicit template instantiation
-template class TriangleMesh<Simple>;
-template class TriangleMesh<Full>;

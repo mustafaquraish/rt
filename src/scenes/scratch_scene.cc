@@ -25,10 +25,10 @@ SCENE(Scratch) {
   
   Object *s;
 
-  s = new TriangleMesh<Simple>("assets/obj/square.obj");
+  s = new TriangleMesh(Simple, "assets/obj/square.obj");
   scene->add(s);
 
-  // s = new TriangleMesh<Simple>("assets/obj/living_room.obj", new Lambertian(Colour(.95)));
+  // s = new TriangleMesh(Simple, "assets/obj/living_room.obj", new Lambertian(Colour(.95)));
   // s->Translate(-10, -1, -5);
   // s->Scale(3);
   // scene->add(s);
