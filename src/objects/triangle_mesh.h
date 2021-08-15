@@ -31,7 +31,11 @@ struct TriangleMesh : Object {
   void loadTriangles(std::vector<Primitive *>& prims);
 
   bool hit(Ray& r, HitRec &rec);
-  
+  Vec3 sample(float *pdf, RNG& rng);
+  void finalize();
+
+  std::vector<Primitive *> *m_prims = nullptr;
+  std::vector<Primitive *> m_lights;
   Aggregate *mesh;
   bool bothSides = false;
   MeshType m_type;
