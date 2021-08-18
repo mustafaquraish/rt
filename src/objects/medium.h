@@ -2,6 +2,7 @@
 
 #include <core/object.h>
 #include <ext/simplex.h>
+#include <ext/worley.h>
 
 struct DensityTexture {
   virtual float get(const Vec3&) = 0;
@@ -20,6 +21,20 @@ struct PerlinDensityTexture : DensityTexture {
     Vec3 pt = p * m_scale;
     float perlin = Simplex::layered(8, 0.5, pt.x, pt.y, pt.z);
     return Simplex::transform(perlin, Layered) * m_intensity;
+  };
+  
+  float m_intensity;
+  float m_scale;
+};
+
+struct WorleyDensityTexture : DensityTexture {
+  WorleyDensityTexture(float intensity, float scale=2) 
+    : m_intensity(intensity), m_scale(scale) {}
+  virtual float get(const Vec3& p) { 
+    const float thres = 0.05;
+    const float mult = 3;
+    float n = Worley::layered(p * m_scale);
+    return (1 - (max(0, n-thres) * mult)) * m_intensity;
   };
   
   float m_intensity;

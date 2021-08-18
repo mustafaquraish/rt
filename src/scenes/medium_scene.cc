@@ -24,11 +24,25 @@ struct MyDensity : DensityTexture {
   float m_scale;
 };
 
+struct MyWorleyDensityTexture : DensityTexture {
+  MyWorleyDensityTexture(float intensity, float scale=2, float offset=0) 
+    : m_intensity(intensity), m_scale(scale) {}
+  virtual float get(const Vec3& p) { 
+    const float thres = 0.2;
+    const Vec3 offvec = {2, 1, 1};
+    float n = Worley::layered(p * m_scale + offvec, 1);
+    return (max(0, n-thres)) * m_intensity;
+  };
+  
+  float m_intensity;
+  float m_scale;
+};
+
 SCENE(medium) {
 
   Scene *scene = new Scene();
   
-  Vec3 e = Vec3(0, 0, -15);
+  Vec3 e = Vec3(0, -5, -15);
   Vec3 g = -e;
   Vec3 up = Vec3(0, 1, 0);
   scene->cam = Camera(e, g, up, 70, params);
@@ -117,11 +131,12 @@ SCENE(medium) {
 
   // s = new Medium(new ConstantDensityTexture(0.01),
   // s = new Medium(new MyDensity(0.1, 3),
-  s = new ConstantMedium(1.5,  
-    new TriangleMesh(Simple, "assets/obj/altostratus00.obj", new Lambertian(Colour(1)))
+  // s = new ConstantMedium(1.5,  
+  s = new Medium(new MyWorleyDensityTexture(0.2, 2.5),
+    new Cube(new Lambertian(Colour(1.3)))
   );
-  s->Scale(0.1, 0.2, 0.1);
-  s->Translate(0, 0, 5);
+  s->Scale(10, 2, 10);
+  s->Translate(0, 5, 5);
   scene->add(s);
 
   // s = new Medium(new PerlinDensityTexture(0.05, 2),
