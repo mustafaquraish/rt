@@ -1,7 +1,7 @@
 #include <objects/medium.h>
 #include <core/rng.h>
 
-#define VOLUME_STEP_SIZE 0.01
+#define VOLUME_STEP_SIZE 0.1
 
 bool Medium::hit(Ray& r, HitRec& rec) {
   Ray transformed = rayTransform(r);

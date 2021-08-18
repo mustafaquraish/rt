@@ -24,7 +24,7 @@ SCENE(A2) {
   scene->add(s);
 
   // Teapot...
-  s = new TriangleMesh<Simple>("assets/obj/teapot_lo.obj", 
+  s = new TriangleMesh(Simple, "assets/obj/teapot_lo.obj", 
     new Lambertian(new ImageTexture("assets/tex/bouncy.ppm"))
   );
   s->Scale(3);

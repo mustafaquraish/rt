@@ -29,12 +29,12 @@ SCENE(Sponza) {
   
   Object *s;
 
-  s = new RescaledMesh<Full>("assets/obj/sponza/sponza.obj");
+  s = new RescaledMesh(Full, "assets/obj/sponza/sponza.obj");
   // s->Translate(0, -2, 0);
   s->Scale(20, 20, 20);
   scene->add(s);
 
-  // s = new TriangleMesh<Simple>("assets/obj/living_room.obj", new Lambertian(Colour(.95)));
+  // s = new TriangleMesh(Simple, "assets/obj/living_room.obj", new Lambertian(Colour(.95)));
   // s->Translate(-10, -1, -5);
   // s->Scale(3);
   // scene->add(s);

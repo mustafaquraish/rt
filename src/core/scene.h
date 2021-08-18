@@ -9,8 +9,17 @@
 #include <core/envmap.h>
 
 struct Renderer;
+struct Scene;
+
+
+// Dirty hack to be able to add light sources from nested
+// meshes, as opposed to having to pass the Scene object 
+// around everywhere (for now).
+inline Scene *CurrentSceneGlobal = nullptr;
 
 struct Scene {
+  Scene() { CurrentSceneGlobal = this; }
+
   std::vector<Primitive *> obj_list;
   std::vector<Object *> lights;
 

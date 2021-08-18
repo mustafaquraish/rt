@@ -41,7 +41,7 @@ SCENE(Env) {
   s->Translate(4, 0, 0);
   // scene->add(s);
 
-  s = new TriangleMesh<Simple>("assets/obj/dragon.obj", new Mirror(0.5));
+  s = new TriangleMesh(Simple, "assets/obj/dragon.obj", new Mirror(0.5));
   s->Scale(2.5);
   s->Translate(0,-4,-5);
   scene->add(s);

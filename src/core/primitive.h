@@ -10,6 +10,7 @@
 
 #include <core/ray.h>
 #include <core/aabb.h>
+#include <vector>
 
 // Forward declare
 struct Object;
@@ -37,5 +38,6 @@ struct Primitive {
 
 struct Aggregate : Primitive {
   virtual bool hit(Ray& r, HitRec &rec) = 0;
+  std::vector<Primitive *> m_prims;
 };
 

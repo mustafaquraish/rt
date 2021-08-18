@@ -10,7 +10,7 @@ DEPFILES := $(patsubst $(SRC)/%.cc,$(DEPDIR)/%.d,$(SRCS))
 OBJS      = $(patsubst $(SRC)/%.cc,$(OBJ)/%.o,$(SRCS))
 DEPFLAGS  = -MT $@ -MMD -MP -MF $(DEPDIR)/$*.d
 EXE       = raytrace
-CFLAGS    = -g -I$(INCLUDE) -std=c++17
+CFLAGS    = -ggdb3 -I$(INCLUDE) -std=c++17
 LDLIBS    = -lm -lpng
 MODE      = "Debug"
 

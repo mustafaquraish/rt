@@ -98,7 +98,7 @@ SCENE(Cornell) {
   // s->Translate(5, -3, 4);
   // scene->add(s);
 
-  // s = new TriangleMesh<Simple>("assets/obj/water.obj", new Transmissive(1.47, Colour(1)));
+  // s = new TriangleMesh(Simple, "assets/obj/water.obj", new Transmissive(1.47, Colour(1)));
   // s->Scale(10, 10, 10);
   // s->Translate(0, -5, 6);
   // scene->add(s);
@@ -118,15 +118,15 @@ SCENE(Cornell) {
   s->Translate(0, -2, 8);
   scene->add(s);
 
-  // // s = new TriangleMesh<Simple>("assets/obj/dragon.obj", new Transmissive(1.47, Colour(1)));
-  // s = new TriangleMesh<Simple>("assets/obj/dragon.obj", new Mirror(Colour(1)));
-  // // s = new TriangleMesh<Simple>("assets/obj/dragon.obj", new Lambertian(Colour(0.9)));
-  // // s = new TriangleMesh<Simple>("assets/obj/dragon.obj", new OrenNayar(R, Colour(0.9)));
+  // // s = new TriangleMesh(Simple, "assets/obj/dragon.obj", new Transmissive(1.47, Colour(1)));
+  // s = new TriangleMesh(Simple, "assets/obj/dragon.obj", new Mirror(Colour(1)));
+  // // s = new TriangleMesh(Simple, "assets/obj/dragon.obj", new Lambertian(Colour(0.9)));
+  // // s = new TriangleMesh(Simple, "assets/obj/dragon.obj", new OrenNayar(R, Colour(0.9)));
   // s->Scale(2.5, 2.5, 2.5);
   // s->Translate(0, -10, 6);
   // scene->add(s);
 
-  // s = new TriangleMesh<Simple>("assets/obj/teapot_lo.obj", 
+  // s = new TriangleMesh(Simple, "assets/obj/teapot_lo.obj", 
   //       new Lambertian( 
   //         new ImageTexture("assets/tex/bouncy.ppm")
   //       )
@@ -142,14 +142,14 @@ SCENE(Cornell) {
   // s = new Sphere(new Transmissive(1.47, Colour(1)));
   // // s = new Sphere(new Lambertian(myim));
   // // s = new Plane(new Lambertian(Colour(0.5)));
-  // // s = new TriangleMesh<Simple>("assets/obj/dragon.obj", new OrenNayar(R, Colour(0.9)));
+  // // s = new TriangleMesh(Simple, "assets/obj/dragon.obj", new OrenNayar(R, Colour(0.9)));
   // s->Scale(4,4,4);
   // s->RotateX(-PI/4);
   // s->Translate(0, 0, 6);
   // scene->add(s);
 
 
-  // s = new TriangleMesh<Simple>("assets/obj/klein.obj", 
+  // s = new TriangleMesh(Simple, "assets/obj/klein.obj", 
   //                      new Transmissive(1.47, Colour(1)), 
   //                      true);
   // s->Scale(3);
@@ -158,7 +158,7 @@ SCENE(Cornell) {
   // s->Translate(0, 0, 6);
   // scene->add(s);
 
-  // s = new TriangleMesh<Simple>("assets/obj/dragon.obj", new Transmissive(1.47, Colour(1)));
+  // s = new TriangleMesh(Simple, "assets/obj/dragon.obj", new Transmissive(1.47, Colour(1)));
   // s->Scale(.4, .4, .4);
   // s->Translate(-5.5, 4, 6);
   // scene->add(s);

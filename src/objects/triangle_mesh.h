@@ -21,24 +21,29 @@ enum MeshType {
   Simple,    // Load only the geometry of the mesh 
   Full,      // Load the geometry and materials, create sub-meshes
 };
-template <MeshType Type=MeshType::Simple>
+
 struct TriangleMesh : Object {
   TriangleMesh(BSDF *mat);
   
-  TriangleMesh(const char *fname, BSDF *mat=nullptr, bool bothSides=false);
+  TriangleMesh(MeshType type, const char *fname, BSDF *mat=nullptr, bool bothSides=false);
 
   // Caller should set the `prims` vector to contain all the Triangles.
   void loadTriangles(std::vector<Primitive *>& prims);
 
   bool hit(Ray& r, HitRec &rec);
-  
+  Vec3 sample(float *pdf, RNG& rng);
+  void finalize();
+
+  std::vector<Primitive *> *m_prims = nullptr;
+  std::vector<Primitive *> m_lights;
   Aggregate *mesh;
   bool bothSides = false;
+  MeshType m_type;
 };
 
-template <MeshType Type=MeshType::Simple>
-struct RescaledMesh : TriangleMesh<Type> {
-  using TriangleMesh<Type>::TriangleMesh;
+
+struct RescaledMesh : TriangleMesh {
+  using TriangleMesh::TriangleMesh;
 
   virtual void finalize() override {
     float scale = max(range(this->mesh->bounds));
@@ -47,7 +52,7 @@ struct RescaledMesh : TriangleMesh<Type> {
     Vec3 pt = -centroid(this->mesh->bounds);
     this->T *= TranslateMatrix(pt.x, pt.y, pt.z);
  
-    TriangleMesh<Type>::finalize();
+    TriangleMesh::finalize();
   }
 };
 

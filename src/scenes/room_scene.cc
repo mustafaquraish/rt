@@ -76,7 +76,7 @@ SCENE(Room) {
 
   // Center
   // s = new Sphere(new Transmissive(2.2, Colour(.95)));
-  s = new TriangleMesh<Simple>("assets/obj/dragon.obj", new Transmissive(1.47, Colour(.95)));
+  s = new TriangleMesh(Simple, "assets/obj/dragon.obj", new Transmissive(1.47, Colour(.95)));
   s->Scale(2);
   s->Translate(0, -10, -5);
   scene->add(s);

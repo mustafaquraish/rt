@@ -13,7 +13,7 @@ SCENE(Ajax) {
 
   Object *s;
 
-  s = new TriangleMesh<Simple>("assets/obj/ajax.obj", new Lambertian(Colour(1, 0, 0)));
+  s = new TriangleMesh(Simple, "assets/obj/ajax.obj", new Lambertian(Colour(1, 0, 0)));
   s->RotateY(-PI/4 - PI/2);
   s->Scale(0.25, 0.25, 0.25);
   // s->RotateX(PI);

@@ -6,6 +6,7 @@
 #include <aggregates/bvh.h>
 #include <aggregates/kdtree.h>
 #include <objects/triangle_mesh.h>
+#include <core/scene.h>
 #include <core/texture.h>
 #include <util/obj_loader.h>
 #include <util/timer.h>
@@ -16,7 +17,15 @@
 #include <materials/emitter.h>
 
 
+
 namespace WavefrontOBJ {
+
+bool use_mesh_lights = true;
+float mesh_lights_scale = 100;
+
+
+void set_use_mesh_lights(bool enable) { use_mesh_lights = enable; }
+void set_mesh_lights_scale(float scale) { mesh_lights_scale = scale; }
 
 struct MeshData {
   MeshData(const char *filepath) {
@@ -46,6 +55,7 @@ struct MeshData {
   std::vector<Primitive *> m_faces;
 
   std::vector<Primitive *> m_sub_meshes;
+  std::vector<Primitive *> m_lights;
 
   std::unordered_set<std::string> m_mtl_files;
   std::unordered_map<std::string, MeshMaterial> m_materials;
@@ -86,17 +96,19 @@ int prefix(const char *pre, const char *str) {
   return strncmp(pre, str, strlen(pre)) == 0;
 }
 
-template <MeshType Type>
-void load(TriangleMesh<Type> &mesh, const char *filename) {
+void load(TriangleMesh &mesh, const char *filename) {
   MeshData data(filename);
-  if constexpr (Type == MeshType::Simple) {
+  if (mesh.m_type == MeshType::Simple) {
     data.read_triangles();
-    mesh.mesh = new BVH(data.m_faces);
+    mesh.loadTriangles(data.m_faces);
   } else {
     BVH::set_time_build(false);
     data.read_sub_meshes();
     BVH::set_time_build(true);
-    mesh.mesh = new BVH(data.m_sub_meshes);
+    mesh.loadTriangles(data.m_sub_meshes);
+  }
+  if (data.m_lights.size() > 0) {
+    mesh.m_lights = data.m_lights;
   }
 }
 
@@ -232,15 +244,15 @@ void MeshData::build_sub_mesh() {
   BSDF *bsdf = nullptr;
   Colour chosen_col = 1;
 
-  constexpr float LIGHT_BRIGHTNESS = 10.0f;
   if (mat.Ke.valid()) {
-    // Hack for now so we don't have unreasonale results
-    chosen_col = mat.Ke / max(mat.Ke) / 3.0f;
-    bsdf = new Lambertian(chosen_col);
-    
-    // @TODO: Add support for mesh-based light sources
-    // chosen_col = mat.Ke * LIGHT_BRIGHTNESS;
-    // bsdf = new Emitter(chosen_col);
+    if (WavefrontOBJ::use_mesh_lights) {
+      chosen_col = mat.Ke * WavefrontOBJ::mesh_lights_scale;
+      bsdf = new Emitter(chosen_col);
+    } else {
+      // Replace light sources with mid-gray if disabled.
+      chosen_col = mat.Ke / max(mat.Ke) / 3.0f;
+      bsdf = new Lambertian(chosen_col);
+    }
 
   } else if (mat.illum == 7) {
     chosen_col = mat.Ks;
@@ -266,9 +278,15 @@ void MeshData::build_sub_mesh() {
     }
   }
   
-  auto *mesh = new TriangleMesh<Simple>(bsdf);
+  auto *mesh = new TriangleMesh(bsdf);
   mesh->loadTriangles(m_faces);
-  m_sub_meshes.push_back(mesh);
+
+  if (mesh->bsdf->isEmitter()) {
+    m_lights.push_back(mesh);
+  } else {
+    mesh->finalize();
+    m_sub_meshes.push_back(mesh);
+  }
 
   m_faces.clear();
 }
@@ -295,8 +313,5 @@ void MeshData::read_sub_meshes() {
   build_sub_mesh();
   printf("[+] Loaded %d sub meshes\n", (int)m_sub_meshes.size());
 }
-
-template void load(TriangleMesh<Simple> &, const char *);
-template void load(TriangleMesh<Full> &, const char *);
 
 }
