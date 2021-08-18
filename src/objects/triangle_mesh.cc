@@ -4,8 +4,9 @@
 #include <aggregates/bvh.h>
 #include <aggregates/kdtree.h>
 #include <aggregates/primitive_list.h>
-
 #include <materials/lambertian.h>
+
+#include <cassert>
 
 void RTMeshList::registerMesh(Aggregate *mesh) {
   allMeshes.insert(mesh);
