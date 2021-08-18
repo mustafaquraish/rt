@@ -43,11 +43,13 @@ struct RNG {
   }
 
   inline Vec3 randomVectorUnitSphere() {
-    while (true) {
-      Vec3 p = randomVector();
-      if (length_sq(p) >= 1) continue;
-      return p;
-    }
+    float u = rand01() * 2 - 1, theta = rand01() * TAU;
+    float ra = sqrt(1 - u*u);
+    return Vec3(
+      ra * cos(theta),
+      ra * sin(theta),
+      u
+    );
   }
 
   inline Vec3 randomUnitDisk() {
@@ -57,7 +59,7 @@ struct RNG {
   }
 
   inline Vec3 randomVectorCosineHemisphere(const Vec3 &n) {
-    return normalized(n + normalized(randomVectorUnitSphere()));
+    return normalized(n + randomVectorUnitSphere());
   }
   
   int x;
