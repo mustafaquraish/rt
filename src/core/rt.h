@@ -52,6 +52,7 @@ using std::endl;
 #include <materials/lambertian.h>
 #include <materials/emitter.h>
 #include <materials/mirror.h>
+#include <materials/glossy.h>
 #include <materials/transmissive.h>
 #include <materials/orennayar.h>
 
