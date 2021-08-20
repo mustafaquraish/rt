@@ -16,6 +16,11 @@
 struct Object;
 
 struct HitRec {
+  enum RayType {
+    Diffuse,
+    Specular
+  };
+
   float t;
   Vec3 p;
   Vec3 n;
@@ -27,6 +32,7 @@ struct HitRec {
   Object *obj = nullptr;
 
   float stepsRatio; // For SDFs
+  RayType rayType;
 };
 
 struct Primitive {

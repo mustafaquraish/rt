@@ -13,23 +13,23 @@ struct BSDF {
   
   virtual ~BSDF() { delete m_tx; };
 
+  virtual void initSample(HitRec &, RNG &) const {};
+
   virtual Colour eval(HitRec& rec) = 0;
   virtual Colour sample(HitRec& rec, RNG& rng) = 0;
   virtual float pdf(HitRec& rec) = 0;
   virtual Colour emittance(HitRec& rec) { return Vec3(0); }
 
-  bool isDiffuse()  const { return diffuse; }
-  bool isEmitter()  const { return emitter; }
-  bool isSpecular() const { return specular; }
+  virtual bool isEmitter()  const { return false; }
+  
+  virtual bool isDiffuse(HitRec &rec)  const { return false; }
+  virtual bool isSpecular(HitRec &rec) const { return false; }
 
   Colour col(HitRec& rec) { 
     if (m_tx != NULL) return m_tx->get(rec);
     return m_col; 
   }
 
-  bool specular = false;
-  bool diffuse = false;
-  bool emitter = false;
   Colour m_col = Vec3(0, 1, 0);
   Texture *m_tx = NULL;
 };

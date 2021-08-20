@@ -63,16 +63,18 @@ Colour Path::Li(Ray &r, Scene *scene, RNG& rng) {
     BSDF *bsdf = rec.obj->bsdf;
     rec.wo = -ray.d;
 
+    bsdf->initSample(rec, rng);
+
 #if 1
     if (applyEmission) L += throughput * bsdf->emittance(rec);
     if (bsdf->isEmitter()) break;
-    if (!bsdf->isSpecular()) L += throughput * SampleLight(rec, scene, rng);
+    if (!bsdf->isSpecular(rec)) L += throughput * SampleLight(rec, scene, rng);
 #else
     if (bsdf->isEmitter()) return throughput * bsdf->emittance(rec);
 #endif
 
     throughput *= bsdf->sample(rec, rng);
-    applyEmission = bsdf->isSpecular();  // Only apply direct emission if spec.
+    applyEmission = bsdf->isSpecular(rec);  // Only apply direct emission if spec.
 
     // Russian roulette:
     if (bounce > 3) {

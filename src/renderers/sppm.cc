@@ -28,7 +28,7 @@ void SPPM::addVisiblePoint(const Ray& r, Scene *scene, RNG& rng, int pixIdx) {
       return;
     }
 
-    if (!bsdf->isSpecular()) {
+    if (!bsdf->isSpecular(rec)) {
       photons[pixIdx] = Photon(rec.p, -ray.d, throughput);
       photonMap->emplacePoint(rec.p, &photons[pixIdx]);
       return;

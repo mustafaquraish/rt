@@ -32,7 +32,7 @@ void PhotonMapping::sendPhoton(Scene *scene, RNG &rng, int depth) {
     BSDF *bsdf = rec.obj->bsdf;
     rec.wo = -ray.d;
 
-    if (!bsdf->isSpecular()) {
+    if (!bsdf->isSpecular(rec)) {
       photonMap->addPoint(Photon(rec.p, -ray.d, throughput));
     }
 
@@ -72,7 +72,7 @@ Colour PhotonMapping::Li(Ray& r, Scene *scene, RNG& rng) {
 
     if (bsdf->isEmitter()) return throughput * bsdf->emittance(rec);
 
-    if (!bsdf->isSpecular()) {
+    if (!bsdf->isSpecular(rec)) {
       std::vector<Photon> photons;
       photonMap->getRange(rec.p, photonRange, photons);
 

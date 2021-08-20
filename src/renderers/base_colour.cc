@@ -20,7 +20,7 @@ Colour BaseColour::Li(Ray &r, Scene *scene, RNG& rng) {
 
     throughput = throughput * bsdf->col(rec);
 
-    if (!bsdf->isSpecular()) return throughput;
+    if (!bsdf->isSpecular(rec)) return throughput;
 
     bsdf->sample(rec, rng);
     ray = Ray(rec.p, rec.wi);    
