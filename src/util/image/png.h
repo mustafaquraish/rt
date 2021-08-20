@@ -1,6 +1,6 @@
 #pragma once
 
-#include <util/image.h>
+struct Image;
 
 namespace PNG {
 

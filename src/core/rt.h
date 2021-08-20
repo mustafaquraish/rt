@@ -5,11 +5,8 @@
 using std::cout;
 using std::endl;
 
-
-// Core stuff
-#include <core/ray.h>
-#include <core/object.h>
 #include <core/camera.h>
+#include <core/envmap.h>
 
 // Utilities
 #include <util/image.h>

@@ -1,12 +1,10 @@
 #pragma once
 
-#include <core/rng.h>
-#include <core/ray.h>
-#include <core/object.h>
-#include <core/scene.h>
 #include <util/params.h>
-#include <time.h>
+#include <core/colour.h>
 
+struct Ray;
+struct RNG;
 struct Scene;
 
 struct Renderer {

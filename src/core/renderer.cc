@@ -2,6 +2,9 @@
 #include <util/timer.h>
 #include <util/progress.h>
 #include <core/tile_manager.h>
+#include <util/image.h>
+#include <core/scene.h>
+#include <core/rng.h>
 
 void Renderer::render(Scene *scene) {
   int total_samples = min(maxSamples, params.get<int>("samples"));

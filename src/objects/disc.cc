@@ -1,5 +1,5 @@
 #include <objects/disc.h>
-
+#include <core/rng.h>
 
 bool Disc::hit(Ray& r, HitRec& rec) {
   Ray transformed = rayTransform(r);

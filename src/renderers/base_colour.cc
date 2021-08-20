@@ -1,4 +1,9 @@
 #include <renderers/base_colour.h>
+#include <core/ray.h>
+#include <core/scene.h>
+#include <core/object.h>
+#include <core/rng.h>
+#include <core/bsdf.h>
 
 #define PATH_MAX_BOUNCES 30
 

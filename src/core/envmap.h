@@ -2,6 +2,7 @@
 
 #include <core/object.h>
 #include <materials/emitter.h>
+#include <core/rng.h>
 
 struct EnvironmentMap : Object {
   EnvironmentMap(Texture *tx, float brightness=10) 

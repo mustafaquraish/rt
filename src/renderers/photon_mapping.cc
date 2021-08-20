@@ -1,5 +1,10 @@
 #include <renderers/photon_mapping.h>
 #include <util/progress.h>
+#include <core/ray.h>
+#include <core/scene.h>
+#include <core/object.h>
+#include <core/rng.h>
+#include <core/bsdf.h>
 
 void PhotonMapping::sendPhoton(Scene *scene, RNG &rng, int depth) {
   if (scene->lights.size() == 0) return; 

@@ -1,9 +1,12 @@
 #pragma once
 
-#include <core/ray.h>
-#include <core/bsdf.h>
+#include <core/math.h>
 #include <core/primitive.h>
-#include <core/aabb.h>
+
+struct BSDF;
+struct Texture;
+struct Ray;
+struct RNG;
 
 struct Object : Primitive {
   Object() {};

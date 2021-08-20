@@ -2,8 +2,9 @@
 
 #include <core/math.h>
 #include <core/primitive.h>
-#include <core/rng.h>
 #include <core/texture.h>
+
+struct RNG;
 
 struct BSDF {
   BSDF() {}

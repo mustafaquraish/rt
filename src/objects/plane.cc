@@ -1,4 +1,5 @@
 #include <objects/plane.h>
+#include <core/rng.h>
 
 bool Plane::hit(Ray& r, HitRec& rec) {
   Ray transformed = rayTransform(r);

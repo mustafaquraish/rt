@@ -1,6 +1,7 @@
 #pragma once
 
-#include <core/math.h>
+union Vec2;
+union Vec3;
 
 namespace Worley {
 

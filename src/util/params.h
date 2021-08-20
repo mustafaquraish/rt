@@ -1,7 +1,6 @@
 #pragma once
 
 #include <string>
-#include <core/math.h>
 #include <unordered_map>
 
 using std::string;

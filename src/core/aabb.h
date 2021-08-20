@@ -1,7 +1,8 @@
 #pragma once
 
 #include <core/math.h>
-#include <core/ray.h>
+
+struct Ray;
 
 struct AABB {
   // Bounding box with Inifinite bounds

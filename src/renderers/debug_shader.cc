@@ -1,4 +1,9 @@
 #include <renderers/debug_shader.h>
+#include <core/ray.h>
+#include <core/scene.h>
+#include <core/object.h>
+#include <core/rng.h>
+#include <core/bsdf.h>
 
 Colour DebugShader::Li(Ray &ray, Scene *scene, RNG& rng) {
   HitRec rec;

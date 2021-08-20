@@ -1,4 +1,5 @@
 #include <materials/transmissive.h>
+#include <core/rng.h>
 
 
 Colour Transmissive::eval(HitRec& rec) {

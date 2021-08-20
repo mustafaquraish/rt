@@ -1,10 +1,7 @@
 #pragma once
 
 #include <core/renderer.h>
-#include <util/params.h>
-#include <core/primitive.h>
 #include <core/pointkdtree.h>
-
 
 
 struct PhotonMapping : Renderer {

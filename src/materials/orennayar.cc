@@ -1,4 +1,5 @@
 #include <materials/orennayar.h>
+#include <core/rng.h>
 
 OrenNayar::OrenNayar(float roughness, Colour col) 
   : BSDF(col) {

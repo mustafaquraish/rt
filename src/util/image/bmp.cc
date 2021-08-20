@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <util/image.h>
 #include <util/image/bmp.h>
 
 namespace BMP {

@@ -1,15 +1,18 @@
 #pragma once
 
 #include <core/camera.h>
-#include <core/object.h>
 
 #include <unordered_map>
 #include <vector>
 
-#include <core/envmap.h>
-
+struct EnvironmentMap;
+struct Ray;
 struct Renderer;
 struct Scene;
+struct Object;
+struct Primitive;
+struct Aggregate;
+struct HitRec;
 
 
 // Dirty hack to be able to add light sources from nested
@@ -42,12 +45,7 @@ struct Scene {
   void finalize();
   ~Scene();
 
-  // In header so compiler can inline it easier; performance critical.
-  bool hit(Ray &ray, HitRec &rec) { 
-    if (world->hit(ray, rec)) return true;
-    if (envMap) return envMap->hit(ray, rec); 
-    return false;
-  }
+  bool hit(Ray &ray, HitRec &rec);
 };
 
 

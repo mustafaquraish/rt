@@ -9,8 +9,7 @@
 
 #pragma once
 
-#include <util/image.h>
-
+struct Image;
 namespace BMP {
 
 bool load(Image &, const char *);

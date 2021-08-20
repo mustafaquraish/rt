@@ -1,4 +1,5 @@
 #include <util/map_converter.h>
+#include <core/math.h>
 
 int wrapped_index(int x, int max) {
   if (x > max) x = x % max;

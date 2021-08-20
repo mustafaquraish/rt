@@ -1,4 +1,5 @@
 #include <core/aabb.h>
+#include <core/ray.h>
 
 // Slightly faster AABB intersection when 1 / ray.d is given.
 bool AABB::hit(Ray& ray, float &t1, float &t2, const Vec3& invD) {

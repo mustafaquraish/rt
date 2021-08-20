@@ -3,7 +3,6 @@
 #include <core/renderer.h>
 
 enum DebugType{DEBUG_NORMALS, DEBUG_DEPTH, DEBUG_COLOUR};
-
 struct DebugShader : Renderer {
   DebugShader(RenderParams& params, DebugType type=DEBUG_NORMALS) 
     : Renderer(params), type(type) {

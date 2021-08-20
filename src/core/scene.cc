@@ -8,6 +8,9 @@
 #include <aggregates/bvh.h>
 #include <aggregates/primitive_list.h>
 
+#include <core/envmap.h>
+
+
 void Scene::add(Object *obj) { 
   // Finalize object first...
   obj->finalize();
@@ -17,6 +20,12 @@ void Scene::add(Object *obj) {
   if (obj->bsdf && obj->bsdf->isEmitter())
     lights.push_back(obj);
 };
+
+bool Scene::hit(Ray &ray, HitRec &rec) { 
+    if (world->hit(ray, rec)) return true;
+    if (envMap) return envMap->hit(ray, rec); 
+    return false;
+  }
 
 void Scene::addEnvMap(EnvironmentMap *tx) {
   envMap = tx;

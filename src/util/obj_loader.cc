@@ -16,7 +16,7 @@
 #include <materials/transmissive.h>
 #include <materials/emitter.h>
 
-
+#include <vector>
 
 namespace WavefrontOBJ {
 

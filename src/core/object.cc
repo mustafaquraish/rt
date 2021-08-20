@@ -1,4 +1,5 @@
 #include <core/object.h>
+#include <core/bsdf.h>
 
 using namespace std;
 

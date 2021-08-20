@@ -1,8 +1,9 @@
 #pragma once
 
-#include <core/rng.h>
 #include <core/ray.h>
-#include <util/params.h>
+
+struct RenderParams;
+struct RNG;
 
 struct Camera {
   Camera() {};

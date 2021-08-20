@@ -2,6 +2,12 @@
 #include <util/progress.h>
 #include <util/timer.h>
 
+#include <core/ray.h>
+#include <core/scene.h>
+#include <core/object.h>
+#include <core/rng.h>
+#include <core/bsdf.h>
+
 void SPPM::addVisiblePoint(const Ray& r, Scene *scene, RNG& rng, int pixIdx) {
   
   Colour throughput = 1;

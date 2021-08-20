@@ -16,9 +16,7 @@
 
 #pragma once
 
-#include <iostream>
 #include <math.h>
-#include <stdlib.h>
 
 #include <core/matrix.h>
 #include <core/colour.h>

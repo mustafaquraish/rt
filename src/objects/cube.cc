@@ -1,4 +1,5 @@
 #include <objects/cube.h>
+#include <core/rng.h>
 
 bool Cube::hit(Ray& r, HitRec& rec) {
   Ray transformed = rayTransform(r);

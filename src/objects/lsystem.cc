@@ -1,7 +1,14 @@
 #include <objects/lsystem.h>
-#include <core/rt.h>
-#include <unordered_map>
+#include <core/rng.h>
 
+#include <materials/mirror.h>
+#include <materials/transmissive.h>
+#include <materials/lambertian.h>
+
+#include <objects/cylinder.h>
+#include <objects/sphere.h>
+
+#include <aggregates/bvh.h>
 
 void LSystem::createLSystem(char type, int depth, Matrix4 pTransform,
                             std::vector<Primitive *>& obj_list, RNG& rng) {

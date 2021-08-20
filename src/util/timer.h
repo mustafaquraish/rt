@@ -2,7 +2,6 @@
 
 #include <chrono>
 #include <string>
-#include <utility>
 
 class Timer {
   std::string message = "Timer";

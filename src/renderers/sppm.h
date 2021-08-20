@@ -1,11 +1,8 @@
 #pragma once
 
 #include <core/renderer.h>
-#include <util/params.h>
-#include <core/primitive.h>
 #include <core/pointkdtree.h>
 
-#include <atomic>
 
 struct SPPM : Renderer {
   SPPM(RenderParams params) : Renderer(params) {

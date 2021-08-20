@@ -2,6 +2,8 @@
 
 #include <core/renderer.h>
 
+struct HitRec;
+
 struct DirectLighting : Renderer {
   DirectLighting(RenderParams params) : Renderer(params) {};
   Colour SampleLight(HitRec& rec, Scene *scene, RNG& rng);

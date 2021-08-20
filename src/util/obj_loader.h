@@ -1,7 +1,6 @@
 #pragma once
 
-#include <objects/triangle_mesh.h>
-#include <vector>
+struct TriangleMesh;
 
 namespace WavefrontOBJ {
 

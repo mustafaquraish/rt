@@ -1,10 +1,10 @@
-#include <util/obj_loader.h>
-#include <objects/triangle_mesh.h>
-#include <core/scene.h>
 #include <aggregates/bvh.h>
-#include <aggregates/kdtree.h>
 #include <aggregates/primitive_list.h>
+#include <core/rng.h>
+#include <core/scene.h>
 #include <materials/lambertian.h>
+#include <objects/triangle_mesh.h>
+#include <util/obj_loader.h>
 
 #include <cassert>
 

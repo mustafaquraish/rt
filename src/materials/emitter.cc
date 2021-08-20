@@ -1,4 +1,5 @@
 #include <materials/emitter.h>
+#include <core/rng.h>
 
 
 Colour Emitter::eval(HitRec& rec) {

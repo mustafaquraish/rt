@@ -1,4 +1,5 @@
 #include <objects/sphere.h>
+#include <core/rng.h>
 
 bool Sphere::hit(Ray& r, HitRec& rec) {
   Ray transformed = rayTransform(r);

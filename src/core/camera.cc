@@ -1,6 +1,6 @@
 #include <core/camera.h>
-#include <core/math.h>
-
+#include <core/rng.h>
+#include <util/params.h>
 
 Camera::Camera(Vec3 e, Vec3 g, Vec3 up, float vfov, RenderParams& params) :
                e(e) {

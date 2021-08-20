@@ -1,4 +1,6 @@
 #include <core/rt.h>
+#include <core/rng.h>
+
 
 SCENE(Implicit) {
 

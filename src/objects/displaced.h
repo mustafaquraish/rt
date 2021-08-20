@@ -5,6 +5,7 @@
 #pragma once
 
 #include <objects/parametric_surface.h>
+#include <core/texture.h>
 
 struct DisplacedSphere : ParametricSurface {
   DisplacedSphere(
