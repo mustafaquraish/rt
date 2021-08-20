@@ -8,7 +8,7 @@ Colour Glossy::eval(HitRec &rec) {
 }
 
 void Glossy::initSample(HitRec &rec, RNG &rng) const {
-  if (rng.rand01() < m_roughness) {
+  if (rng.rand01() <= m_roughness) {
     rec.rayType = HitRec::RayType::Diffuse;
   } else {
     rec.rayType = HitRec::RayType::Specular;
@@ -21,6 +21,9 @@ Colour Glossy::sample(HitRec &rec, RNG& rng) {
   } else {
     Vec3 d = -rec.wo, n = rec.n;
     rec.wi = d - 2 * dot(d, n) * n;
+    if (m_refl_sig > 0) {
+      rec.wi = rng.randomVectorNormalDist(rec.wi, m_refl_sig);
+    }
   }
   return col(rec);
 }

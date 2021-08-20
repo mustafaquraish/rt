@@ -60,11 +60,34 @@ struct RNG {
   inline Vec3 randomVectorCosineHemisphere(const Vec3 &n) {
     return normalized(n + randomVectorUnitSphere());
   }
+
+  inline float randomNormalDist() {
+    if (bm_has_cache) {
+      bm_has_cache = false;
+      return bm_cache;
+    }
+    float x1 = sqrt(-2 * log(rand01()));
+    float f1 = rand01() * TAU;
+    bm_cache = x1 * cos(f1);
+    bm_has_cache = true;
+    return x1 * sin(f1);
+  }
+
+  inline Vec3 randomVectorNormalDist(const Vec3 &mu, float sigma) {
+    // https://en.wikipedia.org/wiki/Box%E2%80%93Muller_transform
+    Vec3 dist = Vec3(randomNormalDist(),
+                     randomNormalDist(),
+                     randomNormalDist());
+    return normalized(mu + dist * sigma);
+  }
   
   int x;
   int y;
   int z;
   int w;
+
+  bool bm_has_cache = false;
+  float bm_cache;
 };
 
 inline thread_local RNG Random;

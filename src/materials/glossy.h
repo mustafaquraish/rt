@@ -3,8 +3,10 @@
 #include <core/bsdf.h>
 
 struct Glossy : BSDF {
-  Glossy(Colour col, float pct=0.5) : BSDF(col), m_roughness(pct) {}
-  Glossy(Texture *tx, float pct=0.5) : BSDF(tx), m_roughness(pct) {}
+  Glossy(Colour col, float pct=0.5, float refl_sig=0) 
+    : BSDF(col), m_roughness(pct), m_refl_sig(refl_sig) {}
+  Glossy(Texture *tx, float pct=0.5, float refl_sig=0) 
+    : BSDF(tx), m_roughness(pct), m_refl_sig(refl_sig) {}
 
   virtual void initSample(HitRec &, RNG &) const;
 
@@ -16,5 +18,6 @@ struct Glossy : BSDF {
   float pdf(HitRec& rec);
 
   float m_roughness;
+  float m_refl_sig;
 };
 
