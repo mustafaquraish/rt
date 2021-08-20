@@ -13,6 +13,7 @@
 
 #include <materials/lambertian.h>
 #include <materials/mirror.h>
+#include <materials/glossy.h>
 #include <materials/transmissive.h>
 #include <materials/emitter.h>
 
@@ -20,11 +21,13 @@
 
 namespace WavefrontOBJ {
 
-bool use_mesh_lights = true;
-float mesh_lights_scale = 100;
+static bool use_mesh_lights = false;
+static bool use_glossy_materials = false;
+static float mesh_lights_scale = 100;
 
 
 void set_use_mesh_lights(bool enable) { use_mesh_lights = enable; }
+void set_use_glossy_materials(bool enable) { use_glossy_materials = enable; }
 void set_mesh_lights_scale(float scale) { mesh_lights_scale = scale; }
 
 struct MeshData {
@@ -36,12 +39,13 @@ struct MeshData {
   struct MeshMaterial {
     Colour Kd = Colour(1);
     Colour Ka = Colour(0);
-    Colour Ke = 0;
     Colour Ks = Colour(1);
+    Colour Ke = Colour(0);
     Colour Tf = Colour(1);
     int illum = 0;
     float Ns = 0;
     float ref_idx = 1.0;
+    float alpha = 1.0;
     std::string texmap;
   };
   
@@ -82,6 +86,8 @@ struct MeshData {
     int v, n, t;
     VertexType type;
   };
+
+  BSDF *get_bsdf_from_material(const MeshMaterial &mat) const;
 
   void make_triangle_from_points(Vertex &, Vertex &, Vertex &);
   void read_faces_from_line(char *line);
@@ -234,16 +240,11 @@ void MeshData::read_material_file(const char *filename) {
   flush_material("");
 }
 
-void MeshData::build_sub_mesh() {
-  if (m_faces.empty() || m_cur_material_name.empty()) return;
-  
-  auto res = m_materials.find(m_cur_material_name);
-  if (res == m_materials.end()) { fprintf(stderr, "Error, couldn't find mat: %s\n", m_cur_material_name.c_str()), exit(1); }
-  MeshMaterial &mat = res->second;
-
-  BSDF *bsdf = nullptr;
+BSDF *MeshData::get_bsdf_from_material(const MeshMaterial &mat) const {
   Colour chosen_col = 1;
-
+  BSDF *bsdf = nullptr;
+  
+  // Emitting objects...
   if (mat.Ke.valid()) {
     if (WavefrontOBJ::use_mesh_lights) {
       chosen_col = mat.Ke * WavefrontOBJ::mesh_lights_scale;
@@ -254,19 +255,50 @@ void MeshData::build_sub_mesh() {
       bsdf = new Lambertian(chosen_col);
     }
 
+  // Refractive objects...
   } else if (mat.illum == 7) {
     chosen_col = mat.Ks;
     if (max(chosen_col) < 0.6) {
       chosen_col *= (0.6 / max(chosen_col));
     }
-    if (mat.ref_idx == 1) mat.ref_idx = 1.5;
-    bsdf = new Transmissive(mat.ref_idx, chosen_col);
+    float ref_idx = mat.ref_idx == 1 ? 1.5 : mat.ref_idx;
+    bsdf = new Transmissive(ref_idx, chosen_col);
+
+  // Reflective objects...
   } else if (mat.illum > 2 && mat.Ns >= 1000) {
     chosen_col = mat.Ks;    
     bsdf = new Mirror(chosen_col); 
+
+  // Diffuse / glossy objects...
   } else {
-    chosen_col = mat.Kd + mat.Ka;
-    bsdf = new Lambertian(chosen_col);
+    
+    // Approximate glossy material based on properties
+    if (WavefrontOBJ::use_glossy_materials) {
+
+      const float MAX_REFL_SIG = 0.3;
+      
+      Colour col = mat.Ka + mat.Kd + mat.Ks;
+      float diffuse = length(mat.Ka) + length(mat.Kd);
+      
+      diffuse = diffuse / length(col);
+      float reflect = 1 - diffuse;
+      
+      float refl_sig = 0;
+      if (mat.Ks.valid() && mat.Ns > 0 && mat.Ns <= 999)
+        refl_sig = MAX_REFL_SIG - (MAX_REFL_SIG * (mat.Ns/1000.0));
+
+      float max_col = max(col);
+      if (max_col > 1)
+        col /= max_col;
+
+      chosen_col = col;
+      bsdf = new Glossy(chosen_col, diffuse, refl_sig);
+    
+    // Use a lambertian material
+    } else {
+      chosen_col = mat.Ka + mat.Kd;
+      bsdf = new Lambertian(chosen_col);
+    }
   }
 
   if (!mat.texmap.empty()) {
@@ -277,6 +309,18 @@ void MeshData::build_sub_mesh() {
       bsdf->m_tx = new ImageTexture(full_path.c_str());
     }
   }
+
+  return bsdf;
+}
+
+void MeshData::build_sub_mesh() {
+  if (m_faces.empty() || m_cur_material_name.empty()) return;
+  
+  auto res = m_materials.find(m_cur_material_name);
+  if (res == m_materials.end()) { fprintf(stderr, "Error, couldn't find mat: %s\n", m_cur_material_name.c_str()), exit(1); }
+  
+  MeshMaterial &mat = res->second;
+  BSDF *bsdf = get_bsdf_from_material(mat);
   
   auto *mesh = new TriangleMesh(bsdf);
   mesh->loadTriangles(m_faces);
@@ -308,7 +352,7 @@ void MeshData::read_sub_meshes() {
     if (sscanf(cur, "mtllib %s", buf)) { read_material_file(buf); }
     if (sscanf(cur, "usemtl %s", buf)) { build_sub_mesh(), m_cur_material_name = buf; }
     // if (sscanf(cur, "g %s", buf)) { m_cur_material_name = buf; }
-    if (sscanf(cur, "o %s", buf)) { build_sub_mesh(); }
+    // if (sscanf(cur, "o %s", buf)) { build_sub_mesh(); }
   }
   build_sub_mesh();
   printf("[+] Loaded %d sub meshes\n", (int)m_sub_meshes.size());
