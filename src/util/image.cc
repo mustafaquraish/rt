@@ -102,9 +102,9 @@ void Image::set(int i, int j, Colour col) {
 }
 
 void Image::splat(int i, int j, Colour col) {
-  m_data[(i + j * sx) * 3 + 0] += + col.x;
-  m_data[(i + j * sx) * 3 + 1] += + col.y;
-  m_data[(i + j * sx) * 3 + 2] += + col.z;
+  m_data[(i + j * sx) * 3 + 0] += col.x;
+  m_data[(i + j * sx) * 3 + 1] += col.y;
+  m_data[(i + j * sx) * 3 + 2] += col.z;
 }
 
 Image::~Image() { 
