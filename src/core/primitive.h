@@ -32,7 +32,7 @@ struct HitRec {
   Object *obj = nullptr;
 
   float stepsRatio; // For SDFs
-  RayType rayType;
+  RayType rayType = RayType::Diffuse;
 };
 
 struct Primitive {
