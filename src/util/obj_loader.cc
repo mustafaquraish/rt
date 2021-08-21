@@ -12,7 +12,7 @@
 #include <util/timer.h>
 
 #include <materials/basic.h>
-#include <materials/glossy.h>
+#include <materials/hybrid.h>
 #include <materials/emitter.h>
 
 #include <vector>
@@ -20,12 +20,11 @@
 namespace WavefrontOBJ {
 
 static bool use_mesh_lights = false;
-static bool use_glossy_materials = false;
+static bool use_hybrid_material = false;
 static float mesh_lights_scale = 100;
 
-
 void set_use_mesh_lights(bool enable) { use_mesh_lights = enable; }
-void set_use_glossy_materials(bool enable) { use_glossy_materials = enable; }
+void set_use_hybrid_material(bool enable) { use_hybrid_material = enable; }
 void set_mesh_lights_scale(float scale) { mesh_lights_scale = scale; }
 
 struct MeshData {
@@ -230,6 +229,7 @@ void MeshData::read_material_file(const char *filename) {
     if (sscanf(cur, "Ks %f %f %f", &r, &g, &b)) { mat.Ks = Colour(r, g, b); }
     if (sscanf(cur, "Tf %f %f %f", &r, &g, &b)) { mat.Tf = Colour(r, g, b); }
     if (sscanf(cur, "illum %d", &v)) { mat.illum = v; }
+    if (sscanf(cur, "d %f", &r)) { mat.alpha = r; }
     if (sscanf(cur, "Ns %f", &r)) { mat.Ns = r; }
     if (sscanf(cur, "Ni %f", &r)) { mat.ref_idx = r; }
     if (sscanf(cur, "map_Kd %s", buf)) { 
@@ -255,25 +255,10 @@ BSDF *MeshData::get_bsdf_from_material(const MeshMaterial &mat) const {
       bsdf = new Lambertian(chosen_col);
     }
 
-  // Refractive objects...
-  } else if (mat.illum == 7) {
-    chosen_col = mat.Ks;
-    if (max(chosen_col) < 0.6) {
-      chosen_col *= (0.6 / max(chosen_col));
-    }
-    float ref_idx = mat.ref_idx == 1 ? 1.5 : mat.ref_idx;
-    bsdf = new Transmissive(ref_idx, chosen_col);
-
-  // Reflective objects...
-  } else if (mat.illum > 2 && mat.Ns >= 1000) {
-    chosen_col = mat.Ks;    
-    bsdf = new Mirror(chosen_col); 
-
-  // Diffuse / glossy objects...
   } else {
     
-    // Approximate glossy material based on properties
-    if (WavefrontOBJ::use_glossy_materials) {
+    // Approximate Hybrid material based on properties
+    if (WavefrontOBJ::use_hybrid_material) {
 
       const float MAX_REFL_SIG = 0.3;
       
@@ -285,19 +270,42 @@ BSDF *MeshData::get_bsdf_from_material(const MeshMaterial &mat) const {
       
       float refl_sig = 0;
       if (mat.Ks.valid() && mat.Ns > 0 && mat.Ns <= 999)
-        refl_sig = MAX_REFL_SIG - (MAX_REFL_SIG * (mat.Ns/1000.0));
+        refl_sig = MAX_REFL_SIG - (MAX_REFL_SIG * (mat.Ns/2000.0));
+
+      float refract = 0;
+
+      diffuse *= mat.alpha;
+      reflect *= mat.alpha;
+      refract = 1 - mat.alpha;
 
       float max_col = max(col);
       if (max_col > 1)
         col /= max_col;
 
       chosen_col = col;
-      bsdf = new Glossy(chosen_col, diffuse, refl_sig);
+      bsdf = new Hybrid(chosen_col, diffuse, reflect, refract, refl_sig, mat.ref_idx);
     
-    // Use a lambertian material
+    // Use the basic materials instead
     } else {
-      chosen_col = mat.Ka + mat.Kd;
-      bsdf = new Lambertian(chosen_col);
+
+      // Refractive objects...
+      if (mat.illum == 7) {
+        chosen_col = mat.Ks;
+        if (max(chosen_col) < 0.6) 
+          chosen_col *= (0.6 / max(chosen_col));
+        float ref_idx = mat.ref_idx == 1 ? 1.5 : mat.ref_idx;
+        bsdf = new Transmissive(ref_idx, chosen_col);
+
+      // Reflective objects...
+      } else if (mat.illum > 2 && mat.Ns >= 1000) {
+        chosen_col = mat.Ks;    
+        bsdf = new Mirror(chosen_col); 
+
+      // Diffuse
+      } else {
+        chosen_col = mat.Ka + mat.Kd;
+        bsdf = new Lambertian(chosen_col);
+      }
     }
   }
 
@@ -352,11 +360,9 @@ void MeshData::read_sub_meshes() {
     read_basic_from_line(cur);
     if (sscanf(cur, "mtllib %s", buf)) { read_material_file(buf); }
     if (sscanf(cur, "usemtl %s", buf)) { build_sub_mesh(), m_cur_material_name = buf; }
-    // if (sscanf(cur, "g %s", buf)) { m_cur_material_name = buf; }
-    // if (sscanf(cur, "o %s", buf)) { build_sub_mesh(); }
   }
   build_sub_mesh();
   printf("[+] Loaded %d sub meshes\n", (int)m_sub_meshes.size());
 }
 
-}
+} // End namespace
