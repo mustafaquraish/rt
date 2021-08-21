@@ -1,4 +1,5 @@
 #include <materials/glossy.h>
+#include <core/reflection.h>
 #include <core/rng.h>
 
 Colour Glossy::eval(HitRec &rec) {
