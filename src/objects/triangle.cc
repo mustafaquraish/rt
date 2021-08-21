@@ -74,7 +74,7 @@ bool Triangle::hit(Ray& r, HitRec& rec) {
                n[0].y * u + n[1].y * v + n[2].y * w,
                n[0].z * u + n[1].z * v + n[2].z * w);
   rec.uv = Vec2(
-    1 - (uv[0].x * u + uv[1].x * v + uv[2].x * w),
+    uv[0].x * u + uv[1].x * v + uv[2].x * w,
     uv[0].y * u + uv[1].y * v + uv[2].y * w
   );
   r.tMax = min(r.tMax, t);

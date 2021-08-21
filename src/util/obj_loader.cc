@@ -107,6 +107,8 @@ void load(TriangleMesh &mesh, const char *filename) {
   if (mesh.m_type == MeshType::Simple) {
     data.read_triangles();
     mesh.loadTriangles(data.m_faces);
+    mesh.Scale(-1, 1, 1);
+
   } else {
     BVH::set_time_build(false);
     data.read_sub_meshes();
@@ -324,6 +326,7 @@ void MeshData::build_sub_mesh() {
   
   auto *mesh = new TriangleMesh(bsdf);
   mesh->loadTriangles(m_faces);
+  mesh->Scale(-1, 1, 1);
 
   if (mesh->bsdf->isEmitter()) {
     m_lights.push_back(mesh);
