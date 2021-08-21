@@ -11,10 +11,8 @@
 #include <util/obj_loader.h>
 #include <util/timer.h>
 
-#include <materials/lambertian.h>
-#include <materials/mirror.h>
+#include <materials/basic.h>
 #include <materials/glossy.h>
-#include <materials/transmissive.h>
 #include <materials/emitter.h>
 
 #include <vector>

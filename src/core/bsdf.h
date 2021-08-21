@@ -15,9 +15,9 @@ struct BSDF {
 
   virtual void initSample(HitRec &, RNG &) const {};
 
-  virtual Colour eval(HitRec& rec) = 0;
+  virtual Colour eval(HitRec& rec) { return 0; }
   virtual Colour sample(HitRec& rec, RNG& rng) = 0;
-  virtual float pdf(HitRec& rec) = 0;
+  virtual float pdf(HitRec& rec) {  return 0; };
   virtual Colour emittance(HitRec& rec) { return Vec3(0); }
 
   virtual bool isEmitter()  const { return false; }

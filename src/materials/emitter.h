@@ -1,17 +1,10 @@
 #pragma once
 
-#include <core/bsdf.h>
+#include <materials/basic.h>
 
-struct Emitter : BSDF {
-  Emitter(Colour col) : BSDF(col) { }
-  Emitter(Texture *tx) : BSDF(tx) { }
-  
+struct Emitter : Lambertian {
+  using Lambertian::Lambertian;
   virtual bool isEmitter() const { return true; }
-
-
-  Colour eval(HitRec& rec);
-  Colour sample(HitRec& rec, RNG& rng);
-  float pdf(HitRec& rec);
-  Colour emittance(HitRec& rec);
+  Colour emittance(HitRec& rec) { return col(rec); };
 };
 

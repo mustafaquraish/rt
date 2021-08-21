@@ -1,9 +1,7 @@
 #include <objects/lsystem.h>
 #include <core/rng.h>
 
-#include <materials/mirror.h>
-#include <materials/transmissive.h>
-#include <materials/lambertian.h>
+#include <materials/basic.h>
 
 #include <objects/cylinder.h>
 #include <objects/sphere.h>

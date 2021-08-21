@@ -49,11 +49,9 @@ using std::endl;
 #include <core/scene.h>
 
 // Materials
-#include <materials/lambertian.h>
+#include <materials/basic.h>
 #include <materials/emitter.h>
-#include <materials/mirror.h>
 #include <materials/glossy.h>
-#include <materials/transmissive.h>
 #include <materials/orennayar.h>
 
 
