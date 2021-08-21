@@ -18,9 +18,13 @@
 struct ProgressBar {
   ProgressBar(int totalWork) : ProgressBar(totalWork, "ProgressBar") {};
 
-  ProgressBar(int totalWork, std::string message, int displayInc=1) 
+  ProgressBar(int totalWork, std::string message, int displayInc) 
     : total(totalWork), workRatio(100.0/totalWork), message(message),
       displayIncrement(displayInc) {};
+
+  ProgressBar(int totalWork, std::string message) 
+    : total(totalWork), workRatio(100.0/totalWork), message(message) {}
+
 
   void update(int increment=1) { 
     done += increment;
@@ -31,7 +35,6 @@ struct ProgressBar {
 
   void display() {
     printf("\r- %s progress: %.1f%%  ", message.c_str(), done * workRatio);
-    fflush(stdout);
   }
 
   int total;
