@@ -55,7 +55,7 @@ debug: $(EXE)
 
 # Optimize in release mode
 release: MODE = "Release"
-release: CFLAGS += -O3 -ffast-math $(OPENMP) -ftree-vectorize -msse2 -mfpmath=sse -flto=full -march=native
+release: CFLAGS += -O3 -ffast-math $(OPENMP) -ftree-vectorize -msse2 -mfpmath=sse -flto -march=native
 release: LDLIBS += $(OPENMP)
 release: $(EXE)
 
