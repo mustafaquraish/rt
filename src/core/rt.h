@@ -52,6 +52,7 @@ using std::endl;
 #include <materials/basic.h>
 #include <materials/emitter.h>
 #include <materials/glossy.h>
+#include <materials/hybrid.h>
 #include <materials/orennayar.h>
 
 
