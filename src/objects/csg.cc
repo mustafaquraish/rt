@@ -129,9 +129,10 @@ bool CSGObject::hit(Ray &r, HitRec &rec) {
   }
 
   if (res.hit) {
-    if (res.min.t < TOL && res.max.t < TOL) 
-      return false; 
-    
+    HitRec picked = (res.min.t > TOL) ? res.min : res.max;
+    if (picked.t < TOL || picked.t > r.tMax) 
+      return false;
+
     rec = (res.min.t > TOL) ? res.min : res.max;
     rec.p = r.at(rec.t);
     rec.n = normalTransform(rec.n);
