@@ -31,14 +31,18 @@ Colour Path::SampleLight(HitRec& rec, Scene *scene, RNG& rng) {
 
   Ray shadowRay = Ray(rec.p, wi);
 
+  float wi_dot_n = dot(wi, rec.n);
+  if (wi_dot_n < 0) return 0;
+
   if (scene->hit(shadowRay, tmp) && tmp.obj == light) {
+    float wi_dot_ls_n = dot(wi, tmp.n);
     // Light ray from bad direction
-    if (dot(wi, tmp.n) > 0 || dot(wi, rec.n) < 0) return 0;
+    if (wi_dot_ls_n > 0) return 0;
     
     tmp.wo = -shadowRay.d;
 
     pdf *= (tmp.t * tmp.t);
-    pdf /= fabs(dot(normalized(wi), rec.n) * -dot(normalized(wi), tmp.n));
+    pdf /= wi_dot_n * -wi_dot_ls_n;
     pdf /= scene->lights.size();
 
     if (pdf < MIN_PDF_LIGHT) pdf = MIN_PDF_LIGHT;
