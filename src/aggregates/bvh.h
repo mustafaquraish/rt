@@ -32,7 +32,7 @@ struct BVH : Aggregate {
     Median,
   };
 
-  BVH(std::vector<Primitive *>&, BuildMethod=Median);
+  BVH(std::vector<Primitive *>&, BuildMethod=SAH);
   ~BVH() {};
   bool hit(Ray& ray, HitRec& rec);
   

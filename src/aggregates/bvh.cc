@@ -130,29 +130,33 @@ bool BVH::hit(Ray& ray, HitRec& rec) {
 
   while (stackPt) {
     int curIdx = stack[ --stackPt ];
-    BVHLinear *cur = &m_nodes[ curIdx ];
+    BVHLinear &cur = m_nodes[ curIdx ];
 
     // Leaf node, test against m_prims
-    if (cur->numPrims > 0) {
-      for (int i = 0; i < cur->numPrims; i++)
-        if (m_prims[cur->primOff + i]->hit(ray, rec))
-          hit = true;
+    if (cur.numPrims > 0) {
+      for (int i = 0; i < cur.numPrims; ++i)
+        hit = m_prims[cur.primOff + i]->hit(ray, rec) || hit;
 
     // Internal node
     } else {
-      int a = curIdx + 1, b = cur->child2Off;
+      int a = curIdx + 1, b = cur.child2Off;
       float a1, a2, b1, b2;
 
       // Check both children's bounding boxes
-      int hit_a = m_nodes[a].bounds.hit(ray, a1, a2, invD);
-      int hit_b = m_nodes[b].bounds.hit(ray, b1, b2, invD);
+      bool hit_a = m_nodes[a].bounds.hit(ray, a1, a2, invD);
+      bool hit_b = m_nodes[b].bounds.hit(ray, b1, b2, invD);
 
       if (!hit_a && !hit_b) continue;  // Hit none of them
       if (!hit_b) { stack[stackPt++] = a; continue; } // Didn't hit b, try a
       if (!hit_a) { stack[stackPt++] = b; continue; } // Didn't hit a, try b
 
-      stack[stackPt++] = a1 >= b1 ? a : b;  // Further child
-      stack[stackPt++] = a1 <  b1 ? a : b;  //  Closer child
+      if (a1 >= b1) {
+        stack[stackPt++] = a;  // Further child
+        stack[stackPt++] = b;  //  Closer child
+      } else {
+        stack[stackPt++] = b;  // Further child
+        stack[stackPt++] = a;  //  Closer child
+      }
     }
   }
   return hit;
