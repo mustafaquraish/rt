@@ -7,15 +7,16 @@ SCENE(Living) {
   Scene *scene = new Scene();
   
 
-  Vec3 e = Vec3(-30, 1, 120);
-  Vec3 g = RotateYMatrix(-PI/10) * Vec3(0, -.4, -1);
+  Vec3 e = Vec3(-45, -5, 120);
+  Vec3 g = RotateYMatrix(-PI/7.5) * Vec3(0, -.275, -1);
+  // Vec3 g = Vec3(10,-40,0) - e;
 
   // Vec3 e = Vec3(0, 1, 2);
   // Vec3 g = Vec3(1, 1, 0) - e;
   
   Vec3 up = Vec3(0, 1, 0);
 
-  scene->cam = Camera(e, g, up, 70, params);
+  scene->cam = Camera(e, g, up, 65, params);
 
   scene->renderer = new Path(params);
   // scene->renderer = new DebugShader(params);
@@ -26,6 +27,8 @@ SCENE(Living) {
   Object *s;
 
   WavefrontOBJ::set_use_mesh_lights(false);
+  WavefrontOBJ::set_use_hybrid_material(true);
+  // WavefrontOBJ::set_mesh_lights_scale(30);
 
   s = new TriangleMesh(Full, "assets/obj/living_room/living_room.obj");
   s->Translate(0, -2, 0);
@@ -38,10 +41,10 @@ SCENE(Living) {
   // scene->add(s);
 
 
-  s = new Disc(new Emitter(Colour(.99, .7, .5) * 10));
-  s->RotateX(PI/2);
-  s->Scale(10, 10, 10);
-  s->Translate(35, 22, 70);
+  s = new Plane(new Emitter(Colour(.99) * 40));
+  // s->RotateX(PI/2);
+  s->Scale(35, 15, 1);
+  s->Translate(0, -3, 10);
   scene->add(s);
 
   // scene->world = new BVH(scene->obj_list);
