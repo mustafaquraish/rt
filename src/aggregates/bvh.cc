@@ -119,6 +119,7 @@ BVH::BVH(std::vector<Primitive *>& prims, BVH::BuildMethod method)
   flatten(bvh);
 }
 
+__attribute__((flatten))
 bool BVH::hit(Ray& ray, HitRec& rec) {
   bool hit = false;
   Vec3 invD = 1 / ray.d; // Lets us have slightly faster AABB hits

@@ -10,6 +10,7 @@
 
 using namespace std;
 
+__attribute__((flatten))
 Colour Path::SampleLight(HitRec& rec, Scene *scene, RNG& rng) {
   float pdf;
   HitRec tmp;
@@ -49,6 +50,7 @@ Colour Path::SampleLight(HitRec& rec, Scene *scene, RNG& rng) {
   return Colour(0);
 }
 
+__attribute__((flatten))
 Colour Path::Li(Ray &r, Scene *scene, RNG& rng) {
   HitRec rec;
   
