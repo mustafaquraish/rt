@@ -7,7 +7,7 @@ bool AABB::hit(Ray& ray, float &t1, float &t2, const Vec3& invD) {
   float tmax = INFINITY;
 
   // Refine using slabs along each axis
-  for (int axis = 0; axis < 3; axis++) {
+  for (int axis = 0; axis < 3; ++axis) {
     float _tmin = (min[axis] - ray.p[axis]) * invD[axis];
     float _tmax = (max[axis] - ray.p[axis]) * invD[axis];
     if (_tmin > _tmax) std::swap(_tmin, _tmax); 
@@ -30,7 +30,7 @@ bool AABB::hit(Ray& ray, float &t1, float &t2) {
   float tmax = INFINITY;
 
   // Refine using slabs along each axis
-  for (int axis = 0; axis < 3; axis++) {
+  for (int axis = 0; axis < 3; ++axis) {
     float _tmin = (min[axis] - ray.p[axis]) / ray.d[axis];
     float _tmax = (max[axis] - ray.p[axis]) / ray.d[axis];
     if (_tmin > _tmax) std::swap(_tmin, _tmax); 
