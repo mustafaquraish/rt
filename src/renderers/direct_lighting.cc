@@ -31,8 +31,7 @@ Colour DirectLighting::SampleLight(HitRec& rec, Scene *scene, RNG& rng) {
   Ray shadowRay = Ray(rec.p, wi);
   if (scene->hit(shadowRay, tmp) && tmp.obj == light) {
     // Light ray from bad direction
-    if (dot(wi, tmp.n) < 0 || dot(wi, rec.n) > 0) {
-      
+    if (dot(wi, tmp.n) < 0 && dot(wi, rec.n) > 0) {
       tmp.wo = -shadowRay.d;
 
       pdf *= (tmp.t * tmp.t);
