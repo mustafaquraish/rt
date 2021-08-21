@@ -18,7 +18,8 @@ struct Object;
 struct HitRec {
   enum RayType {
     Diffuse,
-    Specular
+    Reflection,
+    Refraction,
   };
 
   float t;

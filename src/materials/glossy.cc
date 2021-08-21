@@ -9,20 +9,19 @@ void Glossy::initSample(HitRec &rec, RNG &rng) const {
   if (rng.rand01() <= m_roughness) {
     rec.rayType = HitRec::RayType::Diffuse;
   } else {
-    rec.rayType = HitRec::RayType::Specular;
+    rec.rayType = HitRec::RayType::Reflection;
   }
 }
 
 Colour Glossy::sample(HitRec &rec, RNG& rng) {
   if (rec.rayType == HitRec::RayType::Diffuse) {
     rec.wi = rng.randomVectorCosineHemisphere(rec.n);
-  } else {
-    Vec3 d = -rec.wo, n = rec.n;
-    rec.wi = d - 2 * dot(d, n) * n;
-    if (m_refl_sig > 0) {
-      rec.wi = rng.randomVectorNormalDist(rec.wi, m_refl_sig);
-    }
+    return col(rec);
   }
+
+  rec.wi = Reflection::reflect(-rec.wo, rec.n);
+  if (m_refl_sig > TOL)
+    rec.wi = rng.randomVectorNormalDist(rec.wi, m_refl_sig);
   return col(rec);
 }
 
@@ -35,5 +34,5 @@ bool Glossy::isDiffuse(HitRec &rec) const {
 }
 
 bool Glossy::isSpecular(HitRec &rec) const { 
-  return rec.rayType == HitRec::RayType::Specular; 
+  return rec.rayType != HitRec::RayType::Diffuse; 
 }
