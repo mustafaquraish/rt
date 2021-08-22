@@ -1,6 +1,8 @@
 #pragma once
 
 #include <core/math.h>
+#include <time.h>
+
 
 struct RNG {
   RNG() {
@@ -90,4 +92,4 @@ struct RNG {
   float bm_cache;
 };
 
-inline thread_local RNG Random;
+inline thread_local RNG Random(time(0));

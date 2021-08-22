@@ -25,7 +25,7 @@ void Renderer::render(Scene *scene) {
   for (int t = 0; t < tileManager.numTiles; t++) {
 
     Tile tile = tileManager.getTile(t);
-    RNG rng = RNG(t);
+    RNG rng;
     
     for (int y = tile.yBegin; y < tile.yEnd; y++) {
       for (int x = tile.xBegin; x < tile.xEnd; x++) {
