@@ -1,6 +1,7 @@
 #include <util/image.h>
 
 #include <util/image/ppm.h>
+#include <util/image/pfm.h>
 #include <util/image/png.h>
 #include <util/image/bmp.h>
 #include <util/timer.h>
@@ -36,6 +37,7 @@ Image::Image(int sx, int sy) : sx(sx), sy(sy) {
 Image::Image(char const *fname) {
   auto extension = get_extension(fname);
   if      (extension == "ppm") { PPM::load(*this, fname); }
+  else if (extension == "pfm") { PFM::load(*this, fname); }
   else if (extension == "png") { PNG::load(*this, fname); }
   else if (extension == "bmp") { BMP::load(*this, fname); }
   else { printf("[-] File '%s' unsupported\n", fname); exit(1); }
@@ -87,6 +89,7 @@ void Image::save(char const *fname, bool gammaCorrect, float exposure) {
   }
   auto extension = get_extension(fname);
   if      (extension == "ppm") { PPM::save(*this, fname); }
+  else if (extension == "pfm") { PFM::save(*this, fname); }
   else if (extension == "png") { PNG::save(*this, fname); }
   else if (extension == "bmp") { BMP::save(*this, fname); }
   else { printf("[-] File '%s' unsupported\n", fname); exit(1); }
