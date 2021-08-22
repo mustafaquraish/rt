@@ -18,10 +18,6 @@ MODE      = "Debug"
 
 all: release
 
-ifneq (, $(shell which ccache))
- CC = ccache g++
-endif
-
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Linux)
 	OPENMP += -fopenmp
