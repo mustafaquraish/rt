@@ -25,7 +25,7 @@ enum MeshType {
 struct TriangleMesh : Object {
   TriangleMesh(BSDF *mat);
   
-  TriangleMesh(MeshType type, const char *fname, BSDF *mat=nullptr, bool bothSides=false);
+  TriangleMesh(MeshType type, const char *fname, BSDF *mat=nullptr, bool bothSides=true);
 
   // Caller should set the `prims` vector to contain all the Triangles.
   void loadTriangles(std::vector<Primitive *>& prims);
