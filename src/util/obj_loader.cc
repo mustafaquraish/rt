@@ -269,7 +269,7 @@ BSDF *MeshData::get_bsdf_from_material(const MeshMaterial &mat) const {
       float reflect = 1 - diffuse;
       
       float refl_sig = 0;
-      if (mat.Ks.valid() && mat.Ns > 0 && mat.Ns <= 999)
+      if (mat.Ks.valid() && mat.Ns > 0 && mat.Ns <= 1000)
         refl_sig = MAX_REFL_SIG - (MAX_REFL_SIG * (mat.Ns/2000.0));
 
       float refract = 0;
@@ -277,6 +277,15 @@ BSDF *MeshData::get_bsdf_from_material(const MeshMaterial &mat) const {
       diffuse *= mat.alpha;
       reflect *= mat.alpha;
       refract = 1 - mat.alpha;
+
+      // Handle degenerate material definitions...
+      if (diffuse < TOL && reflect < TOL && refract < TOL)
+        diffuse = 1.0;
+
+      float sum = diffuse + reflect + refract;
+      diffuse /= sum;
+      reflect /= sum;
+      refract /= sum;
 
       float max_col = max(col);
       if (max_col > 1)
