@@ -7,26 +7,22 @@
 
 #define PATH_MAX_BOUNCES 30
 #define MIN_PDF_LIGHT 0.1
+#define USE_LIGHT_SAMPLING 1
 
 using namespace std;
 
 __attribute__((flatten))
 Colour Path::SampleLight(HitRec& rec, Scene *scene, RNG& rng) {
+  if (scene->lights.size() == 0) return 0;
+
   float pdf;
   HitRec tmp;
   
-  if (scene->lights.size() == 0) return 0; 
-
-  // Pick a light source
-  // Object *light = scene->lights[ 0 ];
   Object *light = scene->lights[ rng.randint() % scene->lights.size() ];
-
-
-  // Light source point
-  Vec3 lp = light->sample(&pdf, rng);
+  Vec3 light_point = light->sample(&pdf, rng);
   
   // Vector from intersection pt to lightsource
-  Vec3 wi = normalized(lp - rec.p);
+  Vec3 wi = normalized(light_point - rec.p);
   rec.wi = wi;
 
   Ray shadowRay = Ray(rec.p, wi);
@@ -71,7 +67,7 @@ Colour Path::Li(Ray &r, Scene *scene, RNG& rng) {
 
     bsdf->initSample(rec, rng);
 
-#if 1
+#if USE_LIGHT_SAMPLING
     if (applyEmission) L += throughput * bsdf->emittance(rec);
     if (bsdf->isEmitter()) break;
     if (!bsdf->isSpecular(rec)) L += throughput * SampleLight(rec, scene, rng);
