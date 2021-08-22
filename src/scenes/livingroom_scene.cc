@@ -41,10 +41,10 @@ SCENE(Living) {
   // scene->add(s);
 
 
-  s = new Plane(new Emitter(Colour(.99) * 40));
+  s = new Plane(new Emitter(Colour(.99) * 20));
   // s->RotateX(PI/2);
-  s->Scale(35, 15, 1);
-  s->Translate(0, -3, 10);
+  s->Scale(32, 15, 1);
+  s->Translate(-1, -4, 9);
   scene->add(s);
 
   // scene->world = new BVH(scene->obj_list);
