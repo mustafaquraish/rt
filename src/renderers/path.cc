@@ -12,7 +12,7 @@
 using namespace std;
 
 __attribute__((flatten))
-Colour Path::SampleLight(HitRec& rec, Scene *scene, RNG& rng) {
+Colour SampleLight(HitRec& rec, Scene *scene, RNG& rng) {
   if (scene->lights.size() == 0) return 0;
 
   float pdf;
