@@ -1,3 +1,5 @@
+#include <assert.h>
+#include <limits.h>
 #include <util/image/pfm.h>
 
 namespace PFM {
@@ -42,7 +44,7 @@ bool load(Image &img, const char *filename) {
   sscanf(&line[0], "%f\n", &endianness_scale); // Read file size
 
   float *buffer = new float[img.sx * img.sy * 3];
-  fread(buffer, sizeof(float), img.sx * img.sy * 3, f);
+  assert(fread(buffer, sizeof(float), img.sx * img.sy * 3, f));
 
   // This means we have big endian, convert to little endian for x86
   if (endianness_scale > 0) {
