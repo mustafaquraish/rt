@@ -182,7 +182,7 @@ RenderParams::RenderParams(int argc, char **argv) {
   set("frameTotal", frameTotal);
   set("output", output);
   set("scene", scene);
-  set("tileSize", 8);
+  set("tileSize", tileSize);
 
   set_window(0, 1, 0, 1);
   update_frame(frameBegin);
