@@ -12,13 +12,14 @@
 using namespace std;
 
 __attribute__((flatten))
-Colour SampleLight(HitRec& rec, Scene *scene, RNG& rng) {
+Colour SampleLight(HitRec& rec, Scene *scene, RNG& rng, Object** sampledLight) {
   if (scene->lights.size() == 0) return 0;
 
   float pdf;
   HitRec tmp;
   
   Object *light = scene->lights[ rng.randint() % scene->lights.size() ];
+  if (sampledLight) *sampledLight = light;
   Vec3 light_point = light->sample(&pdf, rng);
   
   // Vector from intersection pt to lightsource
@@ -57,6 +58,7 @@ Colour Path::Li(Ray &r, Scene *scene, RNG& rng) {
   Colour L = 0;
   Colour throughput = 1;
   bool applyEmission = true;
+  Object *sampledLight = nullptr;
 
   Ray ray = Ray(r.p, r.d);
   for (int bounce = 0; bounce < PATH_MAX_BOUNCES; bounce++) {
@@ -68,15 +70,15 @@ Colour Path::Li(Ray &r, Scene *scene, RNG& rng) {
     bsdf->initSample(rec, rng);
 
 #if USE_LIGHT_SAMPLING
-    if (applyEmission) L += throughput * bsdf->emittance(rec);
+    if (rec.obj != sampledLight) L += throughput * bsdf->emittance(rec);
     if (bsdf->isEmitter()) break;
-    if (!bsdf->isSpecular(rec)) L += throughput * SampleLight(rec, scene, rng);
+    sampledLight = nullptr;
+    if (!bsdf->isSpecular(rec)) L += throughput * SampleLight(rec, scene, rng, &sampledLight);
 #else
     if (bsdf->isEmitter()) return throughput * bsdf->emittance(rec);
 #endif
 
     throughput *= bsdf->sample(rec, rng);
-    applyEmission = bsdf->isSpecular(rec);  // Only apply direct emission if spec.
 
     // Russian roulette:
     if (bounce > 3) {

@@ -25,7 +25,7 @@ Colour DirectLighting::Li(Ray &r, Scene *scene, RNG& rng) {
 
     if (bsdf->isEmitter()) return throughput * bsdf->emittance(rec);
     if (!bsdf->isSpecular(rec)) {
-      Colour direct = throughput * SampleLight(rec, scene, rng);
+      Colour direct = throughput * SampleLight(rec, scene, rng, nullptr);
       direct += bsdf->col(rec) * AMBIENT_LIGHT;
       return direct;
     }

@@ -3,8 +3,9 @@
 #include <core/renderer.h>
 
 struct HitRec;
+struct Object;
 
-Colour SampleLight(HitRec& rec, Scene *scene, RNG& rng);
+Colour SampleLight(HitRec& rec, Scene *scene, RNG& rng, Object ** sampledLight);
 
 struct Path : Renderer {
   Path(RenderParams params) : Renderer(params) {};
