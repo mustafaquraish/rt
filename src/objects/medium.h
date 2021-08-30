@@ -54,7 +54,19 @@ struct Medium : Object {
   };
 
 private:
-  DensityTexture *m_density;
-  Object *m_obj;
+  DensityTexture *m_density = nullptr;
+  Object *m_obj = nullptr;
 };
+
+struct LoadedMedium : Object {
+  LoadedMedium(const char *filename, float scale=1);
+  bool hit(Ray &r, HitRec &rec) override;
+  float density(int x, int y, int z);
+  float density(const Vec3 &pt);
+private:
+  float *m_data;
+  int sx, sy, sz;
+  float scale;
+};
+
 
