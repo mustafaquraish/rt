@@ -2,17 +2,17 @@
 
 using namespace std;
 
-SCENE(Fireplace) {
+SCENE(salle) {
 
   Scene *scene = new Scene();
   
-  Vec3 e = Vec3(100, 20, -40);
-  Vec3 g = RotateYMatrix(-PI/2.2) * Vec3(0, 0, 1);
+  Vec3 e = Vec3(2, 0, -20);
+  Vec3 g = RotateXMatrix(PI/20) * RotateYMatrix(-PI/25) * Vec3(0, 0, 1);
   
   Vec3 up = Vec3(0, 1, 0);
 
-  scene->cam = Camera(e, g, up, 70, params);
-
+  scene->cam = Camera(e, g, up, 45, params); 
+ 
   scene->renderer = new Path(params);
   // scene->renderer = new DebugShader(params);
   // scene->renderer = new BaseColour(params);
@@ -22,19 +22,14 @@ SCENE(Fireplace) {
   Object *s;
 
   WavefrontOBJ::set_use_mesh_lights(true);
-  WavefrontOBJ::set_mesh_lights_scale(1);
+  WavefrontOBJ::set_mesh_lights_scale(2);
   WavefrontOBJ::set_use_hybrid_material(true);
 
-  s = new TriangleMesh(Full, "assets/obj/fireplace_room/fireplace_room.obj");
-  s->Scale(-20,20,20);
+  s = new RescaledMesh(Full, "assets/obj/salle/salle_de_bain.obj");
+  s->Scale(20);
+  s->RotateY(PI);
   scene->add(s);
-
-  s = new Disc(new Emitter(Colour(.99, .7, .5) * 5));
-  s->RotateX(PI/2);
-  s->Scale(8, 12, 8);
-  s->Translate(30, 56, -35);
-  // scene->add(s);
-
+ 
   // scene->world = new BVH(scene->obj_list);
   scene->world = new PrimitiveList(scene->obj_list);
   
