@@ -11,6 +11,7 @@
 renders
 *.ppm
 *.png
+*.pfm
 *.gif
 
 # Ignore build and executable
