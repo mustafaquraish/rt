@@ -65,25 +65,16 @@ LoadedMedium::LoadedMedium(const char* filename, float scale)
   fclose(fp);
 
   this->bounds = AABB(0, 1);
+  this->sxsy = sx * sy;
 }
 
 float LoadedMedium::density(int x, int y, int z) {
-  x = min(max(x, 0), sx-1);
-  y = min(max(y, 0), sy-1);
-  z = min(max(z, 0), sz-1);
-
-  float val = m_data[x + y*sx + z*sx*sy];
-
-  size_t idx = x + y*sx + z*sx*sy;
-  size_t tot = sx*sy*sz;
-  if (idx > tot-1) {
-    printf("%d %d %d  .... %d <> %d\n", x, y, z, idx, tot);
-  }
-  return val;
+  return m_data[x + y*sx + z*sxsy];
 }
 
 float LoadedMedium::density(const Vec3& pt) {
-  Vec3 p = pt * Vec3(sx, sy, sz);
+  // Having a -2 allows us to skip expensive bounds checking/clamping
+  Vec3 p = pt * Vec3(sx-2, sy-2, sz-2);
   int x = (int)p.x;
   int y = (int)p.y;
   int z = (int)p.z;

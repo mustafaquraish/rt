@@ -67,6 +67,8 @@ private:
   float *m_data;
   int sx, sy, sz;
   float scale;
+
+  int sxsy; // precomputed
 };
 
 
