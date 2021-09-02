@@ -8,6 +8,11 @@ struct MyPerlin : Texture {
     Vec3 pt = rec.p / 5;
     float perlin = Simplex::layered(8, 0.5, pt.x, pt.y, pt.z);
     return Simplex::transform(perlin, Layered);
+
+
+
+
+    
   }
 };
 
@@ -42,14 +47,19 @@ SCENE(medium) {
 
   Scene *scene = new Scene();
   
-  Vec3 e = Vec3(0, -5, -15);
+  // Vec3 e = Vec3(0, -5, -15);
+  // Vec3 g = -e;
+  // Vec3 up = Vec3(0, 1, 0);
+  // scene->cam = Camera(e, g, up, 70, params);
+
+  Vec3 e = Vec3(0, 0, -15);
   Vec3 g = -e;
   Vec3 up = Vec3(0, 1, 0);
   scene->cam = Camera(e, g, up, 70, params);
 
-  scene->renderer = new Path(params);
+  // scene->renderer = new Path(params);
   // scene->renderer = new DebugShader(params);
-  // scene->renderer = new DirectLighting(params);
+  scene->renderer = new DirectLighting(params);
   // scene->renderer = new BaseColour(params);
   
   Object *s;
@@ -132,12 +142,21 @@ SCENE(medium) {
   // s = new Medium(new ConstantDensityTexture(0.01),
   // s = new Medium(new MyDensity(0.1, 3),
   // s = new ConstantMedium(1.5,  
-  s = new Medium(new MyWorleyDensityTexture(0.2, 2.5),
-    new Cube(new Lambertian(Colour(1.3)))
-  );
-  s->Scale(10, 2, 10);
-  s->Translate(0, 5, 5);
+  // s = new Medium(new MyWorleyDensityTexture(0.2, 2.5),
+  //   new Cube(new Lambertian(Colour(1.3)))
+  // );
+  // s->Scale(10, 2, 10);
+  // s->Translate(0, 5, 5);
+  // scene->add(s);
+
+
+  s = new LoadedMedium("assets/plume.vol", 0.2);
+  s->setMaterial(new Lambertian(0.5));
+  s->Translate(-0.5, -0.5, -0.5);
+  s->Scale(20);
+  s->Translate(2, 0, 5);
   scene->add(s);
+
 
   // s = new Medium(new PerlinDensityTexture(0.05, 2),
   //   new Cube(new Lambertian(Colour(.9, .8, .7)))
@@ -153,23 +172,11 @@ SCENE(medium) {
   // s->Translate(0, 0, 5);
   // scene->add(s);
 
-  s = new Disc(new Emitter(Colour(15, 15, 12)));
+  s = new Disc(new Emitter(Colour(12)));
   s->Scale(3,2.5,3);
   s->RotateX(PI/2);
   s->Translate(0,9.9995,5);
   scene->add(s);
-
-  s = new Disc(new Emitter(Colour(15, 15, 12)));
-  s->Scale(3,2.5,3);
-  s->RotateY(-PI/2);
-  s->Translate(9.99995 ,0,5);
-  // scene->add(s);
-
-  s = new Plane(new Emitter(Colour(3)));
-  s->Scale(5,5,3);
-  // s->RotateX(PI/2);
-  s->Translate(0,0,9);
-  // scene->add(s);
 
   // scene->world = new BVH(scene->obj_list);
   scene->world = new PrimitiveList(scene->obj_list);
