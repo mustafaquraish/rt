@@ -15,12 +15,12 @@ SCENE(Cornell) {
   // params.set<int>("numPhotons", 10000000);
   // params.set<int>("numIterations", 10);
 
-  // scene->renderer = new Path(params);
+  scene->renderer = new Path(params);
   // scene->renderer = new DirectLighting(params);
-  // scene->renderer = new DebugShader(params);
+//   scene->renderer = new DebugShader(params);
   // scene->renderer = new PhotonMapping(params);
   // scene->renderer = new PhotonMapping(params);
-  scene->renderer = new BaseColour(params);
+//   scene->renderer = new BaseColour(params);
   
   Object *s;
 
@@ -109,15 +109,23 @@ SCENE(Cornell) {
   float R = inverseLerp(frame, 0, 60);
 
 
-  s = new DisplacedPlane(
-                          new Perlin4DTexture(Layered, 4, 4, 0.5, R),
-                          new Transmissive(1.2, Colour(0.5, 0.7, 1))
-                          );
-  s->Scale(12, 12, 12);
-  s->RotateX(PI/2);
-  s->Translate(0, -2, 8);
-  scene->add(s);
+//   s = new DisplacedPlane(
+//                           new Perlin4DTexture(Layered, 4, 4, 0.5, R),
+//                           new Transmissive(1.2, Colour(0.5, 0.7, 1))
+//                           );
+//   s->Scale(12, 12, 12);
+//   s->RotateX(PI/2);
+//   s->Translate(0, -2, 8);
+//   scene->add(s);
 
+  char name[256];
+  sprintf(name, "assets/bunny/obj/bunny%02d.obj", params.get<int>("frame"));
+
+  s = new TriangleMesh(Simple, name, new Lambertian(1));
+  s->Scale(0.05, 0.05, 0.05);
+  s->RotateY(PI);
+  s->Translate(0, -5, 3);
+  scene->add(s);
   // // s = new TriangleMesh(Simple, "assets/obj/dragon.obj", new Transmissive(1.47, Colour(1)));
   // s = new TriangleMesh(Simple, "assets/obj/dragon.obj", new Mirror(Colour(1)));
   // // s = new TriangleMesh(Simple, "assets/obj/dragon.obj", new Lambertian(Colour(0.9)));
@@ -170,7 +178,7 @@ SCENE(Cornell) {
   // s->Translate(-3, -15, 6);
   // scene->add(s);
 
-  s = new Disc(new Emitter(Colour(2, 2, 2)));
+  s = new Disc(new Emitter(Colour(10, 10, 10)));
   s->Scale(2.5);
   s->RotateX(PI/2);
   s->Translate(0,9.9995,5);
