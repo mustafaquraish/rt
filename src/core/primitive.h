@@ -16,7 +16,7 @@
 struct Object;
 
 struct HitRec {
-  enum RayType {
+  enum class RayType {
     Diffuse,
     Reflection,
     Refraction,

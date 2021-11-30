@@ -43,12 +43,8 @@ inline Vec3 refract(const Vec3& d_orig, const Vec3& n_orig, float ref_idx, RNG &
   float cosThetaT = sqrt(disc);
 
   // Compute fresnel equations:
-  float Rs = (etaI * cosThetaI - etaT * cosThetaT)
-           / (etaI * cosThetaI + etaT * cosThetaT);
-  float Rp = (etaT * cosThetaI - etaI * cosThetaT)
-           / (etaT * cosThetaI + etaI * cosThetaT);
-  
-  // Percent of light to be reflected
+  float Rs = (etaI * cosThetaI - etaT * cosThetaT) / (etaI * cosThetaI + etaT * cosThetaT);
+  float Rp = (etaT * cosThetaI - etaI * cosThetaT) / (etaT * cosThetaI + etaI * cosThetaT);
   float reflectPct = (Rs * Rs + Rp * Rp) / 2.0;
 
   // Reflect with probability computed
