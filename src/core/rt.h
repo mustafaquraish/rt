@@ -54,5 +54,6 @@ using std::endl;
 #include <materials/glossy.h>
 #include <materials/hybrid.h>
 #include <materials/orennayar.h>
+#include <materials/sampled.h>
 
 
