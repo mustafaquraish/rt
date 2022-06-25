@@ -2,7 +2,31 @@
 
 using namespace std;
 
-SCENE(Test) {
+struct Wavy : ParametricSurface {
+    Wavy(BSDF *mat,
+        float t = 1,
+        int aCount = 200,   // Cuts along parameter a
+        int bCount = 200,   // Cuts along parameter b
+        float aMin = -10,   // a min value
+        float aMax = 10,   // a max value
+        float bMin = -10,   // b min value
+        float bMax = 10 // b max value
+        )
+    : ParametricSurface(mat, aCount, bCount, aMin, aMax, bMin, bMax)
+    , t(t) {};
+    // Parametric function to give points along surface
+  virtual Vec3 P(float a, float b) {
+      return Vec3(
+        a,
+        3*sin(a)*cos(b)*cos(2*t),
+        b
+      );
+  }
+  float t;
+};
+
+
+SCENE(lolwtf) {
 
   Scene *scene = new Scene();
   
@@ -11,13 +35,7 @@ SCENE(Test) {
   Vec3 up = Vec3(0, 1, 0);
   scene->cam = Camera(e, g, up, 70, params);
 
-  params.set<float>("photonRange", .2);
-  params.set<int>("numPhotons", 10000);
-  params.set<int>("numIterations", 10);
-
-  // scene->renderer = new Path(params);
-  // scene->renderer = new PhotonMapping(params);
-  scene->renderer = new SPPM(params);
+  scene->renderer = new Path(params);
   // scene->renderer = new DebugShader(params);
   // scene->renderer = new DirectLighting(params);
   // scene->renderer = new BaseColour(params);
@@ -58,13 +76,6 @@ SCENE(Test) {
   s->Translate(0, 510, 5);
   scene->add(s);
 
-  // // blocking
-  // s = new Plane(new Lambertian(Colour(.75)));
-  // s->Scale(5, 5, 5);
-  // s->RotateX(-PI / 2);
-  // s->Translate(0, 8, 5);
-  // scene->add(s);
-
   // left sphere
   s = new Sphere(new Transmissive(1.47, Colour(1, 1, 1)));
   s->Scale(3.75, 3.75, 3.75);
@@ -76,34 +87,12 @@ SCENE(Test) {
   s->Scale(3.75, 3.75, 3.75);
   s->Translate(4, -3.75, 6.5);
   scene->add(s);
-
-  // s = new TangleCube(new Transmissive(1.47, Colour(1, 1, 1)));
-  // s->RotateX(PI / 6);
-  // s->RotateY(-PI / 9);
-  // s->Scale(2);
-  // s->Translate(0, 0, 4.5);
-  // scene->add(s);
-
-  // s = new DisplacedPlane(
-  //                         new Perlin4DTexture(Layered, 4, 4, 0.5, 0),
-  //                         new Transmissive(1.2, Colour(0.5, 0.7, 1))
-  //                         );
-  // s->Scale(12, 12, 12);
-  // s->RotateX(PI/2);
-  // s->Translate(0, -2, 8);
-  // scene->add(s);
   
-  s = new Plane(new Emitter(Colour(1, 1, 1)));
+  s = new Plane(new Emitter(Colour(12, 12, 12)));
   s->Scale(.5,2.5,10);
   s->RotateX(PI/2);
   s->Translate(0,9.9995,5);
   scene->add(s);
-
-  // s = new Disc(new Emitter(Colour(1, 1, 1)));
-  // s->Scale(2.5,2.5,10);
-  // s->RotateX(PI/2);
-  // s->Translate(0,9.9995,5);
-  // scene->add(s);
 
   // scene->world = new BVH(scene->obj_list);
   scene->world = new PrimitiveList(scene->obj_list);

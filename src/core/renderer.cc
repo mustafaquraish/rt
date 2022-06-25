@@ -18,7 +18,7 @@ void Renderer::render(Scene *scene) {
   // Set up tile manager, timer and progress bar
   TileManager tileManager = TileManager(params);
   ProgressBar progress = ProgressBar(tileManager.numTiles, "Render").start();
-  
+
   Timer timer = Timer("Rendering");
 
   #pragma omp parallel for schedule(dynamic, 1)
@@ -26,12 +26,12 @@ void Renderer::render(Scene *scene) {
 
     Tile tile = tileManager.getTile(t);
     RNG rng;
-    
+
     for (int y = tile.yBegin; y < tile.yEnd; y++) {
       for (int x = tile.xBegin; x < tile.xEnd; x++) {
         Colour col = 0;
         for (int sample = 0; sample < total_samples; sample++) {
-          Ray ray = (enableRNG) ? scene->cam.getRay(x, y, rng) 
+          Ray ray = (enableRNG) ? scene->cam.getRay(x, y, rng)
                                 : scene->cam.getRay(x, y);
           col += Li(ray, scene, rng) / total_samples;
         }

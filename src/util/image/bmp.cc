@@ -8,7 +8,7 @@ namespace BMP {
  * Based on documentation at:
  *  https://docs.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-bitmapfileheader
  */
-typedef struct {
+typedef struct bmpfileheader {
   uint16_t bf_type = 0x4d42;
   uint32_t bf_size = 0;
   uint16_t bf_reserved_1 = 0;
@@ -20,7 +20,7 @@ typedef struct {
  * Based on documentation at:
  * https://docs.microsoft.com/en-us/previous-versions//dd183376(v=vs.85)
  */
-typedef struct {
+typedef struct bmpinfoheader {
   uint32_t bi_size = 40;
   int32_t bi_width = 0;
   int32_t bi_height = 0;

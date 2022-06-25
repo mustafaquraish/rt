@@ -17,7 +17,6 @@ inline Vec3 reflect(const Vec3& d, const Vec3& n) {
  * Compute the refracted ray, with optional diffuse refraction.
  * 
  * NOTE: We need to pass an RNG instance here since there is a possible
- *       chance that the ray will be reflected instead.
  */
 inline Vec3 refract(const Vec3& d_orig, const Vec3& n_orig, float ref_idx, RNG &rng) {
   

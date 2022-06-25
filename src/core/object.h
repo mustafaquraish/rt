@@ -11,7 +11,7 @@ struct RNG;
 struct Object : Primitive {
   Object() {};
   Object(BSDF *bsdf): bsdf(bsdf) {};
-  ~Object();
+  ~Object();  
 
   // Public API for transforming objects
   void RotateX(float t);

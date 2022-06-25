@@ -54,11 +54,11 @@ TriangleMesh::TriangleMesh(MeshType type, const char *fname, BSDF *mat, bool bot
 
 // Caller should set the `prims` vector to contain all the Triangles.
 void TriangleMesh::loadTriangles(std::vector<Primitive *>& prims) {
-  if (prims.size() < 10) {
+//   if (prims.size() < 10) {
     mesh = new PrimitiveList(prims);
-  } else {
-    mesh = new BVH(prims);
-  }
+//   } else {
+//     mesh = new BVH(prims);
+//   }
   bounds = mesh->bounds;
   m_prims = &mesh->m_prims;
   RTMeshList::registerMesh(mesh);

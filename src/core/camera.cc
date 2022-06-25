@@ -39,11 +39,11 @@ Ray Camera::getRay(int i, int j, RNG& rng) {
   if (!DOF) {
     // TODO: Why does Ray(e, normalized(p-e)) break KD-Tree?
     Vec3 pij = Vec3(wl + (i + rng.rand01()) * du,
-                  wt + (j+rng.rand01())*dv,
+                    wt + (j + rng.rand01()) * dv,
                     -1);
     Vec3 p = C2W * pij;
     return Ray(p, normalized(p - e));
-  
+
   } else {
     Vec3 pij = Vec3(wl + i * du, wt + j * dv, -1);
     Vec3 aperture_point = pij + rng.randomUnitDisk() * aperture;

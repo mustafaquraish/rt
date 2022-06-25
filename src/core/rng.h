@@ -3,7 +3,6 @@
 #include <core/math.h>
 #include <time.h>
 
-
 struct RNG {
   RNG() {
     x = rand();

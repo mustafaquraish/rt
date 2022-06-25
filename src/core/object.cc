@@ -1,6 +1,8 @@
 #include <core/object.h>
 #include <core/bsdf.h>
 
+#include <stdio.h>
+
 using namespace std;
 
 Object::~Object() {

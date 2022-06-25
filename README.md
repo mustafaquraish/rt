@@ -4,6 +4,13 @@ A ray tracing engine written from scratch in C++, with no external dependencies 
 The first priority of this project has been to write _readable_ code, so that it can be used
 as a learning tool.
 
+## Building
+
+```bash
+$ make
+$ ./raytrace --help
+```
+
 ## Some sample renders
 
 ![Sample render 1](./renders/dragon.jpg)

@@ -121,10 +121,11 @@ SCENE(Cornell) {
   char name[256];
   sprintf(name, "assets/bunny/obj/bunny%02d.obj", params.get<int>("frame"));
 
-  s = new TriangleMesh(Simple, name, new Lambertian(1));
-  s->Scale(0.05, 0.05, 0.05);
+  s = new TriangleMesh(Simple, name, new Lambertian(Colour(255, 192, 203) / 255.0));
+//   s = new TriangleMesh(Simple, name, new SampledBSDF("assets/brdf/violet-rubber.binary"));
+  s->Scale(0.06, 0.06, 0.06);
   s->RotateY(PI);
-  s->Translate(0, -5, 3);
+  s->Translate(2, -6, 3);
   scene->add(s);
   // // s = new TriangleMesh(Simple, "assets/obj/dragon.obj", new Transmissive(1.47, Colour(1)));
   // s = new TriangleMesh(Simple, "assets/obj/dragon.obj", new Mirror(Colour(1)));
